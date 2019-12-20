@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}"/>
+    <title>{{ _("Supervisor Login") }}</title>
+  </head>
+  <body class="supervisor-login">
+    {% for message in get_flashed_messages() %}
+    <div class="float-box">
+      <div class="notification-box">
+        <p>{{ message }}</p>
+      </div>
+    </div>
+    {% endfor %}
+    <div class="center-box">
+      <div class="dialog-box dialog-box-small">
+        <form method="POST">
+          <div class="padding-box">
+            <h1>{{ _("Supervisor Login") }}</h1>
+            <p class="input-descriptor">{{ _("Username") }}</p>
+            <input type="text" name="username" value=""/>
+            <p class="input-descriptor">{{ _("Password") }}</p>
+            <input type="password" name="password" value=""/>
+          </div>
+          <input name="login_btn" type="submit" value="{{ _('Login') }}"/>
+        </form>
+      </div>
+    </div>
+    {% include 'includes/footer.html' %}
+  </body>
+</html>
+
+

@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}"/>
+    <title>{{ _("About") }}</title>
+    <script src="{{ url_for('static', filename='js/libs/progressbar.min.js') }}"></script>
+  </head>
+  <body class="background-about">
+    {% for message in get_flashed_messages() %}
+    <div class="float-box">
+      <div class="notification-box">
+        <p>{{ message }}</p>
+      </div>
+    </div>
+    {% endfor %}
+    <div class="center-box">
+      <div class="dialog-box dialog-box-small">
+        <div class="padding-box">
+          <h1>Traffy</h1>
+          <h2>v0.0.1</h2>
+          <div class="center-box">
+            <p>{{ _("Developer") }}: Falk Seidl</p>
+            <div class="scroll-box">
+              <p>
+                {% include 'includes/changelog.txt' %}
+              </p>
+          </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    {% include 'includes/sidebar.html' %}
+    {% include 'includes/footer.html' %}
+  </body>
+</html>
+
+

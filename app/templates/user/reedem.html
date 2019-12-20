@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}"/>
+    <title>{{ _("Reedem Voucher") }}</title>
+  </head>
+  <body>
+    {% for message in get_flashed_messages() %}
+    <div class="float-box">
+      <div class="notification-box">
+        <p>{{ message }}</p>
+      </div>
+    </div>
+    {% endfor %}
+    <div class="center-box">
+      <div class="dialog-box dialog-box-small">
+        <form method="POST">
+          <div class="padding-box">
+            <h1>{{ _("Top-Up Data Volume") }}</h1>
+            <h2>{{ _("Enter your voucher") }}</h2>
+            <input type="text" name="voucher" value=""/>
+          </div>
+          <input name="reedem_btn" type="submit" value="{{ _('Top-Up') }}"/>
+        </form>
+      </div>
+    </div>
+    {% include 'includes/sidebar.html' %}
+    {% include 'includes/footer.html' %}
+  </body>
+</html>
+
+

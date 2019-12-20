@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}"/>
+    <title>{{ _("Supervisor Dashboard") }}</title>
+    <script src="{{ url_for('static', filename='js/libs/chart.min.js') }}"></script>
+  </head>
+  <body>
+    <div class="nav-container">
+      <h1 class="nav-logo">{{ _("Supervisor Dashboard") }}</h1>
+      <input type="checkbox" id="nav-menu" class="nav-menu" />
+      <nav>
+        <ul>
+          <li class="active"><a href="#">{{ _("Overview") }}</a></li>
+          <li><a href="{{ url_for('admin.reg_codes') }}">{{ _("Registration Codes") }}</a></li>
+          {% if current_user.is_admin() %}
+          <li><a href="{{ url_for('admin.accounts') }}">{{ _("Accounts") }}</a></li>
+          {% endif %}
+          <li class="logout"><a href="{{ url_for('admin.logout') }}">{{ _("Logout") }}</a></li>
+        </ul>
+      </nav>
+      <label for="nav-menu" class="nav-menu-label">
+        <span></span>
+      </label>
+    </div>
+    {% for message in get_flashed_messages() %}
+      <div class="float-box">
+        <div class="notification-box">
+          <p>{{ message }}</p>
+        </div>
+      </div>
+    {% endfor %}
+    <div class="page-box">
+      <div class="content-box">
+        <h1>{{ _("Total Traffic Consumption") }}</h1>
+        <div class="supervisor-divider"></div>
+        <div class="chart-container">
+          <canvas id="chart"></canvas>
+        </div>
+
+        <h1>{{ _("Miscellaneous statistics") }}</h1>
+        <div class="supervisor-divider"></div>
+        <div class="statistic-flowbox">
+          <div>
+            <h2>{{ _("Active Users") }}</h2>
+            <p>{{ active_users }}</p>
+          </div>
+          <div>
+            <h2>{{ _("Device/User Ratio") }}</h2>
+            <p>{{ ratio }}</p>
+          </div>
+          <div>
+            <h2>{{ _("Average Credit") }}</h2>
+            <p>{{ average_credit }} GiB</p>
+          </div>
+          <div>
+            <h2>{{ _("Shaped Users") }}</h2>
+            <p>{{ shaped_users }}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <script>
+      Chart.defaults.global.responsive = true;
+      Chart.defaults.global.maintainAspectRatio = false;
+
+      var chartData = {
+        labels : [{% for item in labels %}
+                   "{{item}}",
+                  {% endfor %}],
+        datasets : [{
+            label: '{{ legend_downlink }}',
+            fill: true,
+            lineTension: 0.1,
+            backgroundColor: "rgba(165,179,204,0.6)",
+            borderColor: "rgba(45,55,72,1)",
+            borderCapStyle: 'butt',
+            borderDash: [],
+            borderDashOffset: 0.0,
+            borderJoinStyle: 'miter',
+            pointBorderColor: "rgba(156,26,26,1)",
+            pointBackgroundColor: "#fff",
+            pointBorderWidth: 2,
+            pointHoverRadius: 5,
+            pointHoverBackgroundColor: "rgba(0,0,0,1)",
+            pointHoverBorderColor: "rgba(220,220,220,1)",
+            pointHoverBorderWidth: 2,
+            pointRadius: 1,
+            pointHitRadius: 10,
+            data : [{% for item in values_downlink %}
+                      {{item}},
+                    {% endfor %}],
+            spanGaps: false
+        }, {
+            label: '{{ legend_uplink }}',
+            fill: true,
+            lineTension: 0.1,
+            backgroundColor: "rgba(156,26,26,0.4)",
+            borderColor: "rgba(156,26,26,1)",
+            borderCapStyle: 'butt',
+            borderDash: [],
+            borderDashOffset: 0.0,
+            borderJoinStyle: 'miter',
+            pointBorderColor: "rgba(0, 0, 0, 1)",
+            pointBackgroundColor: "#fff",
+            pointBorderWidth: 2,
+            pointHoverRadius: 5,
+            pointHoverBackgroundColor: "rgba(0,0,0,1)",
+            pointHoverBorderColor: "rgba(220,220,220,1)",
+            pointHoverBorderWidth: 2,
+            pointRadius: 1,
+            pointHitRadius: 10,
+            data : [{% for item in values_uplink %}
+                      {{item}},
+                    {% endfor %}],
+            spanGaps: false
+        }]
+      }
+
+      var ctx = document.getElementById("chart").getContext("2d");
+
+      var myChart = new Chart(ctx, {
+        type: 'line',
+        data: chartData,
+      });
+    </script>
+
+    {% include 'includes/footer.html' %}
+  </body>
+</html>
+
+

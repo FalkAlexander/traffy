@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}"/>
+    <title>{{ _("Supervisor Add Registration Code") }}</title>
+    <script src="{{ url_for('static', filename='js/libs/chart.min.js') }}"></script>
+  </head>
+  <body>
+    <div class="nav-container">
+      <h1 class="nav-logo">{{ _("Supervisor Dashboard") }}</h1>
+      <input type="checkbox" id="nav-menu" class="nav-menu" />
+      <nav>
+        <ul>
+          <li><a href="{{ url_for('admin.dashboard') }}">{{ _("Overview") }}</a></li>
+          <li class="active"><a href="#">{{ _("Registration Codes") }}</a></li>
+          {% if current_user.is_admin() %}
+          <li><a href="{{ url_for('admin.accounts') }}">{{ _("Accounts") }}</a></li>
+          {% endif %}
+          <li class="logout"><a href="{{ url_for('admin.logout') }}">{{ _("Logout") }}</a></li>
+        </ul>
+      </nav>
+      <label for="nav-menu" class="nav-menu-label">
+        <span></span>
+      </label>
+    </div>
+
+    <div class="page-box">
+      <div class="content-box">
+        {% for message in get_flashed_messages() %}
+        <div class="float-box-inline">
+          <div class="notification-box">
+            <p>{{ message }}</p>
+          </div>
+        </div>
+        {% endfor %}
+        <h1>{{ _("Add Registration Code") }}</h1>
+        <div class="supervisor-divider"></div>
+
+        <form method="POST">
+          <div class="center-box">
+            <div class="dialog-box dialog-box-small">
+              <div class="padding-box">
+                <p class="input-descriptor">{{ _("First name") }}</p>
+                <input type="text" name="first_name" value=""/>
+                <p class="input-descriptor">{{ _("Surname") }}</p>
+                <input type="text" name="surname" value=""/>
+                <p class="input-descriptor">{{ _("Mail") }}</p>
+                <input type="text" name="mail" value=""/>
+              </div>
+            </div>
+          </div>
+
+          <div class="supervisor-divider"></div>
+          <div class="toolbar">
+            <input name="add_key_btn" type="submit" value="{{ _('Add') }}"/>
+            <input name="cancel_btn" type="submit" value="{{ _('Cancel') }}"/>
+          </div>
+        </form>
+
+      </div>
+    </div>
+
+    {% include 'includes/footer.html' %}
+  </body>
+</html>
+
+

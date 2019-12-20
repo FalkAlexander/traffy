@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8"/>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/instruction.css') }}"/>
+    <title>Netzzugang Wohnheim Görlitz</title>
+  </head>
+  <body>
+    <div class="section">
+        <h1>Internet im Studentenwohnheim Görlitz</h1>
+        <div class="tight">
+            <h3>Das Wohnheimnetz ist Teil des Hochschulnetzwerks.</h3>
+            <h3>Aufgrund dessen existiert eine Datenvolumensbegrenzung für jeden Nutzer.</h3>
+        </div>
+    </div>
+        
+    <div class="info-box">
+        <p>Dein Startvolumen beträgt: <strong>{{ daily_topup_volume }} GiB</strong></p>
+    </div>
+    
+    <div class="justify">
+        <p><strong>Ansparmodell: </strong>Du erhälst jeden Tag <strong>{{ daily_topup_volume }} GiB</strong> gutgeschrieben. Am Ende des Tages wird dein unverbrauchtes Datenvolumen in den darauf folgenden Tag mitgenommen. Das Ansparmodell erlaubt es dir, insgesamt <strong>{{ max_saved_volume}} GiB</strong> anzusparen.</p>
+        
+        <p><strong>Aufbrauch: </strong>Nach Aufbrauch deines Datenvolumens wird dein Internetzugang auf eine Geschwindigkeit von <strong>{{ shaping_speed }}/s</strong> gedrosselt. Einzig die Hochschulinfrastruktur (z.B. Lernplattformen) ist weiterhin in voller Geschwindigkeit abrufbar. Sobald der Tag herum ist und du somit <strong>{{ daily_topup_volume}} GiB</strong> gutgeschrieben bekommst, ist die Geschwindigkeitsbeschränkung wieder aufgehoben.</p>
+    </div>
+    
+    <div class="divider"></div>
+
+    <div class="section">
+        <h1>Internet in the Görlitz student dormitory</h1>
+        <div class="tight">
+            <h3>The dormitory network is part of the university network.</h3>
+            <h3>Because of this, there is a data volume limit for each user.</h3>
+        </div>
+    </div>
+        
+    <div class="info-box">
+        <p>Your initial data volume is: <strong>{{ daily_topup_volume }} GiB</strong></p>
+    </div>
+    
+    <div class="justify">
+        <p><strong>Savings: </strong>Each day you get a credit of <strong>{{ daily_topup_volume }} GiB</strong>. At the end of the day, your remaining data volume will be transferred to the following day. This allows you to save a total amount of <strong>{{ max_saved_volume}} GiB</strong>.</p>
+        
+        <p><strong>Used up: </strong>After using up your data volume, your Internet access will be limited to a speed of <strong>{{ shaping_speed }}/s</strong>. The university infrastructure (e.g. learning platforms) remains to be accessible at full speed. As soon as the day is over and you're getting another <strong>{{ daily_topup_volume}} GiB</strong>, the speed limitation will be removed.</p>
+    </div>
+    
+    <div class="divider"></div>
+
+    <div class="justify">
+        <p><strong>Netzadministrator / Network administrator: </strong>{{ admin_name }}</p>
+        <p><strong>Mail: </strong>{{ admin_mail }}</p>
+        <p><strong>Zi-Nr. / Room No.: </strong>{{ admin_room }}</p>
+        <br/>
+        <p>Feel free to contact me if you run into any problems!</p>
+    </div>
+    
+
+    <div class="header">
+        <h3>Anleitung</h3>
+        <h1>Internetzugang einrichten</h1>
+    </div>
+    
+    <div class="instruction-section">
+        <div class="instruction-count">
+            <h2>1</h2>
+        </div>
+        <div class="instruction-text">
+            <h3>Verbinde dein Gerät mit dem Ethernet-Anschluss</h3>
+        </div>
+    </div>
+    <div class="instruction-section">
+        <div class="instruction-count">
+            <h2>2</h2>
+        </div>
+        <div class="instruction-text">
+            <h3>Die Registrierungsseite öffnet sich automatisch</h3>
+        </div>
+        
+        <div class="instruction-description">
+            <p>Dein Browser öffnet sich und leitet dich auf die Registrierungsseite weiter. Falls nicht, besuche folgende URL im Browser:</p>
+            <div class="info-box">
+                <p>→ <strong>{{ traffy_url }}</strong></p>
+            </div>
+        </div>
+        
+        <div class="instruction-count">
+            <h2>3</h2>
+        </div>
+        <div class="instruction-text">
+            <h3>Gib deinen Registrierungsschlüssel ein</h3>
+        </div>
+
+        <div class="instruction-description">
+            <p>Eine Registrierung ist für jedes Gerät nur beim Ersten verbinden nötig. Du kannst maximal {{ max_devices }} Geräte mit deinem Registrierungsschlüssel verknüpfen. Es ist dir allerdings jederzeit möglich ein Gerät zu deregistrieren um dafür ein anderes zu registrieren. Dein Registrierungsschlüssel:</p>
+            <div class="info-box">
+                <p>→ <strong>{{ reg_key }}</strong></p>
+                <p>Achte darauf deinen Registrierungsschlüssel nicht zu verlieren und halte ihn geheim!</p>
+            </div>
+        </div>
+
+        <div class="instruction-count">
+            <h2>4</h2>
+        </div>
+        <div class="instruction-text">
+            <h3>Akzeptiere die Rahmennetzordnung</h3>
+        </div>
+
+        <div class="instruction-count">
+            <h2>5</h2>
+        </div>
+        <div class="instruction-text">
+            <h3>Fertig!</h3>
+        </div>
+
+        <div class="instruction-description">
+            <p>Dein Internetzugang ist jetzt eingerichtet.</p>
+            <div class="info-box">
+                <p><strong>Tipp: </strong>Besuche regelmäßig <strong>{{ traffy_url }}</strong> in deinem Browser um dein Datenvolumen abzufragen.</p>
+            </div>
+        </div>
+
+        <div class="instruction-count">
+            <h2>?</h2>
+        </div>
+        <div class="instruction-text">
+            <h3 style="padding-left: 4px;">Fragen oder Hilfe benötigt?</h3>
+        </div>
+ 
+        <div class="instruction-description">
+            <p><strong>Netzadministrator: </strong>{{ admin_name }}</p>
+            <p><strong>E-Mail: </strong>{{ admin_mail }}</p>
+            <p><strong>Zi-Nr.: </strong>{{ admin_room }}</p>
+        </div>
+    </div>
+  </body>
+</html>
+
+

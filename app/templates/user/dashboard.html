@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}"/>
+    <title>{{ _("Dashboard") }}</title>
+    <script src="{{ url_for('static', filename='js/libs/progressbar.min.js') }}"></script>
+    <script>
+      var volumeLeft = {{ volume_left }};
+      var credit = {{ credit }};
+    </script>
+  </head>
+  <body class="background-dashboard">
+    {% for message in get_flashed_messages() %}
+    <div class="float-box">
+      <div class="notification-box">
+        <p>{{ message }}</p>
+      </div>
+    </div>
+    {% endfor %}
+    <div class="center-box">
+      <div class="dialog-box dialog-box-small">
+        <div class="padding-box">
+          <h1>{{ _("Dashboard") }}</h1>
+          <div class="center-box">
+            <div class="flex-bottom-box">
+              <div class="progress-box"></div>
+              <div class="progress-subtitle-box">{{ _("Remaining Traffic Volume") }}</div>
+              <script src="{{ url_for('static', filename='js/progressbar.js') }}"></script>
+            </div>
+            <div class="divider-horizontal"></div>
+            <div class="button-box">
+              <form method="POST">
+                <input name="reedem_dashboard_btn" type="submit" value="{{ _('Reedem Voucher') }}"/>
+                <input name="deregister_dashboard_btn" type="submit" value="{{ _('Deregister This Device') }}"/>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    {% include 'includes/sidebar.html' %}
+    {% include 'includes/footer.html' %}
+  </body>
+</html>
+
+

@@ -1,0 +1,42 @@
+
+    <div class="side-box">
+      <div class="slide-menu">
+        <div class="slide-menu-title">
+          <div class="triangle-bottom"></div>
+          {{ _("Contact and Information") }}
+          <div class="triangle-top"></div>
+        </div>
+        <div class="slide-menu-title-mobile">
+          <div class="triangle-bottom"></div>
+        </div>
+        <div class="divider-vertical"></div>
+        <div class="slide-content">
+          <div class="contact-box">
+            <h1>{{ _("In support cases and for questions:") }}</h1>
+            <div class="contact-flow">
+              <div class="contact-button">
+                <a href="mailto:admin.goerlitz@wh.studentenwerk-dresden.de">
+                  <img class="button-image" src="{{ url_for('static', filename='icons/mail.svg') }}"/>
+                </a>
+              </div>
+              <div class="contact-name">
+                <p>Falk Seidl</p>
+                <p class="subtitle">{{ _("Network Administrator") }}</p>
+              </div>
+            </div>
+          </div>
+          <div class="contact-box">
+            <h1>{{ _("In case of defects with passive network equipment:") }}</h1>
+            <div class="contact-flow">
+              <a href="mailto:Georg.Wohlfahrt@studentenwerk-dresden.de">
+                  <img class="button-image" src="{{ url_for('static', filename='icons/mail.svg') }}"/>
+                </a>
+              <div class="contact-name">
+                <p>Georg Wohlfahrt</p>
+                <p class="subtitle">{{ _("Facility Management") }}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>

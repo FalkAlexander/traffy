@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}"/>
+    <title>{{ _("Supervisor Account Page") }}</title>
+  </head>
+  <body>
+    <div class="nav-container">
+      <h1 class="nav-logo">{{ _("Supervisor Dashboard") }}</h1>
+      <input type="checkbox" id="nav-menu" class="nav-menu" />
+      <nav>
+        <ul>
+          <li><a href="{{ url_for('admin.dashboard') }}">{{ _("Overview") }}</a></li>
+          <li><a href="{{ url_for('admin.reg_codes') }}">{{ _("Registration Codes") }}</a></li>
+          {% if current_user.is_admin() %}
+          <li class="active"><a href="{{ url_for('admin.accounts') }}">{{ _("Accounts") }}</a></li>
+          {% endif %}
+          <li class="logout"><a href="{{ url_for('admin.logout') }}">{{ _("Logout") }}</a></li>
+        </ul>
+      </nav>
+      <label for="nav-menu" class="nav-menu-label">
+        <span></span>
+      </label>
+    </div>
+    <div class="page-box">
+      <div class="content-box">
+        {% for category, message in get_flashed_messages(with_categories=true) %}
+        <div class="float-box-inline">
+          <div class="notification-box status-{{ category }}">
+            <p>{{ message }}</p>
+          </div>
+        </div>
+        {% endfor %}
+
+        <div class="toolbar" style="margin-top: 35px;">
+          <div></div>
+          <h1>{{ _("Account:") }} {{ username }}</h1>
+        </div>
+        <div class="supervisor-divider"></div>
+
+        <div class="settings-box">
+          <div class="settings-box-content">
+            <h2>{{ _("Notifications") }}</h2>
+            <p><strong>{{ _("Description:") }}</strong> {{ _("Changes the mail notifications behaviour.") }}</p>
+            <form method="POST">
+              <label class="checkbox-container">
+                <p>{{ _("Shaping events") }}</p>
+                <input name="checkbox_shaped" type="checkbox" {{'checked="checked"' if notify_shaped else ""}}/>
+                <span class="checkbox-style"></span>
+              </label>
+              <label class="checkbox-container">
+                <p>{{ _("Failed login attempts") }}</p>
+                <input name="checkbox_failures" type="checkbox" {{'checked="checked"' if notify_failures else ""}}/>
+                <span class="checkbox-style"></span>
+              </label>
+              <label class="checkbox-container">
+                <p>{{ _("Critical log events") }}</p>
+                <input name="checkbox_critical" type="checkbox" {{'checked="checked"' if notify_critical else ""}}/>
+                <span class="checkbox-style"></span>
+              </label>
+              <input name="change_notifications_btn" type="submit" value="{{ _('Update Behaviour') }}"/>
+            </form>
+          </div>
+        </div>
+
+        <div class="settings-box">
+          <div class="settings-box-content">
+            <h2>{{ _("Password") }}</h2>
+            <p><strong>{{ _("Description:") }}</strong> {{ _("Changes the supervisor account password.") }}</p>
+            <p><strong>{{ _("Requirements:") }}</strong> Minimum 20 characters, at least 5 numbers, 5 capital letters, 5 lower case letters, 5 special characters.</p>
+            <form method="POST">
+              <input type="password" name="password_input" value=""/>
+              <input name="change_password_btn" type="submit" value="{{ _('Change Password') }}"/>
+            </form>
+          </div>
+        </div>
+
+        <div class="settings-box">
+          <div class="settings-box-content">
+            <h2>{{ _("Mail Address") }}</h2>
+            <p><strong>{{ _("Description:") }}</strong> {{ _("Changes the mail address.") }}</p>
+            <p><strong>{{ _("Allowed Values:") }}</strong> {{ _("Only trusted mail servers: ") }} *hszg.de, *studentenwerk-dresden.de</p>
+            <p><strong>{{ _("Current Value:") }}</strong> {{ mail_address }}</p>
+            <form method="POST">
+              <input type="text" name="mail_input" value=""/>
+              <input name="change_mail_btn" type="submit" value="{{ _('Change Mail Address') }}"/>
+            </form>
+          </div>
+        </div>
+
+        <div class="settings-box">
+          <div class="settings-box-content">
+            <h2>{{ _("Delete Account") }}</h2>
+            <p><strong>{{ _("Description:") }}</strong> {{ _("Use this if a supervisor is not in an administrative position anymore.") }}</p>
+            <form method="POST">
+              <input name="delete_account_btn" type="submit" value="{{ _('Delete Supervisor Account') }}"/>
+            </form>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    {% include 'includes/footer.html' %}
+  </body>
+</html>
+
+

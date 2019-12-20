@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}"/>
+    <title>{{ _("Supervisor Registration Key Page") }}</title>
+    <script src="{{ url_for('static', filename='js/libs/chart.min.js') }}"></script>
+  </head>
+  <body>
+    <div class="nav-container">
+      <h1 class="nav-logo">{{ _("Supervisor Dashboard") }}</h1>
+      <input type="checkbox" id="nav-menu" class="nav-menu" />
+      <nav>
+        <ul>
+          <li><a href="{{ url_for('admin.dashboard') }}">{{ _("Overview") }}</a></li>
+          <li class="active"><a href="{{ url_for('admin.reg_codes') }}">{{ _("Registration Codes") }}</a></li>
+          {% if current_user.is_admin() %}
+          <li><a href="{{ url_for('admin.accounts') }}">{{ _("Accounts") }}</a></li>
+          {% endif %}
+          <li class="logout"><a href="{{ url_for('admin.logout') }}">{{ _("Logout") }}</a></li>
+        </ul>
+      </nav>
+      <label for="nav-menu" class="nav-menu-label">
+        <span></span>
+      </label>
+    </div>
+    <div class="page-box">
+      <div class="content-box">
+        {% for message in get_flashed_messages() %}
+        <div class="float-box-inline">
+          <div class="notification-box">
+            <p>{{ message }}</p>
+          </div>
+        </div>
+        {% endfor %}
+
+        <div class="toolbar" style="margin-top: 35px;">
+          <form method="POST">
+            <input name="download_btn" type="submit" value="{{ _('Download Instruction') }}"/>
+          </form>
+          <h1>{{ _("Registration Code:") }} {{ reg_key }}</h1>
+        </div>
+        <div class="supervisor-divider"></div>
+
+        <div class="chart-container">
+          <canvas id="chart"></canvas>
+        </div>
+
+        <div class="statistic-flowbox">
+          <div>
+            <h2>{{ _("Credit") }}</h2>
+            <p>{{ stat_volume_left }} GiB</p>
+          </div>
+          <div>
+            <h2>{{ _("Shaped") }}</h2>
+            <p>{{ stat_shaped }}</p>
+          </div>
+          <div>
+            <h2>{{ _("Status") }}</h2>
+            <p>{{ stat_status }}</p>
+          </div>
+          <div>
+            <h2>{{ _("Created On") }}</h2>
+            <p>{{ stat_created_on }}</p>
+          </div>
+        </div>
+
+        {% if current_user.is_admin() or current_user.is_helpdesk() %}
+        <h1>{{ _("Devices") }}</h1>
+        <div class="supervisor-divider"></div>
+        {% if device_list|length > 0 %}
+        <div class="table">
+          <div class="table-head">
+            <div class="table-cell">{{ _("IP Address") }}</div>
+            <div class="table-cell">{{ _("Mac Address") }}</div>
+            <div class="table-cell">{{ _("Type") }}</div>
+            <div class="table-cell">{{ _("Registered Since") }}</div>
+            {% if current_user.is_admin() or current_user.is_helpdesk() %}
+            <div class="table-cell-button"></div>
+            {% endif %}
+          </div>
+          {% for row in device_list %}
+          <div class="table-row">
+            <div class="table-cell">{{ row.ip_address }}</div>
+            <div class="table-cell">{{ row.mac_address }}</div>
+            <div class="table-cell">{{ row.type }}</div>
+            <div class="table-cell">{{ row.registered_since }}</div>
+            <div class="table-cell-button">
+              <input name="delete_btn" type="submit" value="">
+                <form method="POST">
+                  <a href="{{ reg_key }}/delete/{{ row.ip_address }}">
+                    <img class="table-button-image" src="{{ url_for('static', filename='icons/trash.svg') }}"/>
+                  </a>
+                </form>
+              </input>
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+        {% else %}
+        <h2>{{ _("No devices registered yet") }}</h2>
+        {% endif %}
+        {% endif %}
+
+        <h1>{{ _("User Settings") }}</h1>
+        <div class="supervisor-divider"></div>
+
+        {% if current_user.is_admin() or current_user.is_helpdesk() %}
+        <div class="settings-box">
+          <div class="settings-box-content">
+            <h2>{{ _("Custom Credit") }}</h2>
+            <p><strong>{{ _("Description:") }}</strong> {{ _("Sets this users credit to a custom value.") }}</p>
+            <p><strong>{{ _("Allowed Values:") }}</strong> 1 - 999</p>
+            <p><strong>{{ _("Unit:") }}</strong> GiB</p>
+            <form method="POST">
+              <input type="text" name="custom_credit_input" value=""/>
+              <input name="custom_credit_enable" type="submit" value="{{ _('Set') }}"/>
+            </form>
+          </div>
+        </div>
+
+        <div class="settings-box">
+          <div class="settings-box-content">
+            <h2>{{ _("Custom Daily Top-Up Volume") }}</h2>
+            <p><strong>{{ _("Description:") }}</strong> {{ _("Grants this user a custom daily top-up volume.") }}</p>
+            <p><strong>{{ _("Allowed Values:") }}</strong> 1 - 999</p>
+            <p><strong>{{ _("Unit:") }}</strong> GiB</p>
+            {% if custom_volume_enabled %}
+            <p><strong>{{ _("Status:") }}</strong> {{ _("Enabled") }}</p>
+            <p><strong>{{ _("Value:") }}</strong> {{ value_custom_topup }} GiB</p>
+            {% else %}
+            <p><strong>{{ _("Status:") }}</strong> {{ _("Disabled") }}</p>
+            {% endif %}
+            <form method="POST">
+              <input type="text" name="custom_topup_input" value=""/>
+              <input name="custom_topup_enable" type="submit" value="{{ _('Set') }}"/>
+            </form>
+            {% if custom_volume_enabled %}
+            <form method="POST">
+              <input name="custom_topup_disable" type="submit" value="{{ _('Disable Custom Top-Up Volume') }}"/>
+            </form>
+            {% endif %}
+          </div>
+        </div>
+
+        <div class="settings-box">
+          <div class="settings-box-content">
+            <h2>{{ _("Custom Maximum Volume") }}</h2>
+            <p><strong>{{ _("Description:") }}</strong> {{ _("Grants this user a custom maximum volume.") }}</p>
+            <p><strong>{{ _("Allowed Values:") }}</strong> 1 - 999</p>
+            <p><strong>{{ _("Unit:") }}</strong> GiB</p>
+            {% if custom_max_enabled %}
+            <p><strong>{{ _("Status:") }}</strong> {{ _("Enabled") }}</p>
+            <p><strong>{{ _("Value:") }}</strong> {{ value_max_volume }} GiB</p>
+            {% else %}
+            <p><strong>{{ _("Status:") }}</strong> {{ _("Disabled") }}</p>
+            {% endif %}
+            <form method="POST">
+              <input type="text" name="custom_max_input" value=""/>
+              <input name="custom_max_enable" type="submit" value="{{ _('Set') }}"/>
+            </form>
+            {% if custom_max_enabled %}
+            <form method="POST">
+              <input name="custom_max_disable" type="submit" value="{{ _('Disable Custom Max Volume') }}"/>
+            </form>
+            {% endif %}
+          </div>
+        </div>
+
+        <div class="settings-box">
+          <div class="settings-box-content">
+            <h2>{{ _("Disable Accounting") }}</h2>
+            <p><strong>{{ _("Description:") }}</strong> {{ _("Disables traffic accounting for this user. Use this to grant unlimited traffic to this user.") }}</p>
+            {% if accounting_enabled %}
+            <p><strong>{{ _("Status:") }}</strong> {{ _("Accounting Enabled") }}</p>
+            {% else %}
+            <p><strong>{{ _("Status:") }}</strong> {{ _("Accounting Disabled") }}</p>
+            {% endif %}
+            <form method="POST">
+              {% if accounting_enabled %}
+              <input name="disable_accounting" type="submit" value="{{ _('Disable Accounting') }}"/>
+              {% else %}
+              <input name="enable_accounting" type="submit" value="{{ _('Enable Accounting') }}"/>
+              {% endif %}
+            </form>
+          </div>
+        </div>
+        {% endif %}
+
+        <div class="settings-box">
+          <div class="settings-box-content">
+            <h2>{{ _("Deactivate Registration Code") }}</h2>
+            <p><strong>{{ _("Description:") }}</strong> {{ _("Use this if an user moved out of his apartment or violated the terms of use. All devices which have registered with this code will not be able to go online anymore.") }}</p>
+            {% if key_active %}
+            <p><strong>{{ _("Status:") }}</strong> {{ _("Registration Code Active") }}</p>
+            {% else %}
+            <p><strong>{{ _("Status:") }}</strong> {{ _("Registration Code Deactivated") }}</p>
+            {% endif %}
+            <form method="POST">
+              {% if key_active %}
+              <input name="deactivate_code" type="submit" value="{{ _('Deactivate Registration Code') }}"/>
+              {% else %}
+              <input name="activate_code" type="submit" value="{{ _('Activate Registration Code') }}"/>
+              {% endif %}
+            </form>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <script>
+      Chart.defaults.global.responsive = true;
+      Chart.defaults.global.maintainAspectRatio = false;
+
+      var barData = {
+        labels : [{% for item in labels %}
+                   "{{item}}",
+                  {% endfor %}],
+        datasets : [{
+            label: '{{ legend_downlink }}',
+            backgroundColor: "rgba(45,55,72,0.9)",
+            stack: "Stack 0",
+            data : [{% for item in values_downlink %}
+                      {{item}},
+                    {% endfor %}],
+            spanGaps: false
+        }, {
+            label: '{{ legend_downlink_shaped }}',
+            backgroundColor: "rgba(45,55,72,0.7)",
+            stack: "Stack 0",
+            data : [{% for item in values_downlink_shaped %}
+                      {{item}},
+                    {% endfor %}],
+            spanGaps: false
+        }, {
+            label: '{{ legend_uplink }}',
+            backgroundColor: "rgba(156,26,26,0.9)",
+            stack: "Stack 1",
+            data : [{% for item in values_uplink %}
+                      {{item}},
+                    {% endfor %}],
+            spanGaps: false
+        }, {
+            label: '{{ legend_uplink_shaped }}',
+            backgroundColor: "rgba(156,26,26,0.7)",
+            stack: "Stack 1",
+            data : [{% for item in values_uplink_shaped %}
+                      {{item}},
+                    {% endfor %}],
+            spanGaps: false
+        }]
+      }
+
+      var ctx = document.getElementById("chart").getContext("2d");
+
+      var myChart = new Chart(ctx, {
+        type: 'bar',
+        data: barData,
+      });
+    </script>
+
+    {% include 'includes/footer.html' %}
+  </body>
+</html>
+
+

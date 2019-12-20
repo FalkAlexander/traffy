@@ -1,0 +1,128 @@
+@font-face {
+  font-family: "Bitter-Regular";
+  src: url("../fonts/Bitter-Regular.otf") format("opentype");
+}
+
+@font-face {
+  font-family: "Bitter-Bold";
+  src: url("../fonts/Bitter-Bold.otf") format("opentype");
+}
+
+@font-face {
+  font-family: "OpenSans-Regular";
+  src: url("../fonts/OpenSans-Bold.ttf") format("truetype");
+}
+
+body {
+  font-family: Bitter-Regular;
+}
+
+h1 {
+  font-size: 20px;
+  line-height: 20px;
+}
+
+h3 {
+  font-size: 16px;
+  color: #6e6e6e;
+}
+
+.section {
+  line-height: 10px;
+  margin: 20px 0 20px 0;
+}
+
+.tight {
+  margin: 0;
+  line-height: 20px;
+}
+
+.tight h3 {
+  margin: 0;
+}
+
+.info-box {
+  display: inline-block;
+  background-color: #ededed;
+  border: 2px dotted #828282;
+  padding: 10px;
+}
+
+.info-box p {
+  margin: 0px;
+}
+
+.justify {
+  text-align: justify;
+  text-justify: inter-word;
+}
+
+.divider {
+  margin: 15px 0 15px 0;
+  border: 1px dashed #828282;
+  width: 100%;
+}
+
+.header h1,
+.header h3 {
+  margin: 0px;
+  line-height: 23px;
+}
+
+.instruction-section {
+  display: inline-block;
+  height: 50px;
+  margin-top: 20px;
+  width: 100%;
+}
+
+.instruction-count {
+  float: left;
+  margin-right: 10px;
+}
+
+.instruction-count h2 {
+  font-size: 20px;
+  line-height: 20px;
+  display: table-cell;
+  margin: 0;
+  height: 50px;
+  font-family: OpenSans-Regular;
+  font-weight: normal;
+  font-size: 50px;
+  color: #0011b2;
+  vertical-align: bottom;
+}
+
+.instruction-count h2:after {
+  content: '';
+  display: block;
+  height: 13px; 
+}
+
+.instruction-text h3 {
+  display: table-cell;
+  margin: 0;
+  height: 50px;
+  font-size: 18px;
+  color: #000;
+  vertical-align: bottom;
+}
+
+.instruction-count h3:after {
+  display: block;
+}
+
+.instruction-description {
+  margin: 3px 10px 10px 39px;
+}
+
+.instruction-description p {
+  margin: 0 0 6px 0;
+  text-align: justify;
+  text-justify: inter-word;
+}
+
+.instruction-description .info-box p {
+  margin: 0 0 0 0;
+}

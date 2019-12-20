@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}"/>
+    <title>{{ _("Supervisor Registration Codes") }}</title>
+    <script src="{{ url_for('static', filename='js/libs/chart.min.js') }}"></script>
+  </head>
+  <body>
+    <div class="nav-container">
+      <h1 class="nav-logo">{{ _("Supervisor Dashboard") }}</h1>
+      <input type="checkbox" id="nav-menu" class="nav-menu" />
+      <nav>
+        <ul>
+          <li><a href="{{ url_for('admin.dashboard') }}">{{ _("Overview") }}</a></li>
+          <li class="active"><a href="#">{{ _("Registration Codes") }}</a></li>
+          {% if current_user.is_admin() %}
+          <li><a href="{{ url_for('admin.accounts') }}">{{ _("Accounts") }}</a></li>
+          {% endif %}
+          <li class="logout"><a href="{{ url_for('admin.logout') }}">{{ _("Logout") }}</a></li>
+        </ul>
+      </nav>
+      <label for="nav-menu" class="nav-menu-label">
+        <span></span>
+      </label>
+    </div>
+    <div class="page-box">
+      <div class="content-box">
+        {% for message in get_flashed_messages() %}
+        <div class="float-box-inline">
+          <div class="notification-box">
+            <p>{{ message }}</p>
+          </div>
+        </div>
+        {% endfor %}
+        <h1>{{ _("User Management") }}</h1>
+        <div class="supervisor-divider"></div>
+
+        <div class="toolbar">
+          <form method="POST">
+            <input type="text" name="search_box" value="" placeholder="{{ _('Search…') }}"/>
+          </form>
+
+          <div class="toolbar-button-box">
+            <form method="POST">
+              <input name="add_key_btn" type="submit" value="{{ _('Add Registration Code') }}"/>
+            </form>
+            <form method="POST">
+              {% if clear_button is defined %}
+              <input name="clear_btn" type="submit" value="{{ _('Clear Results') }}"/>
+              {% endif %}
+            </form>
+          </div>
+        </div>
+
+        <div class="table">
+          <div class="table-head">
+            <div class="table-cell">{{ _("Registration Key") }}</div>
+            <div class="table-cell collapse">{{ _("Surname") }}</div>
+            <div class="table-cell collapse">{{ _("First name") }}</div>
+            <div class="table-cell collapse">{{ _("Credit") }}</div>
+            <div class="table-cell-button"></div>
+          </div>
+          {% for row in rows %}
+          <div class="table-row">
+            <div class="table-cell">{{ row.reg_key }}</div>
+            <div class="table-cell collapse">{{ row.last_name }}</div>
+            <div class="table-cell collapse">{{ row.first_name }}</div>
+            <div class="table-cell collapse">{{ row.credit }} GiB</div>
+            <div class="table-cell-button">
+              <input name="stats_btn" type="submit" value="">
+                <form method="POST">
+                  <a href="{{ url_for(request.endpoint) }}/{{ row.reg_key }}">
+                    <img class="table-button-image" src="{{ url_for('static', filename='icons/stats.svg') }}"/>
+                  </a>
+                </form>
+              </input>
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+
+      </div>
+    </div>
+
+    {% include 'includes/footer.html' %}
+  </body>
+</html>
+
+
