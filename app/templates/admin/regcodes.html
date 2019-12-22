@@ -62,7 +62,11 @@
             <div class="table-cell-button"></div>
           </div>
           {% for row in rows %}
+          {% if row.active %}
           <div class="table-row">
+          {% else %}
+          <div class="table-row deactivated">
+          {% endif %}
             <div class="table-cell">{{ row.reg_key }}</div>
             <div class="table-cell collapse">{{ row.last_name }}</div>
             <div class="table-cell collapse">{{ row.first_name }}</div>

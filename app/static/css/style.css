@@ -758,6 +758,11 @@ nav a:hover {
   background: #b8c0cd;
 }
 
+.table .table-row.deactivated {
+  color: #fff;
+  background: repeating-linear-gradient(45deg, #8a0c0c, #8a0c0c 10px, #010101 10px, #010101 20px);
+}
+
 .table .table-cell {
   display: table-cell;
   border: 1px solid #e3e3e3;

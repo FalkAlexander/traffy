@@ -120,7 +120,7 @@ def reg_codes():
             credit = accounting_srv.get_credit(row, gib=True)[0]
             if credit < 0:
                 credit = 0
-            search_results.append(KeyRow(row.key, identity.last_name, identity.first_name, credit))
+            search_results.append(KeyRow(row.key, identity.last_name, identity.first_name, credit, row.active))
 
         return render_template("/admin/regcodes.html", rows=search_results, clear_button=True)
 
@@ -129,7 +129,7 @@ def reg_codes():
         credit = accounting_srv.get_credit(row, gib=True)[0]
         if credit < 0:
             credit = 0
-        rows.append(KeyRow(row.key, identity.last_name, identity.first_name, credit))
+        rows.append(KeyRow(row.key, identity.last_name, identity.first_name, credit, row.active))
 
     rows.reverse()
 
@@ -549,12 +549,14 @@ class KeyRow():
     last_name = ""
     first_name = ""
     credit = ""
+    active = True
 
-    def __init__(self, reg_key, last_name, first_name, credit):
+    def __init__(self, reg_key, last_name, first_name, credit, active):
         self.reg_key = reg_key
         self.last_name = last_name
         self.first_name = first_name
         self.credit = credit
+        self.active = active
 
 class DeviceRow():
     ip_address = ""
