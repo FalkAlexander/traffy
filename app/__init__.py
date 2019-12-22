@@ -12,7 +12,7 @@ db = SQLAlchemy()
 dnsmasq_srv = DnsmasqService()
 babel = Babel()
 login_manager = LoginManager()
-mail_helper = MailHelper()
+#mail_helper = MailHelper()
 
 
 def create_app(config_name):

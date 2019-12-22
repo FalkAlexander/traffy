@@ -138,15 +138,19 @@ class AccountingService():
             return
         else:
             # Missing Traffic Entries
-            day_range = int(self.get_max_saved_volume() / self.get_daily_topup_volume())
+            day_range = int(self.get_max_saved_volume(gib=True) / self.get_daily_topup_volume(gib=True))
             volume_start_day = date - timedelta(days=day_range)
             collected_credit = 0
-            for day in rrule.rrule(rrule.DAILY, dtstart=date, until=volume_start_day):
+            days_iterative = []
+            for day in rrule.rrule(rrule.DAILY, dtstart=volume_start_day, until=date):
+                days_iterative.append(day)
+
+            days_iterative.reverse()
+
+            for day in days_iterative:
                 traffic_query = Traffic.query.filter_by(reg_key=reg_key_query.id, timestamp=day).first()
-                if traffic_query is None:
-                    collected_credit += self.get_daily_topup_volume()
-                else:
-                    collected_credit += traffic_query.credit
+                if traffic_query is not None:
+                    collected_credit = traffic_query.credit + self.get_daily_topup_volume()
                     break
 
             row = Traffic(reg_key=reg_key_query.id,
@@ -284,7 +288,20 @@ class AccountingService():
             address_pair_query = AddressPair.query.filter_by(reg_key=reg_key_query.id).all()
             for row in address_pair_query:
                 ip_address_query = IpAddress.query.filter_by(id=row.ip_address).first()
+
+                # Setup Firewall
                 iptables_rules_manager.unlock_registered_device(ip_address_query.address_v4)
+
+                # Setup Accounting
+                if AddressPair.query.filter_by(reg_key=reg_key_query.id).count() <= 1:
+                    iptables_accounting_manager.add_accounter_chain(reg_key_query.id)
+                    iptables_accounting_manager.add_ip_to_box(reg_key_query.id, ip_address_query.address_v4)
+                else:
+                    iptables_accounting_manager.add_ip_to_box(reg_key_query.id, ip_address_query.address_v4)
+
+                # Setup Shaping
+                if reg_key_query.id in self.shaped_reg_keys:
+                    shaping_manager.enable_shaping_for_ip(ip_address_query.id, ip_address_query.address_v4)
 
             return True
         except:
@@ -298,6 +315,19 @@ class AccountingService():
             address_pair_query = AddressPair.query.filter_by(reg_key=reg_key_query.id).all()
             for row in address_pair_query:
                 ip_address_query = IpAddress.query.filter_by(id=row.ip_address).first()
+
+                # Disable Shaping
+                if reg_key_query.id in self.shaped_reg_keys:
+                    shaping_manager.disable_shaping_for_ip(ip_address_query.id, ip_address_query.address_v4)
+
+                # Disable Accounting
+                if AddressPair.query.filter_by(reg_key=reg_key_query.id).count() == 0:
+                    iptables_accounting_manager.remove_ip_from_box(reg_key_query.id, ip_address_query.address_v4)
+                    iptables_accounting_manager.remove_accounter_chain(reg_key_query.id)
+                else:
+                    iptables_accounting_manager.remove_ip_from_box(reg_key_query.id, ip_address_query.address_v4)
+
+                # Setup Firewall
                 iptables_rules_manager.relock_registered_device(ip_address_query.address_v4)
 
             return True

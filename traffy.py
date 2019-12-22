@@ -69,7 +69,8 @@ def setup_accounting_chains():
             if reg_key_query is None:
                 continue
 
-            iptables_accounting_manager.add_accounter_chain(reg_key_query.id)
+            if reg_key_query.active is True:
+                iptables_accounting_manager.add_accounter_chain(reg_key_query.id)
 
         address_pair_query = db.session.query(AddressPair.ip_address).filter(AddressPair.ip_address).distinct()
         for ip_address_fk in address_pair_query:
@@ -83,7 +84,9 @@ def setup_accounting_chains():
             address_pair_query = AddressPair.query.filter_by(ip_address=ip_address_fk.ip_address).first()
             reg_key_query = RegistrationKey.query.filter_by(id=address_pair_query.reg_key).first()
             ip_address_query = IpAddress.query.filter_by(id=address_pair_query.ip_address).first()
-            iptables_accounting_manager.add_ip_to_box(reg_key_query.id, ip_address_query.address_v4)
+
+            if reg_key_query.active is True:
+                iptables_accounting_manager.add_ip_to_box(reg_key_query.id, ip_address_query.address_v4)
             # Spoofing Protection
             mac_address_query = MacAddress.query.filter_by(id=address_pair_query.mac_address).first()
             arp_manager.add_static_arp_entry(ip_address_query.address_v4, mac_address_query.address)
@@ -102,7 +105,9 @@ def remove_accounting_chains():
             address_pair_query = AddressPair.query.filter_by(ip_address=ip_address_fk.ip_address).first()
             reg_key_query = RegistrationKey.query.filter_by(id=address_pair_query.reg_key).first()
             ip_address_query = IpAddress.query.filter_by(id=address_pair_query.ip_address).first()
-            iptables_accounting_manager.remove_ip_from_box(reg_key_query.id, ip_address_query.address_v4)
+
+            if reg_key_query.active is True:
+                iptables_accounting_manager.remove_ip_from_box(reg_key_query.id, ip_address_query.address_v4)
             # Spoofing Protection
             arp_manager.remove_static_arp_entry(ip_address_query.address_v4)
 
@@ -115,7 +120,8 @@ def remove_accounting_chains():
             if reg_key_query is None:
                 continue
 
-            iptables_accounting_manager.remove_accounter_chain(reg_key_query.id)
+            if reg_key_query.active is True:
+                iptables_accounting_manager.remove_accounter_chain(reg_key_query.id)
 
 def shutdown():
     # Stop dnsmasq
@@ -147,16 +153,16 @@ def startup():
     # Setup Shaping
     shaping_manager.setup_shaping()
 
-    # Start Accounting
-    setup_accounting_chains()
-    accounting_srv.app = app
-    accounting_srv.start(10)
-
     # Apply Firewall Rules
     iptables_rules_manager.apply_block_rule(delete=False)
     iptables_rules_manager.apply_redirect_rule(delete=False)
     iptables_rules_manager.apply_dns_rule(delete=False)
     firewall_unlock_registered_devices()
+
+    # Start Accounting
+    setup_accounting_chains()
+    accounting_srv.app = app
+    accounting_srv.start(10)
 
     atexit.register(shutdown)
 
