@@ -292,16 +292,16 @@ class AccountingService():
                 # Setup Firewall
                 iptables_rules_manager.unlock_registered_device(ip_address_query.address_v4)
 
-                # Setup Accounting
-                if AddressPair.query.filter_by(reg_key=reg_key_query.id).count() <= 1:
-                    iptables_accounting_manager.add_accounter_chain(reg_key_query.id)
-                    iptables_accounting_manager.add_ip_to_box(reg_key_query.id, ip_address_query.address_v4)
-                else:
-                    iptables_accounting_manager.add_ip_to_box(reg_key_query.id, ip_address_query.address_v4)
-
                 # Setup Shaping
                 if reg_key_query.id in self.shaped_reg_keys:
                     shaping_manager.enable_shaping_for_ip(ip_address_query.id, ip_address_query.address_v4)
+
+            iptables_accounting_manager.add_accounter_chain(reg_key_query.id)
+            for row in address_pair_query:
+                ip_address_query = IpAddress.query.filter_by(id=row.ip_address).first()
+
+                # Setup Accounting
+                iptables_accounting_manager.add_ip_to_box(reg_key_query.id, ip_address_query.address_v4)
 
             return True
         except:
@@ -321,14 +321,11 @@ class AccountingService():
                     shaping_manager.disable_shaping_for_ip(ip_address_query.id, ip_address_query.address_v4)
 
                 # Disable Accounting
-                if AddressPair.query.filter_by(reg_key=reg_key_query.id).count() == 0:
-                    iptables_accounting_manager.remove_ip_from_box(reg_key_query.id, ip_address_query.address_v4)
-                    iptables_accounting_manager.remove_accounter_chain(reg_key_query.id)
-                else:
-                    iptables_accounting_manager.remove_ip_from_box(reg_key_query.id, ip_address_query.address_v4)
+                iptables_accounting_manager.remove_ip_from_box(reg_key_query.id, ip_address_query.address_v4)
 
                 # Setup Firewall
                 iptables_rules_manager.relock_registered_device(ip_address_query.address_v4)
+            iptables_accounting_manager.remove_accounter_chain(reg_key_query.id)
 
             return True
         except:
