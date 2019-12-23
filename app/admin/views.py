@@ -279,6 +279,15 @@ def reg_code(reg_key):
 
             return redirect("/admin/regcodes/" + reg_key_query.key)
 
+        # Delete Registration Code
+        if "delete_code" in request.form:
+            success = user_functions.delete_registration_key(reg_key_query)
+
+            if not success:
+                flash(_l("An error occured."))
+
+            return redirect("/admin/regcodes")
+
 
     # Statistics
     traffic_query = Traffic.query.filter_by(reg_key=reg_key_query.id).first()

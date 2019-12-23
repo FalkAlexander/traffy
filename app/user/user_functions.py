@@ -1,5 +1,5 @@
 from .. import db, accounting_srv, dnsmasq_srv
-from ..models import AddressPair, RegistrationKey, IpAddress, MacAddress
+from ..models import AddressPair, RegistrationKey, IpAddress, MacAddress, Traffic, Identity
 from ..util import arp_manager, iptables_accounting_manager, iptables_rules_manager, lease_parser, dnsmasq_manager, shaping_manager
 import datetime
 
@@ -105,6 +105,28 @@ def deregister_device(ip_address):
 
     # Setup Firewall
     iptables_rules_manager.relock_registered_device(ip_address)
+
+def delete_registration_key(reg_key_query):
+    try:
+        address_pair_query = AddressPair.query.filter_by(reg_key=reg_key_query.id).all()
+        for row in address_pair_query:
+            ip_address_query = IpAddress.query.filter_by(id=row.ip_address).first()
+            deregister_device(ip_address_query.address_v4)
+
+        traffic_query = Traffic.query.filter_by(reg_key=reg_key_query.id).all()
+        for row in traffic_query:
+            db.session.delete(row)
+
+        identity_query = Identity.query.filter_by(id=reg_key_query.identity).first()
+        db.session.delete(reg_key_query)
+        db.session.commit()
+        db.session.delete(identity_query)
+
+        db.session.commit()
+        return True
+    except Exception as ex:
+        print(ex)
+        return False
 
 class RegistrationError(Exception):
     pass

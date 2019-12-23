@@ -883,6 +883,10 @@ nav a:hover {
   margin-bottom: 20px;
 }
 
+.settings-box.dangerous {
+  background: repeating-linear-gradient(135deg, #ffffff, #ffffff 50px, #ffbfbf 10px, #ffbfbf 100px);
+}
+
 .settings-box-content {
   padding: 20px 20px 20px 20px;
 }
@@ -1027,3 +1031,4 @@ nav a:hover {
 	background-position: center right;
   background-repeat: no-repeat;
 }
+

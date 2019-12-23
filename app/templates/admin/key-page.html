@@ -190,7 +190,7 @@
         <div class="settings-box">
           <div class="settings-box-content">
             <h2>{{ _("Deactivate Registration Code") }}</h2>
-            <p><strong>{{ _("Description:") }}</strong> {{ _("Use this if an user moved out of his apartment or violated the terms of use. All devices which have registered with this code will not be able to go online anymore.") }}</p>
+            <p><strong>{{ _("Description:") }}</strong> {{ _("Use this if an user temporarily moved out of his apartment or violated the terms of use. All devices which have registered with this code will not be able to go online until activated again.") }}</p>
             {% if key_active %}
             <p><strong>{{ _("Status:") }}</strong> {{ _("Registration Code Active") }}</p>
             {% else %}
@@ -202,6 +202,17 @@
               {% else %}
               <input name="activate_code" type="submit" value="{{ _('Activate Registration Code') }}"/>
               {% endif %}
+            </form>
+          </div>
+        </div>
+
+        <div class="settings-box dangerous">
+          <div class="settings-box-content">
+            <h2>{{ _("Delete Registration Code") }}</h2>
+            <p><strong>{{ _("Description:") }}</strong> {{ _("Use this if an user moved out of his apartment permanently. All user data will get deleted and all devices registered with this code will go offline immediately.") }}</p>
+            <p><strong>{{ _("Important:") }}</strong> {{ _("This action can not be made undone!") }}</p>
+            <form method="POST">
+              <input name="delete_code" type="submit" value="{{ _('Delete Registration Code') }}"/>
             </form>
           </div>
         </div>
