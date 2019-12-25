@@ -73,7 +73,7 @@ def dashboard():
     count = 0
     for row in traffic_rows:
         count += 1
-        average_credit += row.credit / 1073741824
+        average_credit += (row.credit - (row.ingress + row.egress)) / 1073741824
 
     if count != 0:
         average_credit = round(average_credit, 3)
