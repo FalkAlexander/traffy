@@ -54,7 +54,6 @@ h3 {
 
 .justify {
   text-align: justify;
-  text-justify: inter-word;
 }
 
 .divider {
@@ -120,7 +119,6 @@ h3 {
 .instruction-description p {
   margin: 0 0 6px 0;
   text-align: justify;
-  text-justify: inter-word;
 }
 
 .instruction-description .info-box p {
