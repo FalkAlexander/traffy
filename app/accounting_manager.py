@@ -309,9 +309,6 @@ class AccountingService():
 
     def deactivate_registration_key(self, reg_key_query):
         try:
-            reg_key_query.active = False
-            self.db.session.commit()
-
             address_pair_query = AddressPair.query.filter_by(reg_key=reg_key_query.id).all()
             for row in address_pair_query:
                 ip_address_query = IpAddress.query.filter_by(id=row.ip_address).first()
@@ -327,9 +324,16 @@ class AccountingService():
                 iptables_rules_manager.relock_registered_device(ip_address_query.address_v4)
             iptables_accounting_manager.remove_accounter_chain(reg_key_query.id)
 
+            reg_key_query.active = False
+            self.db.session.commit()
+
             return True
         except:
             return False
+
+    def reload_registration_key(self, reg_key_query):
+        self.deactivate_registration_key(reg_key_query)
+        self.activate_registration_key(reg_key_query)
 
     def is_registration_key_active(self, reg_key_query):
         try:

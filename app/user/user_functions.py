@@ -124,8 +124,7 @@ def delete_registration_key(reg_key_query):
 
         db.session.commit()
         return True
-    except Exception as ex:
-        print(ex)
+    except:
         return False
 
 class RegistrationError(Exception):

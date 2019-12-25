@@ -132,6 +132,9 @@ def shutdown():
     iptables_rules_manager.apply_redirect_rule(delete=True)
     iptables_rules_manager.apply_dns_rule(delete=True)
     firewall_relock_unregistered_devices()
+    iptables_rules_manager.attach_traffic_to_portal(delete=True)
+    iptables_rules_manager.create_portal_route(delete=True)
+    iptables_rules_manager.create_portal_box(delete=True)
 
     # Stop Accounting
     accounting_srv.stop()
@@ -154,6 +157,9 @@ def startup():
     shaping_manager.setup_shaping()
 
     # Apply Firewall Rules
+    iptables_rules_manager.create_portal_box(delete=False)
+    iptables_rules_manager.create_portal_route(delete=False)
+    iptables_rules_manager.attach_traffic_to_portal(delete=False)
     iptables_rules_manager.apply_block_rule(delete=False)
     iptables_rules_manager.apply_redirect_rule(delete=False)
     iptables_rules_manager.apply_dns_rule(delete=False)

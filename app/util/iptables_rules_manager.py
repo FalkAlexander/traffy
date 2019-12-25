@@ -31,21 +31,55 @@ def apply_redirect_rule(delete=False):
             "-j",
             "DNAT",
             "--to-destination",
-            config.THIS_SERVER_IP + ":80"
+            config.THIS_SERVER_IP_LAN + ":80"
             ], stdout=subprocess.PIPE, preexec_fn=os.setsid).wait()
 
-#    subprocess.Popen([
-#            "sudo",
-#            "iptables",
-#            "-t",
-#            "nat",
-#            "-A",
-#            "POSTROUTING",
-#            "-j",
-#            "MASQUERADE"
-#            ], stdout=subprocess.PIPE, preexec_fn=os.setsid)
-
     logging.info("Applied captive portal ACLs")
+
+def create_portal_box(delete=False):
+    action = "-N"
+
+    if delete is True:
+        action = "-X"
+
+    subprocess.Popen([
+        "sudo",
+        "iptables",
+        action,
+        "PORTAL"
+        ], stdout=subprocess.PIPE, preexec_fn=os.setsid).wait()
+
+def create_portal_route(delete=False):
+    action = "-I"
+
+    if delete is True:
+        action = "-D"
+
+    subprocess.Popen([
+        "sudo",
+        "iptables",
+        action,
+        "FORWARD",
+        "-j",
+        "PORTAL"
+        ], stdout=subprocess.PIPE, preexec_fn=os.setsid).wait()
+
+def attach_traffic_to_portal(delete=False):
+    directions = ["INPUT", "OUTPUT"]
+    action = "-I"
+
+    if delete is True:
+        action = "-D"
+
+    for direction in directions:
+        subprocess.Popen([
+            "sudo",
+            "iptables",
+            action,
+            direction,
+            "-j",
+            "PORTAL"
+            ], stdout=subprocess.PIPE, preexec_fn=os.setsid).wait()
 
 def apply_dns_rule(delete=False):
     ip_range = config.IP_RANGE_START + "-" + config.IP_RANGE_END
@@ -65,7 +99,7 @@ def apply_dns_rule(delete=False):
             "-t",
             "filter",
             chain,
-            "FORWARD",
+            "PORTAL",
             "-m",
             "iprange",
             "--src-range",
@@ -103,7 +137,7 @@ def apply_block_rule(delete=False):
         "-t",
         "filter",
         chain,
-        "FORWARD",
+        "PORTAL",
         "-m",
         "iprange",
         "--src-range",
@@ -112,11 +146,31 @@ def apply_block_rule(delete=False):
         "DROP"
         ], stdout=subprocess.PIPE, preexec_fn=os.setsid).wait()
 
+    server_ips = [config.THIS_SERVER_IP_LAN, config.THIS_SERVER_IP_WAN]
+
+    for ip in server_ips:
+        subprocess.Popen([
+            "sudo",
+            "iptables",
+            "-t",
+            "filter",
+            chain,
+            "PORTAL",
+            "-m",
+            "iprange",
+            "--src-range",
+            ip_range,
+            "-d",
+            ip,
+            "-j",
+            "ACCEPT"
+            ], stdout=subprocess.PIPE, preexec_fn=os.setsid).wait()
+
     logging.info("Applied unregistered users ACL")
 
 def unlock_registered_device(ip_address):
     table = ["nat", "filter"]
-    chain = ["PREROUTING", "FORWARD"]
+    chain = ["PREROUTING", "PORTAL"]
 
     for parameter in range(0, 2):
         subprocess.Popen([
@@ -136,7 +190,7 @@ def unlock_registered_device(ip_address):
 
 def relock_registered_device(ip_address):
     table = ["nat", "filter"]
-    chain = ["PREROUTING", "FORWARD"]
+    chain = ["PREROUTING", "PORTAL"]
 
     for parameter in range(0, 2):
         subprocess.Popen([

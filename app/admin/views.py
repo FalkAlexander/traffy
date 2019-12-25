@@ -547,7 +547,7 @@ def create_instruction_pdf(reg_key):
                            daily_topup_volume=daily_topup_volume,
                            max_saved_volume=max_saved_volume,
                            shaping_speed=config.SHAPING_SPEED,
-                           traffy_url=config.THIS_SERVER_IP,
+                           traffy_url=config.THIS_SERVER_IP_WAN,
                            max_devices=config.MAX_MAC_ADDRESSES_PER_REG_KEY,
                            admin_name=config.ADMIN_NAME,
                            admin_mail=config.ADMIN_MAIL,
