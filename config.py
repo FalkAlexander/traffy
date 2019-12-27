@@ -25,6 +25,7 @@ DNSMASQ_CONFIG_FILE = "/home/traffy/dnsmasq/dnsmasq.conf"
 DNSMASQ_HOSTS_FILE = "/home/traffy/dnsmasq/dnsmasq-hosts.conf"
 DNSMASQ_LEASE_FILE = "/home/traffy/dnsmasq/dnsmasq.leases"
 DNSMASQ_LISTEN_INTERFACE = "enp7s0"
+BRIDGE_INGRESS_INTERFACE = "ifb0"
 DNS_SERVER = "1.1.1.1" # 141.46.140.31
 DAILY_TOPUP_VOLUME = 5368709120 # 5 GiB / in bytes
 MAX_SAVED_VOLUME = 37580963840 # 35 GiB / in bytes
@@ -41,7 +42,8 @@ SHAPING_EXCEPTIONS = ["192.168.100.150",        # Local
                     "134.109.133.26",           # OPAL
                     "141.0.22.231",             # SWDD web
                     "141.30.0.0/16",            # TUD (public)
-                    "141.76.0.0/16"]            # TUD (public)
+                    "141.76.0.0/16",            # TUD (public)
+                    "1.1.1.1"]
 MAX_MAC_ADDRESSES_PER_REG_KEY = 5
 IP_RANGE_START = "10.90.0.2"
 IP_RANGE_END = "10.90.0.254"
