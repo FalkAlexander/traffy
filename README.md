@@ -74,6 +74,39 @@ COMMIT
 iptables-restore < /etc/iptables/rules.v4
 ```
 
+#### Pseudo NIC hinzufügen
+Intermediate Functional Block Kernel Modul beim Systemstart deklarieren:
+```
+/etc/modules
+```
+Modulname in Konfigurationsdatei aufnehmen:
+```
+ifb
+```
+
+Kernel Modul bei Bedarf laden:
+```
+modprobe ifb
+```
+
+Ein pseudo Interface ist ausreichend, daher Parameter spezifizieren:
+```
+/etc/modprobe.d/ifb_options.conf
+```
+
+```
+options ifb numifbs=1
+```
+
+Interface beim Systemstart automatisch aktivieren:
+```
+/etc/network/interfaces
+```
+
+```
+up ifconfig ifb0 up
+```
+
 #### Traffy Abhängigkeiten installieren
 * sudo
 * dnsmasq
@@ -264,3 +297,4 @@ User: ```admin```
 Password: ```admin```
 
 Anmeldedaten für den Produktivbetrieb unbedingt ändern!
+
