@@ -64,3 +64,15 @@ def remove_static_lease(mac_address, ip_address):
 
     logging.debug("Removed static lease: " + mac_address + " <-> " + ip_address)
 
+def get_static_lease_mac(ip_address):
+    mac_address = None
+    with open(config.DNSMASQ_HOSTS_FILE, "r") as host_file:
+        for line in host_file:
+            pairs = line.split()
+            for pair in pairs:
+                elements = pair.split(",")
+                if elements[1] == ip_address:
+                    mac_address = elements[0].replace("dhcp-host=", "")
+                    break
+    return mac_address
+

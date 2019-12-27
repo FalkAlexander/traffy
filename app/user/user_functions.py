@@ -62,7 +62,7 @@ def register_device(input_key, ip_address, request):
         shaping_manager.enable_shaping_for_ip(ip_address_query.id, ip_address_query.address_v4)
 
 def deregister_device(ip_address):
-    mac_address = lease_parser.get_mac_from_ip(ip_address)
+    mac_address = dnsmasq_manager.get_static_lease_mac(ip_address)
 
     ip_address_query = IpAddress.query.filter_by(address_v4=ip_address).first()
     mac_address_query = MacAddress.query.filter_by(address=mac_address).first()
