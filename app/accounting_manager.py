@@ -59,21 +59,26 @@ class AccountingService():
         if traffic_query is not None:
             credit = traffic_query.credit
 
-            if traffic_query.ingress + traffic_query.egress >= credit or credit <= 0:
-                traffic_query.ingress_shaped = traffic_query.ingress_shaped + ingress_used
-                traffic_query.egress_shaped = traffic_query.egress_shaped + egress_used
+            if traffic_query.ingress + traffic_query.egress + ingress_used + egress_used >= credit or credit <= 0:
+                if inactive:
+                    return
 
-                self.db.session.commit()
-
-                if not inactive:
-                    self.traffic_limit_exceeded(reg_key_query)
+                if reg_key_query.id in self.shaped_reg_keys:
+                    self.__update_traffic_shaped_values(traffic_query, ingress_used, egress_used)
+                else:
+                    self.__update_traffic_values(traffic_query, ingress_used, egress_used)
+                    self.shaped_reg_keys.append(reg_key_query.id)
+                    self.__enable_traffic_shaping_for_reg_key(reg_key_query)
             else:
-                traffic_query.ingress = traffic_query.ingress + ingress_used
-                traffic_query.egress = traffic_query.egress + egress_used
+                if inactive:
+                    return
 
-                self.db.session.commit()
-                if not inactive:
-                    self.traffic_limit_obeyed(reg_key_query)
+                if reg_key_query.id not in self.shaped_reg_keys:
+                    self.__update_traffic_values(traffic_query, ingress_used, egress_used)
+                else:
+                    self.__disable_traffic_shaping_for_reg_key(reg_key_query)
+                    self.__update_traffic_shaped_values(traffic_query, ingress_used, egress_used)
+                    self.shaped_reg_keys.remove(reg_key_query.id)
 
             if not inactive:
                 iptables_accounting_manager.reset_box_counter(reg_key_query.id)
@@ -167,24 +172,6 @@ class AccountingService():
             if not inactive:
                 iptables_accounting_manager.reset_box_counter(reg_key_query.id)
             return
-
-    #
-    # In Interval Traffic Actions
-    #
-
-    def traffic_limit_exceeded(self, reg_key_query):
-        if reg_key_query.id in self.shaped_reg_keys:
-            return
-
-        self.shaped_reg_keys.append(reg_key_query.id)
-        self.__enable_traffic_shaping_for_reg_key(reg_key_query)
-
-    def traffic_limit_obeyed(self, reg_key_query):
-        if reg_key_query.id not in self.shaped_reg_keys:
-            return
-
-        self.__disable_traffic_shaping_for_reg_key(reg_key_query)
-        self.shaped_reg_keys.remove(reg_key_query.id)
 
     #
     # Out of Interval Traffic Actions
@@ -407,6 +394,16 @@ class AccountingService():
     #
     # Private Functions
     #
+
+    def __update_traffic_values(self, traffic_query, ingress_used, egress_used):
+        traffic_query.ingress = traffic_query.ingress + ingress_used
+        traffic_query.egress = traffic_query.egress + egress_used
+        self.db.session.commit()
+
+    def __update_traffic_shaped_values(self, traffic_query, ingress_used, egress_used):
+        traffic_query.ingress_shaped = traffic_query.ingress_shaped + ingress_used
+        traffic_query.egress_shaped = traffic_query.egress_shaped + egress_used
+        self.db.session.commit()
 
     def __enable_traffic_shaping_for_reg_key(self, reg_key_query):
         address_pair_query = AddressPair.query.filter_by(reg_key=reg_key_query.id).distinct()
