@@ -56,3 +56,6 @@ def create_configs():
 from app.accounting_manager import AccountingService
 accounting_srv = AccountingService(db)
 
+from app.tests.dev_mode_test import DevModeTest
+dev_mode_test = DevModeTest()
+

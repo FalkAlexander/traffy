@@ -57,3 +57,5 @@ ADMIN_ROOM = "2521"
 COMMUNITY = "Görlitz"
 SMTP_SERVER = "smtp.hszg.de"
 SMTP_PORT = "25"
+
+DEV_MODE = True

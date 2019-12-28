@@ -38,6 +38,11 @@
           <form method="POST">
             <input name="download_btn" type="submit" value="{{ _('Download Instruction') }}"/>
           </form>
+          {% if dev_mode %}
+          <form method="POST">
+            <input name="fake_device_btn" type="submit" value="{{ _('Add Fake Device') }}"/>
+          </form>
+          {% endif %}
           <h1>{{ _("Registration Code:") }} {{ reg_key }}</h1>
         </div>
         <div class="supervisor-divider"></div>

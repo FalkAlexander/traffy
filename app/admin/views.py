@@ -3,7 +3,7 @@ from flask_babel import lazy_gettext as _l
 from flask_login import current_user, login_user, login_required, logout_user
 from . import admin, supervisor_functions
 from ..user import user_functions
-from .. import db, babel, dnsmasq_srv, accounting_srv, login_manager
+from .. import db, babel, dnsmasq_srv, accounting_srv, login_manager, dev_mode_test
 from ..models import RegistrationKey, IpAddress, MacAddress, Identity, Traffic, AddressPair, SupervisorAccount, Role
 from ..util import lease_parser, dnsmasq_manager, iptables_rules_manager, iptables_accounting_manager, generate_registration_key
 from dateutil import rrule
@@ -134,12 +134,16 @@ def reg_codes():
     rows.reverse()
 
     if "clear_btn" in request.form:
-        return render_template("/admin/regcodes.html", rows=rows)
+        return render_template("/admin/regcodes.html", rows=rows, dev_mode=config.DEV_MODE)
 
     if "add_key_btn" in request.form:
         return redirect("/admin/add-regcode")
 
-    return render_template("/admin/regcodes.html", rows=rows)
+    if "add_test_btn" in request.form:
+        dev_mode_test.add_reg_key()
+        return redirect("/admin/regcodes")
+
+    return render_template("/admin/regcodes.html", rows=rows, dev_mode=config.DEV_MODE)
 
 @admin.route("/admin/add-regcode", methods=["GET", "POST"])
 @login_required
@@ -191,6 +195,11 @@ def reg_code(reg_key):
 
     # User Settings Post Processing
     if request.method == "POST":
+        # Dev Mode
+        if "fake_device_btn" in request.form:
+            dev_mode_test.register_device(reg_key_query, request)
+            return redirect("/admin/regcodes/" + reg_key_query.key)
+
         # Instruction Download
         if "download_btn" in request.form:
             return render_pdf(url_for("admin.create_instruction_pdf", reg_key=reg_key_query.key))
@@ -371,6 +380,7 @@ def reg_code(reg_key):
     key_active = reg_key_query.active
 
     return render_template("/admin/key-page.html",
+                           dev_mode=config.DEV_MODE,
                            reg_key=reg_key,
                            stat_volume_left=stat_volume_left,
                            stat_created_on=stat_created_on,
