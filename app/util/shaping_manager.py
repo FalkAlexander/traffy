@@ -130,7 +130,7 @@ def enable_shaping_for_ip(ip_id, ip_address):
 def disable_shaping_for_ip(ip_id, ip_address):
     for interface in [config.DNSMASQ_LISTEN_INTERFACE, config.BRIDGE_INGRESS_INTERFACE]:
         # Remove matching filter
-        for handle in __get_rule_handles(config.DNSMASQ_LISTEN_INTERFACE, ip_address):
+        for handle in __get_rule_handles(interface, ip_address):
             subprocess.Popen([
                 "sudo",
                 "tc",

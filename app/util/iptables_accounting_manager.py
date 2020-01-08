@@ -271,9 +271,12 @@ def remove_accounter_chain(reg_key):
 
 def parse_iptables_output(cmd):
     out = cmd.communicate()[0].decode("utf-8")
-    bytes = [column.split()[1] for column in out.splitlines()][2:]
-    traffic = 0
-    for element in bytes:
-        traffic += int(element)
-    return traffic
+    if len(out.splitlines()) == 0:
+        return 0
+    else:
+        bytes = [column.split()[1] for column in out.splitlines()][2:]
+        traffic = 0
+        for element in bytes:
+            traffic += int(element)
+        return traffic
 
