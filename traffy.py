@@ -6,6 +6,7 @@ import os
 import atexit
 import logging
 
+
 def setup_logging():
     logging.basicConfig(format="[%(asctime)s] [%(process)d] [%(levelname)s] %(message)s", datefmt="%Y-%m-%d %H:%M:%S %z", level=logging.INFO)
 
@@ -168,7 +169,7 @@ def startup():
     # Start Accounting
     setup_accounting_chains()
     accounting_srv.app = app
-    accounting_srv.start(10)
+    accounting_srv.start()
 
     atexit.register(shutdown)
 

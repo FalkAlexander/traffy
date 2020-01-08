@@ -1,8 +1,12 @@
+from flask import flash
 from .. import db, accounting_srv, dnsmasq_srv
 from ..models import AddressPair, RegistrationKey, IpAddress, MacAddress, Traffic, Identity
 from ..util import arp_manager, iptables_accounting_manager, iptables_rules_manager, lease_parser, dnsmasq_manager, shaping_manager
 import datetime
 
+
+class RegistrationError(Exception):
+    pass
 
 def register_device(input_key, ip_address, request):
     # Rahmennetzordnung
@@ -126,7 +130,4 @@ def delete_registration_key(reg_key_query):
         return True
     except:
         return False
-
-class RegistrationError(Exception):
-    pass
 

@@ -42,7 +42,7 @@ class DevModeTest():
         return mail
 
     def __generate_random_ip(self):
-        network = str(random.randrange(0, 255))
+        network = str(random.randrange(0, 1))
         host = str(random.randrange(2, 254))
         ip_address = "10.90." + network + "." + host
         ip_address_query = IpAddress.query.filter_by(address_v4=ip_address).first()
