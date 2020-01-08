@@ -328,9 +328,9 @@ class AccountingService():
         except:
             return False
 
-    def get_count_shaped_reg_keys(self, traffic_query):
+    def get_count_shaped_reg_keys(self, reg_key_query):
         try:
-            return traffic_query.id in self.shaped_reg_keys
+            return reg_key_query.id in self.shaped_reg_keys
         except:
             return 0
 

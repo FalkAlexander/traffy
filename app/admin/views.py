@@ -302,7 +302,7 @@ def reg_code(reg_key):
     traffic_query = Traffic.query.filter_by(reg_key=reg_key_query.id).first()
     stat_volume_left = accounting_srv.get_credit(reg_key_query, gib=True)[0]
     stat_created_on = accounting_srv.get_reg_key_creation_timestamp(reg_key_query, "%d.%m.%Y")
-    stat_shaped = accounting_srv.get_count_shaped_reg_keys(traffic_query)
+    stat_shaped = accounting_srv.get_count_shaped_reg_keys(reg_key_query)
     stat_status = accounting_srv.is_registration_key_active(reg_key_query)
 
     if stat_volume_left < 0:
