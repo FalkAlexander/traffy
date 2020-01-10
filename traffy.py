@@ -5,7 +5,9 @@ from datetime import datetime
 import os
 import atexit
 import logging
+import threading
 
+thread_count = 0
 
 def setup_logging():
     logging.basicConfig(format="[%(asctime)s] [%(process)d] [%(levelname)s] %(message)s", datefmt="%Y-%m-%d %H:%M:%S %z", level=logging.INFO)
@@ -41,23 +43,35 @@ def firewall_unlock_registered_devices():
     with app.app_context():
         address_column = IpAddress.query.with_entities(IpAddress.address_v4).all()
         for row in address_column:
-            ip_address = row[0]
-            ip_address_query = IpAddress.query.filter_by(address_v4=ip_address).first()
-            address_pair_query = AddressPair.query.filter_by(ip_address=ip_address_query.id).first()
-            reg_key_query = RegistrationKey.query.filter_by(id=address_pair_query.reg_key).first()
-            if reg_key_query.active is True:
-                iptables_rules_manager.unlock_registered_device(ip_address)
+            thread = threading.Thread(target=__unlock_device_thread, args=[row])
+            thread.daemon = True
+            thread.start()
+
+def __unlock_device_thread(row):
+    with app.app_context():
+        ip_address = row[0]
+        ip_address_query = IpAddress.query.filter_by(address_v4=ip_address).first()
+        address_pair_query = AddressPair.query.filter_by(ip_address=ip_address_query.id).first()
+        reg_key_query = RegistrationKey.query.filter_by(id=address_pair_query.reg_key).first()
+        if reg_key_query.active is True:
+            iptables_rules_manager.unlock_registered_device(ip_address)
 
 def firewall_relock_unregistered_devices():
     with app.app_context():
         address_column = IpAddress.query.with_entities(IpAddress.address_v4).all()
         for row in address_column:
-            ip_address = row[0]
-            ip_address_query = IpAddress.query.filter_by(address_v4=ip_address).first()
-            address_pair_query = AddressPair.query.filter_by(ip_address=ip_address_query.id).first()
-            reg_key_query = RegistrationKey.query.filter_by(id=address_pair_query.reg_key).first()
-            if reg_key_query.active is True:
-                iptables_rules_manager.relock_registered_device(ip_address)
+            thread = threading.Thread(target=__relock_device_thread, args=[row])
+            thread.daemon = True
+            thread.start()
+
+def __relock_device_thread(row):
+    with app.app_context():
+        ip_address = row[0]
+        ip_address_query = IpAddress.query.filter_by(address_v4=ip_address).first()
+        address_pair_query = AddressPair.query.filter_by(ip_address=ip_address_query.id).first()
+        reg_key_query = RegistrationKey.query.filter_by(id=address_pair_query.reg_key).first()
+        if reg_key_query.active is True:
+            iptables_rules_manager.relock_registered_device(ip_address)
 
 def setup_accounting_chains():
     with app.app_context():
@@ -94,35 +108,53 @@ def setup_accounting_chains():
 
 def remove_accounting_chains():
     with app.app_context():
+        global thread_count
         address_pair_query = db.session.query(AddressPair.ip_address).filter(AddressPair.ip_address).distinct()
         for ip_address_fk in address_pair_query:
-            if ip_address_fk is None:
-                continue
+            thread = threading.Thread(target=__remove_ip_thread, args=[ip_address_fk])
+            thread.daemon = False
+            thread.start()
+            thread_count += 1
 
-            ip_address_query = IpAddress.query.filter_by(id=ip_address_fk.ip_address).first()
-            if ip_address_query is None:
-                continue
+        run_while = True
+        while run_while is True:
+            if thread_count == 0:
+                address_pair_query = db.session.query(AddressPair.reg_key).filter(AddressPair.reg_key).distinct()
+                for reg_key_fk in address_pair_query:
+                    if reg_key_fk is None:
+                        continue
 
-            address_pair_query = AddressPair.query.filter_by(ip_address=ip_address_fk.ip_address).first()
-            reg_key_query = RegistrationKey.query.filter_by(id=address_pair_query.reg_key).first()
-            ip_address_query = IpAddress.query.filter_by(id=address_pair_query.ip_address).first()
+                    reg_key_query = RegistrationKey.query.filter_by(id=reg_key_fk.reg_key).first()
+                    if reg_key_query is None:
+                        continue
 
-            if reg_key_query.active is True:
-                iptables_accounting_manager.remove_ip_from_box(reg_key_query.id, ip_address_query.address_v4)
-            # Spoofing Protection
-            arp_manager.remove_static_arp_entry(ip_address_query.address_v4)
+                    if reg_key_query.active is True:
+                        iptables_accounting_manager.remove_accounter_chain(reg_key_query.id)
 
-        address_pair_query = db.session.query(AddressPair.reg_key).filter(AddressPair.reg_key).distinct()
-        for reg_key_fk in address_pair_query:
-            if reg_key_fk is None:
-                continue
+                thread_count = -1
+                run_while = False
 
-            reg_key_query = RegistrationKey.query.filter_by(id=reg_key_fk.reg_key).first()
-            if reg_key_query is None:
-                continue
+def __remove_ip_thread(ip_address_fk):
+    with app.app_context():
+        global thread_count
+        if ip_address_fk is None:
+            return
 
-            if reg_key_query.active is True:
-                iptables_accounting_manager.remove_accounter_chain(reg_key_query.id)
+        ip_address_query = IpAddress.query.filter_by(id=ip_address_fk.ip_address).first()
+        if ip_address_query is None:
+            return
+
+        address_pair_query = AddressPair.query.filter_by(ip_address=ip_address_fk.ip_address).first()
+        reg_key_query = RegistrationKey.query.filter_by(id=address_pair_query.reg_key).first()
+        ip_address_query = IpAddress.query.filter_by(id=address_pair_query.ip_address).first()
+
+        if reg_key_query.active is True:
+            iptables_accounting_manager.remove_ip_from_box(reg_key_query.id, ip_address_query.address_v4)
+        # Spoofing Protection
+        arp_manager.remove_static_arp_entry(ip_address_query.address_v4)
+        thread_count = thread_count - 1
+
+
 
 def shutdown():
     # Stop dnsmasq
@@ -138,8 +170,10 @@ def shutdown():
     iptables_rules_manager.create_portal_box(delete=True)
 
     # Stop Accounting
+    logging.info("Clearing accounting chains…")
     accounting_srv.stop()
     remove_accounting_chains()
+    logging.info("Stopped accounting services")
 
     # Shutdown Shaping
     shaping_manager.shutdown_shaping()
@@ -167,17 +201,16 @@ def startup():
     firewall_unlock_registered_devices()
 
     # Start Accounting
+    logging.info("Preparing accounting chains…")
     setup_accounting_chains()
     accounting_srv.app = app
     accounting_srv.start()
-
-    atexit.register(shutdown)
+    logging.info("Started accounting services")
 
     logging.info("Network now fully managed")
-    logging.info("Startup completed in " + str((datetime.now() - before_startup).total_seconds()) + "s")
+    logging.info("Traffy backend ready after " + str((datetime.now() - before_startup).total_seconds()) + "s")
 
 before_startup = datetime.now()
 setup_logging()
-app = create_app("production")
-startup()
+app = create_app()
 

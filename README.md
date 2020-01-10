@@ -111,6 +111,7 @@ up ifconfig ifb0 up
 * sudo
 * dnsmasq
 * net-tools
+* ipset
 * mariadb-server
 * nginx
 * gunicorn3
@@ -175,6 +176,9 @@ traffy  ALL=(ALL:ALL) NOPASSWD:/usr/sbin/iptables *
 traffy  ALL=(ALL:ALL) NOPASSWD:/usr/sbin/tc *
 traffy  ALL=(ALL:ALL) NOPASSWD:/usr/sbin/arp -s *
 traffy  ALL=(ALL:ALL) NOPASSWD:/usr/sbin/arp -d *
+traffy  ALL=(ALL:ALL) NOPASSWD:/usr/sbin/ipset create *
+traffy  ALL=(ALL:ALL) NOPASSWD:/usr/sbin/ipset add *
+traffy  ALL=(ALL:ALL) NOPASSWD:/usr/sbin/ipset destroy *
 ```
 
 #### NGINX konfigurieren

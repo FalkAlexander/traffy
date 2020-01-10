@@ -14,7 +14,7 @@ def add_static_arp_entry(ip_address, mac_address):
         "-s",
         ip_address,
         mac_address
-        ], stdout=subprocess.PIPE, preexec_fn=os.setsid).wait()
+        ], stdout=subprocess.PIPE, preexec_fn=os.setsid)
 
     logging.debug("Started IP spoofing protection for " + ip_address)
 
@@ -24,7 +24,7 @@ def remove_static_arp_entry(ip_address):
         "arp",
         "-d",
         ip_address
-        ], stdout=subprocess.PIPE, preexec_fn=os.setsid).wait()
+        ], stdout=subprocess.PIPE, preexec_fn=os.setsid)
 
     logging.debug("Stopped IP spoofing protection for " + ip_address)
 

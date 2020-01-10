@@ -2,7 +2,6 @@ from app.models import RegistrationKey, IpAddress, AddressPair, Traffic
 from app.util import iptables_accounting_manager, iptables_rules_manager, shaping_manager, helpers
 from datetime import datetime, timedelta
 from dateutil import rrule
-from sqlalchemy import and_
 import threading, time
 import config
 import logging
@@ -12,7 +11,6 @@ class AccountingService():
     db = NotImplemented
     app = NotImplemented
     run = True
-    threads = []
     shaped_reg_keys = []
 
     def __init__(self, db):
@@ -22,18 +20,17 @@ class AccountingService():
     # Accounting Thread Management
     #
 
-    def start(self, interval):
+    def start(self):
+        keys_per_thread = 25
         with self.app.app_context():
-            keys_per_thread = 25
             threads_needed = int(RegistrationKey.query.count() / keys_per_thread) + 1
-            start_stop_id = 0
-            for count in range(0, threads_needed):
-                thread = threading.Thread(target=self.query_active_boxes, args=[interval, start_stop_id, start_stop_id + keys_per_thread - 1])
-                thread.daemon = True
-                thread.start()
-                start_stop_id = start_stop_id + keys_per_thread
-                self.threads.append(thread)
-                logging.debug("Started Accounting Thread " + str(count + 1))
+        start_stop_id = 0
+        for count in range(0, threads_needed):
+            thread = threading.Thread(target=self.query_active_boxes, args=[start_stop_id, start_stop_id + keys_per_thread - 1])
+            thread.daemon = True
+            thread.start()
+            start_stop_id = start_stop_id + keys_per_thread
+            logging.debug("Started Accounting Thread " + str(count + 1))
 
     def stop(self):
         self.run = False
@@ -43,15 +40,18 @@ class AccountingService():
             with self.app.app_context():
                 reg_key_query = RegistrationKey.query.all()
                 for reg_key in reg_key_query[start_id:stop_id]:
-                    if reg_key.active is False or reg_key.enable_accounting is False:
-                        continue
+                    try:
+                        if reg_key.active is False or reg_key.enable_accounting is False:
+                            continue
 
-                    if AddressPair.query.filter_by(reg_key=reg_key.id).count() != 0:
-                        self.update_interval_used_traffic(reg_key,
-                                                          iptables_accounting_manager.get_box_ingress_bytes(reg_key.id),
-                                                          iptables_accounting_manager.get_box_egress_bytes(reg_key.id))
-                    else:
-                        self.update_interval_used_traffic(reg_key, 0, 0, inactive=True)
+                        if AddressPair.query.filter_by(reg_key=reg_key.id).count() != 0:
+                            self.update_interval_used_traffic(reg_key,
+                                                              iptables_accounting_manager.get_box_ingress_bytes(reg_key.id),
+                                                              iptables_accounting_manager.get_box_egress_bytes(reg_key.id))
+                        else:
+                            self.update_interval_used_traffic(reg_key, 0, 0, inactive=True)
+                    except:
+                        logging.debug("Exception thrown in Accounting Service")
 
     #
     # Calculate User Credit and Ingress / Egress

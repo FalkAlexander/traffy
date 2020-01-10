@@ -11,6 +11,11 @@ def create_box(reg_key, delete=False):
 
     if delete is True:
         action = "-X"
+        destroy_ipset(reg_key)
+    else:
+        create_ipset(reg_key)
+        for exc_ip in config.SHAPING_EXCEPTIONS:
+            add_ipset_ip(reg_key, exc_ip)
 
     for name in names:
         subprocess.Popen([
@@ -170,56 +175,66 @@ def add_exception_box_ips(reg_key, ip_address):
     name_ingress = reg_key + "-INGRESS-EXC"
     name_egress = reg_key + "-EGRESS-EXC"
 
-    for exc_ip in config.SHAPING_EXCEPTIONS:
-        subprocess.Popen([
-            "sudo",
-            "iptables",
-            "-I",
-            name_ingress,
-            "-d",
-            ip_address,
-            "-s",
-            exc_ip
-            ], stdout=subprocess.PIPE, preexec_fn=os.setsid).wait()
+    subprocess.Popen([
+        "sudo",
+        "iptables",
+        "-I",
+        name_ingress,
+        "-d",
+        ip_address,
+        "-m",
+        "set",
+        "--match-set",
+        reg_key,
+        "src"
+        ], stdout=subprocess.PIPE, preexec_fn=os.setsid).wait()
 
-        subprocess.Popen([
-            "sudo",
-            "iptables",
-            "-I",
-            name_egress,
-            "-d",
-            exc_ip,
-            "-s",
-            ip_address
-            ], stdout=subprocess.PIPE, preexec_fn=os.setsid).wait()
+    subprocess.Popen([
+        "sudo",
+        "iptables",
+        "-I",
+        name_egress,
+        "-m",
+        "set",
+        "--match-set",
+        reg_key,
+        "dst",
+        "-s",
+        ip_address
+        ], stdout=subprocess.PIPE, preexec_fn=os.setsid).wait()
 
 def remove_exception_box_ips(reg_key, ip_address):
     reg_key = str(reg_key)
     name_ingress = reg_key + "-INGRESS-EXC"
     name_egress = reg_key + "-EGRESS-EXC"
 
-    for exc_ip in config.SHAPING_EXCEPTIONS:
-        subprocess.Popen([
-            "sudo",
-            "iptables",
-            "-D",
-            name_ingress,
-            "-d",
-            ip_address,
-            "-s",
-            exc_ip
-            ], stdout=subprocess.PIPE, preexec_fn=os.setsid).wait()
+    subprocess.Popen([
+        "sudo",
+        "iptables",
+        "-D",
+        name_ingress,
+        "-d",
+        ip_address,
+        "-m",
+        "set",
+        "--match-set",
+        reg_key,
+        "src"
+        ], stdout=subprocess.PIPE, preexec_fn=os.setsid).wait()
 
-        subprocess.Popen([
-            "sudo",
-            "iptables",
-            "-D",
-            name_egress,
-            "-d",
-            exc_ip,
-            "-s",
-            ip_address
-            ], stdout=subprocess.PIPE, preexec_fn=os.setsid).wait()
+    subprocess.Popen([
+        "sudo",
+        "iptables",
+        "-D",
+        name_egress,
+        "-m",
+        "set",
+        "--match-set",
+        reg_key,
+        "dst",
+        "-s",
+        ip_address
+        ], stdout=subprocess.PIPE, preexec_fn=os.setsid).wait()
 
 def get_exception_box_ingress_bytes(reg_key):
     reg_key = str(reg_key)
@@ -279,4 +294,33 @@ def parse_iptables_output(cmd):
         for element in bytes:
             traffic += int(element)
         return traffic
+
+def create_ipset(reg_key):
+    cmd = subprocess.Popen([
+        "sudo",
+        "ipset",
+        "create",
+        reg_key,
+        "hash:net"
+        ], stdout=subprocess.PIPE)
+    cmd.wait()
+
+def add_ipset_ip(reg_key, ip_address):
+    cmd = subprocess.Popen([
+        "sudo",
+        "ipset",
+        "add",
+        reg_key,
+        ip_address
+        ], stdout=subprocess.PIPE)
+    cmd.wait()
+
+def destroy_ipset(reg_key):
+    cmd = subprocess.Popen([
+        "sudo",
+        "ipset",
+        "destroy",
+        reg_key
+        ], stdout=subprocess.PIPE)
+    cmd.wait()
 

@@ -1,4 +1,5 @@
 from flask import flash
+from flask_babel import lazy_gettext as _l
 from .. import db, accounting_srv, dnsmasq_srv
 from ..models import AddressPair, RegistrationKey, IpAddress, MacAddress, Traffic, Identity
 from ..util import arp_manager, iptables_accounting_manager, iptables_rules_manager, lease_parser, dnsmasq_manager, shaping_manager

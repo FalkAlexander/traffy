@@ -2,10 +2,10 @@ from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_babel import Babel
 from flask_login import LoginManager
-from config import config
 from app.util.dnsmasq_manager import DnsmasqService
 from app.util.mail_helper import MailHelper
 import os
+import config
 
 
 db = SQLAlchemy()
@@ -15,10 +15,11 @@ login_manager = LoginManager()
 #mail_helper = MailHelper()
 
 
-def create_app(config_name):
+def create_app():
     app = Flask(__name__)
-    app.config.from_object(config[config_name])
-    config[config_name].init_app(app)
+    app.secret_key = "BnUlPYIj2ZzeTL1wv4IxzCsRtqcPJLpxvOv"
+    app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
+    app.config["SQLALCHEMY_DATABASE_URI"] = config.DATABASE_URI
 
     db.init_app(app)
     babel.init_app(app)
