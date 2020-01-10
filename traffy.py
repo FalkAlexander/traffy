@@ -3,9 +3,9 @@ from app.models import RegistrationKey, Identity, Role, IpAddress, MacAddress, A
 from app.util import iptables_rules_manager, iptables_accounting_manager, shaping_manager, arp_manager
 from datetime import datetime
 import os
-import atexit
 import logging
 import threading
+
 
 thread_count = 0
 
@@ -204,7 +204,7 @@ def startup():
     logging.info("Preparing accounting chains…")
     setup_accounting_chains()
     accounting_srv.app = app
-    accounting_srv.start()
+    accounting_srv.start(10)
     logging.info("Started accounting services")
 
     logging.info("Network now fully managed")

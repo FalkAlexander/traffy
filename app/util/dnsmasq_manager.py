@@ -50,7 +50,7 @@ class DnsmasqService():
 
 def add_static_lease(mac_address, ip_address):
     with open(config.DNSMASQ_HOSTS_FILE, "a") as host_file:
-        host_file.write("dhcp-host=" + mac_address + "," + ip_address + "\n")
+        host_file.write(mac_address + "," + ip_address + "\n")
     logging.debug("Added static lease: " + mac_address + " <-> " + ip_address)
 
 def remove_static_lease(mac_address, ip_address):
@@ -59,7 +59,7 @@ def remove_static_lease(mac_address, ip_address):
 
     with open(config.DNSMASQ_HOSTS_FILE, "w") as host_file:
         for host in cache:
-            if host != "dhcp-host=" + mac_address + "," + ip_address + "\n":
+            if host != mac_address + "," + ip_address + "\n":
                 host_file.write(host)
 
     logging.debug("Removed static lease: " + mac_address + " <-> " + ip_address)
@@ -72,7 +72,7 @@ def get_static_lease_mac(ip_address):
             for pair in pairs:
                 elements = pair.split(",")
                 if elements[1] == ip_address:
-                    mac_address = elements[0].replace("dhcp-host=", "")
+                    mac_address = elements[0]
                     break
     return mac_address
 

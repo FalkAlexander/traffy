@@ -20,13 +20,13 @@ class AccountingService():
     # Accounting Thread Management
     #
 
-    def start(self):
+    def start(self, interval):
         keys_per_thread = 25
         with self.app.app_context():
             threads_needed = int(RegistrationKey.query.count() / keys_per_thread) + 1
         start_stop_id = 0
         for count in range(0, threads_needed):
-            thread = threading.Thread(target=self.query_active_boxes, args=[start_stop_id, start_stop_id + keys_per_thread - 1])
+            thread = threading.Thread(target=self.query_active_boxes, args=[start_stop_id, start_stop_id + keys_per_thread - 1, interval])
             thread.daemon = True
             thread.start()
             start_stop_id = start_stop_id + keys_per_thread
@@ -35,7 +35,7 @@ class AccountingService():
     def stop(self):
         self.run = False
 
-    def query_active_boxes(self, start_id, stop_id):
+    def query_active_boxes(self, start_id, stop_id, interval):
         while self.run:
             with self.app.app_context():
                 reg_key_query = RegistrationKey.query.all()
@@ -52,6 +52,7 @@ class AccountingService():
                             self.update_interval_used_traffic(reg_key, 0, 0, inactive=True)
                     except:
                         logging.debug("Exception thrown in Accounting Service")
+            time.sleep(interval)
 
     #
     # Calculate User Credit and Ingress / Egress
@@ -286,7 +287,7 @@ class AccountingService():
                 iptables_rules_manager.unlock_registered_device(ip_address_query.address_v4)
 
                 # Setup Shaping
-                if reg_key_query.id in self.shaped_reg_keys:
+                if self.is_reg_key_shaped(reg_key_query):
                     shaping_manager.enable_shaping_for_ip(ip_address_query.id, ip_address_query.address_v4)
 
             iptables_accounting_manager.add_accounter_chain(reg_key_query.id)
@@ -307,7 +308,7 @@ class AccountingService():
                 ip_address_query = IpAddress.query.filter_by(id=row.ip_address).first()
 
                 # Disable Shaping
-                if reg_key_query.id in self.shaped_reg_keys:
+                if self.is_reg_key_shaped(reg_key_query):
                     shaping_manager.disable_shaping_for_ip(ip_address_query.id, ip_address_query.address_v4)
 
                 # Disable Accounting
@@ -334,9 +335,14 @@ class AccountingService():
         except:
             return False
 
-    def get_count_shaped_reg_keys(self, reg_key_query):
+    def is_reg_key_shaped(self, reg_key_query):
         try:
-            return reg_key_query.id in self.shaped_reg_keys
+            date = datetime.today().date()
+            traffic_query = Traffic.query.filter_by(reg_key=reg_key_query.id, timestamp=date).first()
+            if traffic_query.ingress + traffic_query.egress >= traffic_query.credit or traffic_query.credit <= 0:
+                return True
+            else:
+                return False
         except:
             return 0
 
@@ -440,4 +446,5 @@ class AccountingService():
 
     def __to_bytes(self, gib):
         return int(gib * 1073741824)
+
 

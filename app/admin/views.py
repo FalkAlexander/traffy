@@ -71,16 +71,17 @@ def dashboard():
 
     average_credit = 0
     count = 0
+    shaped_users = 0
     for row in traffic_rows:
         count += 1
         average_credit += (row.credit - (row.ingress + row.egress)) / 1073741824
+        if row.ingress + row.egress >= row.credit or row.credit <= 0:
+            shaped_users += 1
 
     if count != 0:
         average_credit = round(average_credit, 3)
     else:
         average_credit = 0
-
-    shaped_users = len(accounting_srv.shaped_reg_keys)
 
     return render_template("/admin/dashboard.html",
                            labels=labels,
@@ -302,7 +303,7 @@ def reg_code(reg_key):
     traffic_query = Traffic.query.filter_by(reg_key=reg_key_query.id).first()
     stat_volume_left = accounting_srv.get_credit(reg_key_query, gib=True)[0]
     stat_created_on = accounting_srv.get_reg_key_creation_timestamp(reg_key_query, "%d.%m.%Y")
-    stat_shaped = accounting_srv.get_count_shaped_reg_keys(reg_key_query)
+    stat_shaped = accounting_srv.is_reg_key_shaped(reg_key_query)
     stat_status = accounting_srv.is_registration_key_active(reg_key_query)
 
     if stat_volume_left < 0:
