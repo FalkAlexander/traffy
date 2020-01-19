@@ -1,16 +1,15 @@
 from flask import Flask, render_template, request, jsonify, flash, session, redirect, url_for
 from flask_babel import lazy_gettext as _l
 from flask_login import current_user, login_user, login_required, logout_user
-from . import admin, supervisor_functions
-from ..user import user_functions
-from .. import db, babel, dnsmasq_srv, accounting_srv, login_manager, dev_mode_test
-from ..models import RegistrationKey, IpAddress, MacAddress, Identity, Traffic, AddressPair, SupervisorAccount, Role
-from ..util import lease_parser, dnsmasq_manager, iptables_rules_manager, iptables_accounting_manager, generate_registration_key
 from dateutil import rrule
 from datetime import datetime, timedelta
 from user_agents import parse
 from flask_weasyprint import HTML, render_pdf
+from . import admin, supervisor_functions
+from .. import db, server, login_manager
+from ..models import SupervisorAccount, Role
 import config
+
 
 @admin.route("/admin", methods=["GET"])
 def index():
@@ -39,49 +38,10 @@ def login():
 @admin.route("/admin/dashboard", methods=["GET", "POST"])
 @login_required
 def dashboard():
-    today = datetime.today().date()
-    passed_days = today - timedelta(days=10)
-
     legend_downlink = _l("Downlink") + " (GiB)"
     legend_uplink = _l("Uplink") + " (GiB)"
-    values_downlink = []
-    values_uplink = []
-    labels = []
 
-    for date in rrule.rrule(rrule.DAILY, dtstart=passed_days, until=today):
-        traffic_query = Traffic.query.filter_by(timestamp=date).all()
-        downlink = 0
-        uplink = 0
-        if traffic_query is not None:
-            for row in traffic_query:
-                downlink += __to_gib(row.ingress)
-                uplink += __to_gib(row.egress)
-
-        values_downlink.append(downlink)
-        values_uplink.append(uplink)
-        labels.append(date.strftime("%d.%m."))
-
-    active_users = RegistrationKey.query.filter_by(active=True).count()
-    ip_adresses = IpAddress.query.count()
-    ratio = "N/A"
-    if ip_adresses != 0:
-        ratio = round(active_users / IpAddress.query.count(), 1)
-
-    traffic_rows = Traffic.query.filter_by(timestamp=today).all()
-
-    average_credit = 0
-    count = 0
-    shaped_users = 0
-    for row in traffic_rows:
-        count += 1
-        average_credit += (row.credit - (row.ingress + row.egress)) / 1073741824
-        if row.ingress + row.egress >= row.credit or row.credit <= 0:
-            shaped_users += 1
-
-    if count != 0:
-        average_credit = round(average_credit, 3)
-    else:
-        average_credit = 0
+    values_downlink, values_uplink, labels, active_users, ratio, average_credit, shaped_users = server.get_supervisor_dashboard_stats()
 
     return render_template("/admin/dashboard.html",
                            labels=labels,
@@ -97,42 +57,15 @@ def dashboard():
 @admin.route("/admin/regcodes", methods=["GET", "POST"])
 @login_required
 def reg_codes():
-    rows = []
     date = datetime.today().date()
 
     if "search_box" in request.form:
         search_term = request.form["search_box"].lower()
-        search_results = []
-
-        reg_key_query = []
-        for query in db.session.query(RegistrationKey).all():
-            if search_term in query.key:
-                reg_key_query.append(query)
-            else:
-                identity = Identity.query.filter_by(id=query.identity).first()
-
-                if search_term in identity.first_name.lower() or search_term in identity.last_name.lower() or search_term in identity.mail.lower():
-                    reg_key_query.append(query)
-
-        reg_key_query.reverse()
-
-        for row in reg_key_query:
-            identity = Identity.query.filter_by(id=row.identity).first()
-            credit = accounting_srv.get_credit(row, gib=True)[0]
-            if credit < 0:
-                credit = 0
-            search_results.append(KeyRow(row.key, identity.last_name, identity.first_name, credit, row.active))
+        search_results = server.get_reg_codes_search_results(search_term)
 
         return render_template("/admin/regcodes.html", rows=search_results, clear_button=True)
 
-    for row in RegistrationKey.query.all():
-        identity = Identity.query.filter_by(id=row.identity).first()
-        credit = accounting_srv.get_credit(row, gib=True)[0]
-        if credit < 0:
-            credit = 0
-        rows.append(KeyRow(row.key, identity.last_name, identity.first_name, credit, row.active))
-
-    rows.reverse()
+    rows = server.construct_reg_code_list()
 
     if "clear_btn" in request.form:
         return render_template("/admin/regcodes.html", rows=rows, dev_mode=config.DEV_MODE)
@@ -141,7 +74,7 @@ def reg_codes():
         return redirect("/admin/add-regcode")
 
     if "add_test_btn" in request.form:
-        dev_mode_test.add_reg_key()
+        #dev_mode_test.add_reg_key()
         return redirect("/admin/regcodes")
 
     return render_template("/admin/regcodes.html", rows=rows, dev_mode=config.DEV_MODE)
@@ -161,17 +94,7 @@ def add_regcode():
                 flash(_l("Please fill out all input forms."))
                 return render_template("/admin/add-regcode.html")
             else:
-                db.session.add(Identity(first_name=first_name, last_name=surname, mail=mail))
-                identity = Identity.query.filter_by(first_name=first_name, last_name=surname, mail=mail).first()
-
-                reg_key = generate_registration_key.generate()
-
-                db.session.add(RegistrationKey(key=reg_key, identity=identity.id))
-                reg_key_query = RegistrationKey.query.filter_by(key=reg_key).first()
-
-                db.session.add(Traffic(reg_key=reg_key_query.id, timestamp=datetime.today().date(), credit=config.DAILY_TOPUP_VOLUME, ingress=0, egress=0, ingress_shaped=0, egress_shaped=0))
-
-                db.session.commit()
+                reg_key = server.add_registration_code(first_name, surname, mail)
                 return redirect("/admin/regcodes/" + reg_key)
 
     return render_template("/admin/add-regcode.html")
@@ -182,15 +105,14 @@ def delete_device(reg_key, ip_address):
     if not current_user.is_admin() and not current_user.is_helpdesk():
         return redirect("/admin/dashboard")
 
-    user_functions.deregister_device(ip_address)
+    server.deregister_device(ip_address)
     flash(_l("Device unregistered"))
     return redirect("/admin/regcodes/" + reg_key)
 
 @admin.route("/admin/regcodes/<reg_key>", methods=["GET", "POST"])
 @login_required
 def reg_code(reg_key):
-    reg_key_query = RegistrationKey.query.filter_by(key=reg_key).first()
-    if reg_key_query is None:
+    if server.reg_key_exists(reg_key) is False:
         flash(_l("Invalid registration key."))
         return redirect("/admin/regcodes")
 
@@ -198,100 +120,97 @@ def reg_code(reg_key):
     if request.method == "POST":
         # Dev Mode
         if "fake_device_btn" in request.form:
-            dev_mode_test.register_device(reg_key_query, request)
-            return redirect("/admin/regcodes/" + reg_key_query.key)
+            #dev_mode_test.register_device(reg_key_query, request)
+            return redirect("/admin/regcodes/" + reg_key)
 
         # Instruction Download
         if "download_btn" in request.form:
-            return render_pdf(url_for("admin.create_instruction_pdf", reg_key=reg_key_query.key))
+            return render_pdf(url_for("admin.create_instruction_pdf", reg_key=reg_key))
 
         # Set Custom Credit
         if "custom_credit_enable" in request.form:
-            valid = accounting_srv.set_custom_credit(reg_key_query,
-                                                     request.form["custom_credit_input"])
+            valid = server.set_reg_key_custom_credit(reg_key, request.form["custom_credit_input"])
 
             if not valid:
                 flash(_l("Input entered is invalid."))
 
-            return redirect("/admin/regcodes/" + reg_key_query.key)
+            return redirect("/admin/regcodes/" + reg_key)
 
         # Set Custom Top-Up
         if "custom_topup_enable" in request.form:
-            valid = accounting_srv.set_custom_topup(reg_key_query,
-                                                     request.form["custom_topup_input"])
+            valid = server.set_reg_key_custom_topup(reg_key, request.form["custom_topup_input"])
 
             if not valid:
                 flash(_l("Input entered is invalid."))
 
-            return redirect("/admin/regcodes/" + reg_key_query.key)
+            return redirect("/admin/regcodes/" + reg_key)
 
         # Disable Custom Top-Up
         if "custom_topup_disable" in request.form:
-            success = accounting_srv.disable_custom_topup(reg_key_query)
+            success = server.set_reg_key_disable_custom_topup(reg_key)
 
             if not success:
                 flash(_l("An error occured."))
 
-            return redirect("/admin/regcodes/" + reg_key_query.key)
+            return redirect("/admin/regcodes/" + reg_key)
 
         # Set Custom Maximum Credit
         if "custom_max_enable" in request.form:
-            valid = accounting_srv.set_custom_max_volume(reg_key_query,
-                                                     request.form["custom_max_input"])
+            valid = server.set_reg_key_custom_max_enable(reg_key, request.form["custom_max_input"])
 
             if not valid:
                 flash(_l("Input entered is invalid."))
 
-            return redirect("/admin/regcodes/" + reg_key_query.key)
+            return redirect("/admin/regcodes/" + reg_key)
 
         # Disable Custom Maximum Credit
         if "custom_max_disable" in request.form:
-            success = accounting_srv.disable_custom_max_volume(reg_key_query)
+            success = server.set_reg_key_custom_max_disable(reg_key)
 
             if not success:
                 flash(_l("An error occured."))
 
-            return redirect("/admin/regcodes/" + reg_key_query.key)
+            return redirect("/admin/regcodes/" + reg_key)
 
         # Enable Accounting
         if "enable_accounting" in request.form:
-            success = accounting_srv.enable_accounting_for_reg_key(reg_key_query)
+            success = server.set_reg_key_enable_accounting(reg_key)
 
             if not success:
                 flash(_l("An error occured."))
 
-            return redirect("/admin/regcodes/" + reg_key_query.key)
+            return redirect("/admin/regcodes/" + reg_key)
 
         # Disable Accounting
         if "disable_accounting" in request.form:
-            success = accounting_srv.disable_accounting_for_reg_key(reg_key_query)
+            success = server.set_reg_key_disable_accounting(reg_key)
 
             if not success:
                 flash(_l("An error occured."))
 
-            return redirect("/admin/regcodes/" + reg_key_query.key)
+            return redirect("/admin/regcodes/" + reg_key)
 
         # Activate Registration Key
         if "activate_code" in request.form:
-            success = accounting_srv.activate_registration_key(reg_key_query)
+            success = server.set_reg_key_activated(reg_key)
 
             if not success:
                 flash(_l("An error occured."))
 
-            return redirect("/admin/regcodes/" + reg_key_query.key)
+            return redirect("/admin/regcodes/" + reg_key)
 
         # Deactivate Registration Key
         if "deactivate_code" in request.form:
-            success = accounting_srv.deactivate_registration_key(reg_key_query)
+            success = server.set_reg_key_deactivated(reg_key)
 
             if not success:
                 flash(_l("An error occured."))
 
-            return redirect("/admin/regcodes/" + reg_key_query.key)
+            return redirect("/admin/regcodes/" + reg_key)
 
         # Delete Registration Code
         if "delete_code" in request.form:
-            success = user_functions.delete_registration_key(reg_key_query)
+            success = server.delete_registration_key(reg_key)
 
             if not success:
                 flash(_l("An error occured."))
@@ -300,14 +219,11 @@ def reg_code(reg_key):
 
 
     # Statistics
-    traffic_query = Traffic.query.filter_by(reg_key=reg_key_query.id).first()
-    stat_volume_left = accounting_srv.get_credit(reg_key_query, gib=True)[0]
-    stat_created_on = accounting_srv.get_reg_key_creation_timestamp(reg_key_query, "%d.%m.%Y")
-    stat_shaped = accounting_srv.is_reg_key_shaped(reg_key_query)
-    stat_status = accounting_srv.is_registration_key_active(reg_key_query)
-
-    if stat_volume_left < 0:
-        stat_volume_left = 0
+    legend_downlink = _l("Downlink") + " (GiB)"
+    legend_downlink_shaped = _l("Shaped Downlink") + " (GiB)"
+    legend_uplink = _l("Uplink") + " (GiB)"
+    legend_uplink_shaped = _l("Shaped Uplink") + " (GiB)"
+    stat_volume_left, stat_created_on, stat_shaped, stat_status, labels, values_downlink, values_downlink_shaped, values_uplink, values_uplink_shaped = server.get_reg_code_statistics(reg_key)
 
     if stat_shaped:
         stat_shaped = _l("Yes")
@@ -319,66 +235,11 @@ def reg_code(reg_key):
     else:
         stat_status = _l("Disabled")
 
-    legend_downlink = _l("Downlink") + " (GiB)"
-    legend_downlink_shaped = _l("Shaped Downlink") + " (GiB)"
-    legend_uplink = _l("Uplink") + " (GiB)"
-    legend_uplink_shaped = _l("Shaped Uplink") + " (GiB)"
-    values_downlink = []
-    values_downlink_shaped = []
-    values_uplink = []
-    values_uplink_shaped = []
-    labels = []
-
-    today = datetime.today().date()
-    passed_days = today - timedelta(days=10)
-
-    for date in rrule.rrule(rrule.DAILY, dtstart=passed_days, until=today):
-        traffic_query = Traffic.query.filter_by(reg_key=reg_key_query.id, timestamp=date).all()
-        downlink = 0
-        downlink_shaped = 0
-        uplink = 0
-        uplink_shaped = 0
-
-        if traffic_query is not None:
-            for row in traffic_query:
-                downlink += __to_gib(row.ingress)
-                downlink_shaped += __to_gib(row.ingress_shaped)
-                uplink += __to_gib(row.egress)
-                uplink_shaped += __to_gib(row.egress_shaped)
-
-        values_downlink.append(downlink)
-        values_downlink_shaped.append(downlink_shaped)
-        values_uplink.append(uplink)
-        values_uplink_shaped.append(uplink_shaped)
-        labels.append(date.strftime("%d.%m."))
-
     # Devices
-    device_list = []
-    for row in AddressPair.query.filter_by(reg_key=reg_key_query.id).all():
-        ip_address_query = IpAddress.query.filter_by(id=row.ip_address).first()
-        mac_address_query = MacAddress.query.filter_by(id=row.mac_address).first()
-
-        device_list.append(DeviceRow(ip_address_query.address_v4, mac_address_query.address, mac_address_query.user_agent, mac_address_query.first_known_since))
-
-    device_list.reverse()
+    device_list = server.get_reg_code_device_list(reg_key)
 
     # User Settings Variables
-    # Custom Top-Up
-    custom_volume_enabled = False
-    value_custom_topup = 0
-    if reg_key_query.daily_topup_volume is not None:
-        custom_volume_enabled = True
-        value_custom_topup = __to_gib(reg_key_query.daily_topup_volume)
-    # Custom Max Value
-    custom_max_enabled = False
-    value_max_volume = 0
-    if reg_key_query.max_volume is not None:
-        custom_max_enabled = True
-        value_max_volume = __to_gib(reg_key_query.max_volume)
-    # Disable Accounting
-    accounting_enabled = reg_key_query.enable_accounting
-    # Deactivate Registration Key
-    key_active = reg_key_query.active
+    custom_volume_enabled, value_custom_topup, custom_max_enabled, value_max_volume, accounting_enabled, key_active = server.get_reg_code_settings_values(reg_key)
 
     return render_template("/admin/key-page.html",
                            dev_mode=config.DEV_MODE,
@@ -544,74 +405,22 @@ def unauthorized():
 
 @admin.route("/admin/regcodes/render-instruction-pdf/<reg_key>", methods=["GET"])
 def create_instruction_pdf(reg_key):
-    reg_key_query = RegistrationKey.query.filter_by(key=reg_key).first()
-
-    if reg_key_query is None:
+    if server.reg_key_exists(reg_key) is False:
         flash(_l("Invalid registration key."))
         return redirect("/admin/regcodes")
 
-    max_saved_volume = __to_gib(accounting_srv.get_max_saved_volume(), decimals=0)
-    daily_topup_volume = __to_gib(accounting_srv.get_daily_topup_volume(), decimals=0)
+    max_saved_volume, daily_topup_volume, shaping_speed, traffy_url, max_devices = server.get_instruction_pdf_values()
 
     return render_template("/admin/pdf/instruction.html",
                            reg_key=reg_key,
                            daily_topup_volume=daily_topup_volume,
                            max_saved_volume=max_saved_volume,
-                           shaping_speed=config.SHAPING_SPEED,
-                           traffy_url=config.THIS_SERVER_IP_WAN,
-                           max_devices=config.MAX_MAC_ADDRESSES_PER_REG_KEY,
+                           shaping_speed=shaping_speed,
+                           traffy_url=traffy_url,
+                           max_devices=max_devices,
                            admin_name=config.ADMIN_NAME,
                            admin_mail=config.ADMIN_MAIL,
                            admin_room=config.ADMIN_ROOM)
-
-class KeyRow():
-    reg_key = ""
-    last_name = ""
-    first_name = ""
-    credit = ""
-    active = True
-
-    def __init__(self, reg_key, last_name, first_name, credit, active):
-        self.reg_key = reg_key
-        self.last_name = last_name
-        self.first_name = first_name
-        self.credit = credit
-        self.active = active
-
-class DeviceRow():
-    ip_address = ""
-    mac_address = ""
-    type = ""
-    registered_since = ""
-
-    def __init__(self, ip_address, mac_address, user_agent, registered_since):
-        self.ip_address = ip_address
-        self.mac_address = mac_address
-        self.type = self.find_device(user_agent)
-        self.registered_since = registered_since.strftime("%d.%m.%Y %H:%M:%S")
-
-    def find_device(self, user_agent):
-        device_string = ""
-        user_agent = parse(user_agent)
-
-        if user_agent.is_mobile:
-            if user_agent.is_touch_capable:
-                device_string += "Smartphone / "
-                device_string += user_agent.device.brand + " / " + user_agent.device.family + " / "
-            else:
-                device_string += "Handy / "
-                device_string += user_agent.device.brand + " / " + user_agent.device.family + " / "
-        elif user_agent.is_tablet:
-            device_string += "Tablet / "
-        elif user_agent.is_pc:
-            device_string += "Desktop / "
-
-        device_string += user_agent.os.family + " " + user_agent.os.version_string
-
-        if device_string == "Other":
-            device_string = _l("Unknown")
-
-        return device_string
 
 class AccountRow():
     username = ""
@@ -624,14 +433,4 @@ class AccountRow():
         self.last_name = last_name
         self.first_name = first_name
         self.role = role
-
-#
-# Private
-#
-
-def __to_gib(bytes, decimals=3):
-    return round(bytes / 1073741824, decimals)
-
-def __to_bytes(gib):
-    return int(gib * 1073741824)
 

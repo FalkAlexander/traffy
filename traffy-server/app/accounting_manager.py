@@ -9,7 +9,6 @@ import logging
 
 class AccountingService():
     db = NotImplemented
-    app = NotImplemented
     run = True
     shaped_reg_keys = []
 
@@ -21,38 +20,42 @@ class AccountingService():
     #
 
     def start(self, interval):
-        keys_per_thread = 25
-        with self.app.app_context():
-            threads_needed = int(RegistrationKey.query.count() / keys_per_thread) + 1
-        start_stop_id = 0
-        for count in range(0, threads_needed):
-            thread = threading.Thread(target=self.query_active_boxes, args=[start_stop_id, start_stop_id + keys_per_thread - 1, interval])
-            thread.daemon = True
-            thread.start()
-            start_stop_id = start_stop_id + keys_per_thread
-            logging.debug("Started Accounting Thread " + str(count + 1))
+        # keys_per_thread = 25
+        # with self.app.app_context():
+        #     threads_needed = int(RegistrationKey.query.count() / keys_per_thread) + 1
+        # start_stop_id = 0
+        # for count in range(0, threads_needed):
+        #     thread = threading.Thread(target=self.query_active_boxes, args=[start_stop_id, start_stop_id + keys_per_thread - 1, interval])
+        #     thread.daemon = True
+        #     thread.start()
+        #     start_stop_id = start_stop_id + keys_per_thread
+        #     logging.debug("Started Accounting Thread " + str(count + 1))
+        thread = threading.Thread(target=self.query_active_boxes, args=[interval])
+        thread.daemon = True
+        thread.start()
 
     def stop(self):
         self.run = False
 
-    def query_active_boxes(self, start_id, stop_id, interval):
+    def query_active_boxes(self, interval):
         while self.run:
-            with self.app.app_context():
-                reg_key_query = RegistrationKey.query.all()
-                for reg_key in reg_key_query[start_id:stop_id]:
-                    try:
-                        if reg_key.active is False or reg_key.enable_accounting is False:
-                            continue
+            try:
+                reg_key_query = self.db.session.query(RegistrationKey).all()
+                #reg_key_query = RegistrationKey.query.all()
+                for reg_key in reg_key_query:
+                    if reg_key.active is False or reg_key.enable_accounting is False:
+                        continue
 
-                        if AddressPair.query.filter_by(reg_key=reg_key.id).count() != 0:
-                            self.update_interval_used_traffic(reg_key,
-                                                              iptables_accounting_manager.get_box_ingress_bytes(reg_key.id),
-                                                              iptables_accounting_manager.get_box_egress_bytes(reg_key.id))
-                        else:
-                            self.update_interval_used_traffic(reg_key, 0, 0, inactive=True)
-                    except:
-                        logging.debug("Exception thrown in Accounting Service")
-            time.sleep(interval)
+                    if self.db.session.query(AddressPair).filter_by(reg_key=reg_key.id).count() != 0:
+                    #if AddressPair.query.filter_by(reg_key=reg_key.id).count() != 0:
+                        self.update_interval_used_traffic(reg_key,
+                                                          iptables_accounting_manager.get_box_ingress_bytes(reg_key.id),
+                                                          iptables_accounting_manager.get_box_egress_bytes(reg_key.id))
+                    else:
+                        self.update_interval_used_traffic(reg_key, 0, 0, inactive=True)
+            except:
+                logging.debug("Exception thrown in Accounting Service")
+        time.sleep(interval)
 
     #
     # Calculate User Credit and Ingress / Egress
@@ -61,7 +64,8 @@ class AccountingService():
     def update_interval_used_traffic(self, reg_key_query, ingress_used, egress_used, inactive=False):
         # Every X Seconds Check
         date = datetime.today().date()
-        traffic_query = Traffic.query.filter_by(reg_key=reg_key_query.id, timestamp=date).first()
+        traffic_query = self.db.session.query(Traffic).filter_by(reg_key=reg_key_query.id, timestamp=date).first()
+        #traffic_query = Traffic.query.filter_by(reg_key=reg_key_query.id, timestamp=date).first()
 
         if traffic_query is not None:
             credit = traffic_query.credit
@@ -93,7 +97,8 @@ class AccountingService():
 
         # New Day Check
         date = date - timedelta(days = 1)
-        traffic_query = Traffic.query.filter_by(reg_key=reg_key_query.id, timestamp=date).first()
+        traffic_query = self.db.session.query(Traffic).filter_by(reg_key=reg_key_query.id, timestamp=date).first()
+        #traffic_query = Traffic.query.filter_by(reg_key=reg_key_query.id, timestamp=date).first()
 
         topup_volume = self.get_daily_topup_volume()
         if reg_key_query.daily_topup_volume is not None:
@@ -133,7 +138,8 @@ class AccountingService():
 
         # First Ever Check
         date = datetime.today().date()
-        if Traffic.query.filter_by(reg_key=reg_key_query.id).count() == 0:
+        if self.db.session.query(Traffic).filter_by(reg_key=reg_key_query.id).count() == 0:
+        #if Traffic.query.filter_by(reg_key=reg_key_query.id).count() == 0:
             row = Traffic(reg_key=reg_key_query.id,
                                   timestamp=date,
                                   credit=topup_volume,
@@ -279,9 +285,11 @@ class AccountingService():
             reg_key_query.active = True
             self.db.session.commit()
 
-            address_pair_query = AddressPair.query.filter_by(reg_key=reg_key_query.id).all()
+            address_pair_query = self.db.session.query(AddressPair).filter_by(reg_key=reg_key_query.id).all()
+            #address_pair_query = AddressPair.query.filter_by(reg_key=reg_key_query.id).all()
             for row in address_pair_query:
-                ip_address_query = IpAddress.query.filter_by(id=row.ip_address).first()
+                ip_address_query = self.db.session.query(IpAddress).filter_by(id=row.ip_address).first()
+                #ip_address_query = IpAddress.query.filter_by(id=row.ip_address).first()
 
                 # Setup Firewall
                 iptables_rules_manager.unlock_registered_device(ip_address_query.address_v4)
@@ -292,7 +300,8 @@ class AccountingService():
 
             iptables_accounting_manager.add_accounter_chain(reg_key_query.id)
             for row in address_pair_query:
-                ip_address_query = IpAddress.query.filter_by(id=row.ip_address).first()
+                ip_address_query = self.db.session.query(IpAddress).filter_by(id=row.ip_address).first()
+                #ip_address_query = IpAddress.query.filter_by(id=row.ip_address).first()
 
                 # Setup Accounting
                 iptables_accounting_manager.add_ip_to_box(reg_key_query.id, ip_address_query.address_v4)
@@ -303,9 +312,11 @@ class AccountingService():
 
     def deactivate_registration_key(self, reg_key_query):
         try:
-            address_pair_query = AddressPair.query.filter_by(reg_key=reg_key_query.id).all()
+            address_pair_query = self.db.session.query(AddressPair).filter_by(reg_key=reg_key_query.id).all()
+            #address_pair_query = AddressPair.query.filter_by(reg_key=reg_key_query.id).all()
             for row in address_pair_query:
-                ip_address_query = IpAddress.query.filter_by(id=row.ip_address).first()
+                ip_address_query = self.db.session.query(IpAddress).filter_by(id=row.ip_address).first()
+                #ip_address_query = IpAddress.query.filter_by(id=row.ip_address).first()
 
                 # Disable Shaping
                 if self.is_reg_key_shaped(reg_key_query):
@@ -338,7 +349,8 @@ class AccountingService():
     def is_reg_key_shaped(self, reg_key_query):
         try:
             date = datetime.today().date()
-            traffic_query = Traffic.query.filter_by(reg_key=reg_key_query.id, timestamp=date).first()
+            traffic_query = self.db.session.query(Traffic).filter_by(reg_key=reg_key_query.id, timestamp=date).first()
+            #traffic_query = Traffic.query.filter_by(reg_key=reg_key_query.id, timestamp=date).first()
             if traffic_query.ingress + traffic_query.egress >= traffic_query.credit or traffic_query.credit <= 0:
                 return True
             else:
@@ -418,24 +430,30 @@ class AccountingService():
         self.db.session.commit()
 
     def __enable_traffic_shaping_for_reg_key(self, reg_key_query):
-        address_pair_query = AddressPair.query.filter_by(reg_key=reg_key_query.id).distinct()
+        address_pair_query = self.db.session.query(AddressPair).filter_by(reg_key=reg_key_query.id).distinct()
+        #address_pair_query = AddressPair.query.filter_by(reg_key=reg_key_query.id).distinct()
         for query in address_pair_query:
-            ip_address_query = IpAddress.query.filter_by(id=query.ip_address).first()
+            ip_address_query = self.db.session.query(IpAddress).filter_by(id=query.ip_address).first()
+            #ip_address_query = IpAddress.query.filter_by(id=query.ip_address).first()
             shaping_manager.enable_shaping_for_ip(ip_address_query.id, ip_address_query.address_v4)
 
     def __disable_traffic_shaping_for_reg_key(self, reg_key_query):
-        address_pair_query = AddressPair.query.filter_by(reg_key=reg_key_query.id).distinct()
+        address_pair_query = self.db.session.query(AddressPair).filter_by(reg_key=reg_key_query.id).distinct()
+        #address_pair_query = AddressPair.query.filter_by(reg_key=reg_key_query.id).distinct()
         for query in address_pair_query:
-            ip_address_query = IpAddress.query.filter_by(id=query.ip_address).first()
+            ip_address_query = self.db.session.query(IpAddress).filter_by(id=query.ip_address).first()
+            #ip_address_query = IpAddress.query.filter_by(id=query.ip_address).first()
             shaping_manager.disable_shaping_for_ip(ip_address_query.id, ip_address_query.address_v4)
 
     def __verify_todays_traffic_query(self, reg_key_query):
         date = datetime.today().date()
-        traffic_query = Traffic.query.filter_by(reg_key=reg_key_query.id, timestamp=date).first()
+        traffic_query = self.db.session.query(Traffic).filter_by(reg_key=reg_key_query.id, timestamp=date).first()
+        #traffic_query = Traffic.query.filter_by(reg_key=reg_key_query.id, timestamp=date).first()
 
         if traffic_query is None:
             date = date - timedelta(days = 1)
-            traffic_query = Traffic.query.filter_by(reg_key=reg_key_query.id, timestamp=date).first()
+            traffic_query = self.db.session.query(Traffic).filter_by(reg_key=reg_key_query.id, timestamp=date).first()
+            #traffic_query = Traffic.query.filter_by(reg_key=reg_key_query.id, timestamp=date).first()
             if traffic_query is None:
                 return None
 

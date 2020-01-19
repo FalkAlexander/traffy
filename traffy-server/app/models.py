@@ -1,11 +1,14 @@
 from datetime import datetime
-from werkzeug.security import generate_password_hash, check_password_hash
-from flask_login import UserMixin
-from . import db
 from sqlalchemy.sql import text
+from sqlalchemy.ext.declarative import declarative_base
+import sqlalchemy as db
 
 
-class RegistrationKey(db.Model):
+Base = declarative_base()
+
+class RegistrationKey(Base):
+    __tablename__ = "registration_key"
+
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     key = db.Column(db.String(80), unique=True, nullable=False)
     created_on = db.Column(db.DateTime, nullable=False)
@@ -35,7 +38,9 @@ class RegistrationKey(db.Model):
     def __repr__(self):
         return "<RegistrationKey %r>" % self.key
 
-class MacAddress(db.Model):             
+class MacAddress(Base):
+    __tablename__ = "mac_address"
+
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     address = db.Column(db.String(25), unique=True, nullable=False)
     user_agent = db.Column(db.String(500), unique=False, nullable=True)
@@ -49,7 +54,9 @@ class MacAddress(db.Model):
     def __repr__(self):
         return "<MacAddress %r>" % self.address
 
-class IpAddress(db.Model):             
+class IpAddress(Base):
+    __tablename__ = "ip_address"
+
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     address_v4 = db.Column(db.String(15), unique=True, nullable=False)
     address_v6 = db.Column(db.String(100), unique=True, nullable=True)
@@ -59,72 +66,11 @@ class IpAddress(db.Model):
         self.address_v6 = address_v6
     
     def __repr__(self):
-        return "<IpAddress %r>" % self.address
+        return "<IpAddress %r>" % self.address_v4
 
-class Role(db.Model):             
-    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    role = db.Column(db.String(30), unique=True, nullable=False)
-    
-    def __init__(self, role):
-        self.role = role
-    
-    def __repr__(self):
-        return "<Role %r>" % self.role
+class Identity(Base):
+    __tablename__ = "identity"
 
-class SupervisorAccount(db.Model, UserMixin):
-    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    username = db.Column(db.String(50), unique=True, nullable=False)
-    password = db.Column(db.String(200), unique=False, nullable=False)
-    first_name = db.Column(db.String(100), unique=False, nullable=False)
-    last_name = db.Column(db.String(100), unique=False, nullable=False)
-    mail = db.Column(db.String(100), unique=False, nullable=False)
-    role = db.Column(db.Integer, db.ForeignKey("role.id"))
-    notify_shaping = db.Column(db.Boolean, unique=False, nullable=False)
-    notify_login_attempts = db.Column(db.Boolean, unique=False, nullable=False)
-    notify_critical_events = db.Column(db.Boolean, unique=False, nullable=False)
-
-    def __init__(self, username, password, first_name, last_name, mail, role, notify_shaping, notify_login_attempts, notify_critical_events):
-        self.username = username
-        self.password = generate_password_hash(password, method="sha256")
-        self.first_name = first_name
-        self.last_name = last_name
-        self.mail = mail
-        self.role = role
-        self.notify_shaping = notify_shaping
-        self.notify_login_attempts = notify_login_attempts
-        self.notify_critical_events = notify_critical_events
-
-    def set_password(self, password):
-        self.password = generate_password_hash(password, method="sha256")
-
-    def check_password(self, password):
-        return check_password_hash(self.password, password)
-
-    def is_admin(self):
-        role_query = Role.query.filter_by(id=self.role).first()
-        if role_query.role == "Admin":
-            return True
-        else:
-            return False
-
-    def is_helpdesk(self):
-        role_query = Role.query.filter_by(id=self.role).first()
-        if role_query.role == "Helpdesk":
-            return True
-        else:
-            return False
-
-    def is_clerk(self):
-        role_query = Role.query.filter_by(id=self.role).first()
-        if role_query.role == "Clerk":
-            return True
-        else:
-            return False
-
-    def __repr__(self):
-        return "<SupervisorAccount %r>" % self.username
-
-class Identity(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     first_name = db.Column(db.String(50), unique=False, nullable=True)
     last_name = db.Column(db.String(50), unique=False, nullable=True)
@@ -138,7 +84,9 @@ class Identity(db.Model):
     def __repr__(self):
         return "<Identity %r>" % self.first_name
 
-class Traffic(db.Model):             
+class Traffic(Base):
+    __tablename__ = "traffic"
+
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     reg_key = db.Column(db.Integer, db.ForeignKey("registration_key.id"))
     timestamp = db.Column(db.DateTime, nullable=False)
@@ -160,7 +108,9 @@ class Traffic(db.Model):
     def __repr__(self):
         return "<Traffic %r>" % self.reg_key
 
-class Voucher(db.Model):
+class Voucher(Base):
+    __tablename__ = "voucher"
+
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     code = db.Column(db.String(50), unique=True, nullable=False)
     valid_until = db.Column(db.DateTime, nullable=True)
@@ -174,7 +124,9 @@ class Voucher(db.Model):
     def __repr__(self):
         return "<Voucher %r>" % self.code
 
-class VoucherUser(db.Model):
+class VoucherUser(Base):
+    __tablename__ = "voucher_user"
+
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     code = db.Column(db.Integer, db.ForeignKey("voucher.id"))
     reg_key = db.Column(db.Integer, db.ForeignKey("registration_key.id"))
@@ -188,7 +140,9 @@ class VoucherUser(db.Model):
     def __repr__(self):
         return "<VoucherUser %r>" % self.code
 
-class AddressPair(db.Model):
+class AddressPair(Base):
+    __tablename__ = "address_pair"
+
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     reg_key = db.Column(db.Integer, db.ForeignKey("registration_key.id"))
     mac_address = db.Column(db.Integer, db.ForeignKey("mac_address.id"))
@@ -201,4 +155,7 @@ class AddressPair(db.Model):
     
     def __repr__(self):
         return "<AddressPairs %r>" % self.reg_key
+
+def create_all(engine):
+    Base.metadata.create_all(engine)
 
