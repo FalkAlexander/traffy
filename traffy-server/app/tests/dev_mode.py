@@ -22,19 +22,23 @@ class DevModeTest():
         self.__build_device(api, reg_key_query.key, self.__generate_random_ip(), user_agent)
 
     def __build_reg_key(self, first_name, surname, mail):
-        session = self.db.create_session()
+        try:
+            session = self.db.create_session()
 
-        session.add(Identity(first_name=first_name, last_name=surname, mail=mail))
-        identity = session.query(Identity).filter_by(first_name=first_name, last_name=surname, mail=mail).first()
-        reg_key = generate_registration_key.generate()
+            session.add(Identity(first_name=first_name, last_name=surname, mail=mail))
+            identity = session.query(Identity).filter_by(first_name=first_name, last_name=surname, mail=mail).first()
+            reg_key = generate_registration_key.generate()
 
-        session.add(RegistrationKey(key=reg_key, identity=identity.id))
-        reg_key_query = session.query(RegistrationKey).filter_by(key=reg_key).first()
+            session.add(RegistrationKey(key=reg_key, identity=identity.id))
+            reg_key_query = session.query(RegistrationKey).filter_by(key=reg_key).first()
 
-        session.add(Traffic(reg_key=reg_key_query.id, timestamp=datetime.today().date(), credit=config.DAILY_TOPUP_VOLUME, ingress=0, egress=0, ingress_shaped=0, egress_shaped=0))
+            session.add(Traffic(reg_key=reg_key_query.id, timestamp=datetime.today().date(), credit=config.DAILY_TOPUP_VOLUME, ingress=0, egress=0, ingress_shaped=0, egress_shaped=0))
 
-        session.commit()
-        session.close()
+            session.commit()
+        except:
+            session.rollback()
+        finally:
+            session.close()
 
     def __build_device(self, api, key, ip_address, user_agent):
         api.register_device(key, ip_address, user_agent)
@@ -54,10 +58,11 @@ class DevModeTest():
 
         session = self.db.create_session()
         ip_address_query = session.query(IpAddress).filter_by(address_v4=ip_address).first()
-        session.close()
 
         if ip_address_query is not None:
-            self.__generate_random_ip()
+            session.close()
+            return self.__generate_random_ip()
+        session.close()
 
         self.__add_random_fake_lease(ip_address)
 

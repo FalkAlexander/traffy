@@ -49,10 +49,7 @@ class ServerAPI:
     #
 
     def database_commit(self, session):
-        try:
-            session.commit()
-        except Exception as ex:
-            raise DatabaseError(100)
+        session.commit()
 
     def delete_query(self, session, query):
         session.delete(query)
@@ -92,40 +89,43 @@ class ServerAPI:
     def register_device(self, reg_key, ip_address, user_agent):
         session = self.db.create_session()
 
-        reg_key_query = self.get_reg_key_query_by_key(session, reg_key)
+        try:
+            reg_key_query = self.get_reg_key_query_by_key(session, reg_key)
 
-        # Rahmennetzordnung
-        self.__set_reg_key_eula_accepted(reg_key_query, True)
+            # Rahmennetzordnung
+            self.__set_reg_key_eula_accepted(reg_key_query, True)
 
-        # Create IP Entry
-        self.__create_ip_entry(session, ip_address)
+            # Create IP Entry
+            self.__create_ip_entry(session, ip_address)
 
-        # Create MAC Entry
-        mac_address = self.__get_mac_pair_for_ip(ip_address)
-        self.__create_mac_entry(session, mac_address, user_agent)
+            # Create MAC Entry
+            mac_address = self.__get_mac_pair_for_ip(ip_address)
+            self.__create_mac_entry(session, mac_address, user_agent)
 
-        # Create AddressPair
-        ip_address_query = self.__create_address_pair(session, reg_key_query, mac_address, ip_address)
+            # Create AddressPair
+            ip_address_query = self.__create_address_pair(session, reg_key_query, mac_address, ip_address)
 
-        # Write DB
-        self.database_commit(session)
+            # Write DB
+            self.database_commit(session)
 
-        # Create Static Lease
-        self.__add_static_lease(mac_address, ip_address)
+            # Create Static Lease
+            self.__add_static_lease(mac_address, ip_address)
 
-        # Setup Firewall
-        self.__unlock_registered_device_firewall(ip_address)
+            # Setup Firewall
+            self.__unlock_registered_device_firewall(ip_address)
 
-        # Setup Accounting
-        self.__enable_device_accounting(session, reg_key_query, ip_address)
+            # Setup Accounting
+            self.__enable_device_accounting(session, reg_key_query, ip_address)
+        except:
+            session.rollback()
+        finally:
+            session.close()
 
         # Spoofing Protection
         self.__enable_spoofing_protection(ip_address, mac_address)
 
         # Setup Shaping
         self.__enable_shaping(reg_key_query, ip_address_query)
-
-        session.close()
 
     def get_registered_devices_count(self, reg_key):
         session = self.db.create_session()
@@ -202,30 +202,36 @@ class ServerAPI:
             session = self.db.create_session()
             close_session = True
 
-        ip_address_query = self.get_ip_address_query_by_ip(session, ip_address)
-        address_pair_query = self.get_address_pair_query_by_ip(session, ip_address_query)
-        mac_address_query = self.get_mac_address_query_by_id(session, address_pair_query.mac_address)
-        reg_key_query = self.get_reg_key_query_by_id(session, address_pair_query.reg_key)
+        try:
+            ip_address_query = self.get_ip_address_query_by_ip(session, ip_address)
+            address_pair_query = self.get_address_pair_query_by_ip(session, ip_address_query)
+            mac_address_query = self.get_mac_address_query_by_id(session, address_pair_query.mac_address)
+            reg_key_query = self.get_reg_key_query_by_id(session, address_pair_query.reg_key)
 
-        mac_address = mac_address_query.address
+            mac_address = mac_address_query.address
 
-        # Disable Shaping
-        self.__disable_shaping(reg_key_query, ip_address_query)
+            # Disable Shaping
+            self.__disable_shaping(reg_key_query, ip_address_query)
 
-        # Delete AddressPair
-        self.delete_query(session, address_pair_query)
-        self.database_commit(session)
+            # Delete AddressPair
+            self.delete_query(session, address_pair_query)
+            self.database_commit(session)
 
-        # Delete IP Address
-        self.delete_query(session, ip_address_query)
-        self.database_commit(session)
+            # Delete IP Address
+            self.delete_query(session, ip_address_query)
+            self.database_commit(session)
 
-        # Delete MAC Address
-        self.delete_query(session, mac_address_query)
-        self.database_commit(session)
+            # Delete MAC Address
+            self.delete_query(session, mac_address_query)
+            self.database_commit(session)
 
-        # Disable Accounting
-        self.__disable_device_accounting(session, reg_key_query, ip_address)
+            # Disable Accounting
+            self.__disable_device_accounting(session, reg_key_query, ip_address)
+        except:
+            session.rollback()
+        finally:
+            if close_session is True:
+                session.close()
 
         # Spoofing Protection
         self.__disable_spoofing_protection(ip_address)
@@ -235,9 +241,6 @@ class ServerAPI:
 
         # Setup Firewall
         self.__relock_registered_device_firewall(ip_address)
-
-        if close_session is True:
-            session.close()
 
     def __disable_shaping(self, reg_key_query, ip_address_query):
         if reg_key_query.id in self.accounting_srv.shaped_reg_keys:
@@ -458,19 +461,24 @@ class ServerAPI:
         return rows
 
     def add_registration_code(self, first_name, surname, mail):
-        session = self.db.create_session()
+        try:
+            session = self.db.create_session()
 
-        session.add(Identity(first_name=first_name, last_name=surname, mail=mail))
-        identity = session.query(Identity).filter_by(first_name=first_name, last_name=surname, mail=mail).first()
+            session.add(Identity(first_name=first_name, last_name=surname, mail=mail))
+            identity = session.query(Identity).filter_by(first_name=first_name, last_name=surname, mail=mail).first()
 
-        reg_key = generate_registration_key.generate()
+            reg_key = generate_registration_key.generate()
 
-        session.add(RegistrationKey(key=reg_key, identity=identity.id))
-        reg_key_query = session.query(RegistrationKey).filter_by(key=reg_key).first()
+            session.add(RegistrationKey(key=reg_key, identity=identity.id))
+            reg_key_query = session.query(RegistrationKey).filter_by(key=reg_key).first()
 
-        session.add(Traffic(reg_key=reg_key_query.id, timestamp=datetime.today().date(), credit=config.DAILY_TOPUP_VOLUME, ingress=0, egress=0, ingress_shaped=0, egress_shaped=0))
-        session.commit()
-        session.close()
+            session.add(Traffic(reg_key=reg_key_query.id, timestamp=datetime.today().date(), credit=config.DAILY_TOPUP_VOLUME, ingress=0, egress=0, ingress_shaped=0, egress_shaped=0))
+            session.commit()
+        except:
+            session.rollback()
+        finally:
+            session.close()
+
         return reg_key
 
     def set_reg_key_custom_credit(self, reg_key, value):
@@ -486,7 +494,7 @@ class ServerAPI:
     def set_reg_key_custom_topup(self, reg_key, value):
         session = self.db.create_session()
         reg_key_query = self.get_reg_key_query_by_key(session, reg_key)
-        valid = self.accounting_srv.set_custom_topup(reg_key_query, value)
+        valid = self.accounting_srv.set_custom_topup(session, reg_key_query, value)
         session.close()
 
         if not valid:
@@ -496,7 +504,7 @@ class ServerAPI:
     def set_reg_key_disable_custom_topup(self, reg_key):
         session = self.db.create_session()
         reg_key_query = self.get_reg_key_query_by_key(session, reg_key)
-        success = self.accounting_srv.disable_custom_topup(reg_key_query)
+        success = self.accounting_srv.disable_custom_topup(session, reg_key_query)
         session.close()
 
         if not success:
@@ -506,7 +514,7 @@ class ServerAPI:
     def set_reg_key_custom_max_enable(self, reg_key, value):
         session = self.db.create_session()
         reg_key_query = self.get_reg_key_query_by_key(session, reg_key)
-        valid = self.accounting_srv.set_custom_max_volume(reg_key_query, value)
+        valid = self.accounting_srv.set_custom_max_volume(session, reg_key_query, value)
         session.close()
 
         if not valid:
@@ -516,7 +524,7 @@ class ServerAPI:
     def set_reg_key_custom_max_disable(self, reg_key):
         session = self.db.create_session()
         reg_key_query = self.get_reg_key_query_by_key(session, reg_key)
-        success = self.accounting_srv.disable_custom_max_volume(reg_key_query)
+        success = self.accounting_srv.disable_custom_max_volume(session, reg_key_query)
         session.close()
 
         if not success:
@@ -526,7 +534,7 @@ class ServerAPI:
     def set_reg_key_enable_accounting(self, reg_key):
         session = self.db.create_session()
         reg_key_query = self.get_reg_key_query_by_key(session, reg_key)
-        success = self.accounting_srv.enable_accounting_for_reg_key(reg_key_query)
+        success = self.accounting_srv.enable_accounting_for_reg_key(session, reg_key_query)
         session.close()
 
         if not success:
@@ -536,7 +544,7 @@ class ServerAPI:
     def set_reg_key_disable_accounting(self, reg_key):
         session = self.db.create_session()
         reg_key_query = self.get_reg_key_query_by_key(session, reg_key)
-        success = self.accounting_srv.disable_accounting_for_reg_key(reg_key_query)
+        success = self.accounting_srv.disable_accounting_for_reg_key(session, reg_key_query)
         session.close()
 
         if not success:

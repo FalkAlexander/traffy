@@ -9,39 +9,31 @@ import logging
 
 class AccountingService():
     db = NotImplemented
-    run = True
     shaped_reg_keys = []
     threads = []
-    session = NotImplemented
 
     def __init__(self, db):
         self.db = db
-        self.session = session = db.create_session()
 
     #
     # Accounting Threads Management
     #
 
     def start(self, interval):
-        # keys_per_thread = 25
-        # threads_needed = int(self.session.query(RegistrationKey).count() / keys_per_thread) + 1
+        keys_per_thread = 25
 
-        # start_stop_id = 0
-        # for count in range(0, threads_needed):
-        #     accounting_srv = AccountingService(self.db)
-        #     thread = threading.Thread(target=accounting_srv.query_active_boxes, args=[start_stop_id, start_stop_id + keys_per_thread - 1, interval])
-        #     thread.daemon = True
-        #     thread.start()
-        #     start_stop_id = start_stop_id + keys_per_thread
-        #     logging.debug("Started Accounting Thread " + str(count + 1))
+        session = self.db.create_session()
+        threads_needed = int(session.query(RegistrationKey).count() / keys_per_thread) + 1
+        session.close()
 
-        accounting_thread = AccountingThread(self, interval)
-        accounting_thread.daemon = True
-        accounting_thread.start()
-        self.threads.append(accounting_thread)
-        #thread = threading.Thread(target=self.query_active_boxes, args=[interval])
-        #thread.daemon = True
-        #thread.start()
+        start_stop_id = 0
+        for count in range(0, threads_needed):
+            accounting_thread = AccountingThread(self, interval, start_stop_id, start_stop_id + keys_per_thread - 1)
+            accounting_thread.daemon = True
+            accounting_thread.start()
+            self.threads.append(accounting_thread)
+            start_stop_id = start_stop_id + keys_per_thread
+            logging.debug("Started Accounting Thread " + str(count + 1))
 
     def stop(self):
         for thread in self.threads:
@@ -68,6 +60,7 @@ class AccountingService():
             session.commit()
             return self.__to_gib(traffic_query.credit)
         except:
+            session.rollback()
             return False
 
     def set_custom_credit(self, session, reg_key_query, amount_gib):
@@ -82,9 +75,10 @@ class AccountingService():
             session.commit()
             return self.__to_gib(traffic_query.credit)
         except:
+            session.rollback()
             return False
 
-    def set_custom_topup(self, reg_key_query, amount_gib):
+    def set_custom_topup(self, session, reg_key_query, amount_gib):
         try:
             amount_gib = helpers.string_to_float(amount_gib)
             if not amount_gib > 0 or amount_gib > 999:
@@ -94,9 +88,10 @@ class AccountingService():
             session.commit()
             return self.__to_gib(reg_key_query.daily_topup_volume)
         except:
+            session.rollback()
             return False
 
-    def set_custom_max_volume(self, reg_key_query, amount_gib):
+    def set_custom_max_volume(self, session, reg_key_query, amount_gib):
         try:
             amount_gib = helpers.string_to_float(amount_gib)
             if not amount_gib > 0 or amount_gib > 999:
@@ -106,38 +101,43 @@ class AccountingService():
             session.commit()
             return self.__to_gib(reg_key_query.max_volume)
         except:
+            session.rollback()
             return False
 
-    def disable_custom_topup(self, reg_key_query):
+    def disable_custom_topup(self, session, reg_key_query):
         try:
             reg_key_query.daily_topup_volume = None
             session.commit()
             return True
         except:
+            session.rollback()
             return False
 
-    def disable_custom_max_volume(self, reg_key_query):
+    def disable_custom_max_volume(self, session, reg_key_query):
         try:
             reg_key_query.max_volume = None
             session.commit()
             return True
         except:
+            session.rollback()
             return False
 
-    def enable_accounting_for_reg_key(self, reg_key_query):
+    def enable_accounting_for_reg_key(self, session, reg_key_query):
         try:
             reg_key_query.enable_accounting = True
             session.commit()
             return True
         except:
+            session.rollback()
             return False
 
-    def disable_accounting_for_reg_key(self, reg_key_query):
+    def disable_accounting_for_reg_key(self, session, reg_key_query):
         try:
             reg_key_query.enable_accounting = False
             session.commit()
             return True
         except:
+            session.rollback()
             return False
 
     def activate_registration_key(self, session, reg_key_query):
@@ -189,7 +189,7 @@ class AccountingService():
             session.commit()
 
             return True
-        except:
+        except Exception as ex:
             session.rollback()
             return False
 
@@ -214,7 +214,7 @@ class AccountingService():
         try:
             return reg_key_query.created_on.strftime(format)
         except:
-            return _l("Error")
+            return "N/A"
 
     #
     # Traffic Value Getters
@@ -295,31 +295,33 @@ class AccountingThread(threading.Thread):
     db = NotImplemented
     interval = NotImplemented
     accounting_srv = NotImplemented
+    start_id = NotImplemented
+    stop_id = NotImplemented
 
-
-    def __init__(self, accounting_srv, interval):
+    def __init__(self, accounting_srv, interval, start_id, stop_id):
         super(AccountingThread, self).__init__()
         self.accounting_srv = accounting_srv
         self.interval = interval
         self.db = accounting_srv.db
+        self.start_id = start_id
+        self.stop_id = stop_id
 
     def run(self):
-        self.query_active_boxes(self.interval)
+        self.query_active_boxes()
 
     def stop(self):
         self.run = False
 
-    def query_active_boxes(self, interval):
+    def query_active_boxes(self):
         while self.run:
             try:
                 session = self.db.create_session()
 
                 reg_key_query = session.query(RegistrationKey).all()
-                for reg_key in reg_key_query:
+                for reg_key in reg_key_query[self.start_id:self.stop_id]:
                     if reg_key.active is False or reg_key.enable_accounting is False:
                         continue
 
-                    print("run")
                     if session.query(AddressPair).filter_by(reg_key=reg_key.id).count() != 0:
                         self.update_interval_used_traffic(reg_key,
                                                           iptables_accounting_manager.get_box_ingress_bytes(reg_key.id),
@@ -328,12 +330,10 @@ class AccountingThread(threading.Thread):
                         self.update_interval_used_traffic(reg_key, 0, 0, inactive=True)
 
                 session.close()
-            except Exception as ex:
-                print("exception")
-                print(ex)
+            except:
                 logging.debug("Exception thrown in Accounting Service")
 
-            time.sleep(interval)
+            time.sleep(self.interval)
 
     #
     # Calculate User Credit and Ingress / Egress
@@ -402,15 +402,18 @@ class AccountingThread(threading.Thread):
                 if credit > max_volume:
                     credit = max_volume
 
-            row = Traffic(reg_key=reg_key_query.id,
-                          timestamp=date,
-                          credit=credit,
-                          ingress=ingress_used,
-                          egress=egress_used,
-                          ingress_shaped=0,
-                          egress_shaped=0)
-            session.add(row)
-            session.commit()
+            try:
+                row = Traffic(reg_key=reg_key_query.id,
+                              timestamp=date,
+                              credit=credit,
+                              ingress=ingress_used,
+                              egress=egress_used,
+                              ingress_shaped=0,
+                              egress_shaped=0)
+                session.add(row)
+                session.commit()
+            except:
+                session.rollback()
 
             if not inactive:
                 iptables_accounting_manager.reset_box_counter(reg_key_query.id)
@@ -421,16 +424,19 @@ class AccountingThread(threading.Thread):
         # First Ever Check
         date = datetime.today().date()
         if session.query(Traffic).filter_by(reg_key=reg_key_query.id).count() == 0:
-            row = Traffic(reg_key=reg_key_query.id,
-                                  timestamp=date,
-                                  credit=topup_volume,
-                                  ingress=ingress_used,
-                                  egress=egress_used,
-                                  ingress_shaped=0,
-                                  egress_shaped=0)
+            try:
+                row = Traffic(reg_key=reg_key_query.id,
+                                      timestamp=date,
+                                      credit=topup_volume,
+                                      ingress=ingress_used,
+                                      egress=egress_used,
+                                      ingress_shaped=0,
+                                      egress_shaped=0)
 
-            session.add(row)
-            session.commit()
+                session.add(row)
+                session.commit()
+            except:
+                session.rollback()
 
             if not inactive:
                 iptables_accounting_manager.reset_box_counter(reg_key_query.id)
@@ -454,16 +460,19 @@ class AccountingThread(threading.Thread):
                     collected_credit = traffic_query.credit + self.get_daily_topup_volume()
                     break
 
-            row = Traffic(reg_key=reg_key_query.id,
-                          timestamp=date,
-                          credit=collected_credit,
-                          ingress=ingress_used,
-                          egress=egress_used,
-                          ingress_shaped=0,
-                          egress_shaped=0)
+            try:
+                row = Traffic(reg_key=reg_key_query.id,
+                              timestamp=date,
+                              credit=collected_credit,
+                              ingress=ingress_used,
+                              egress=egress_used,
+                              ingress_shaped=0,
+                              egress_shaped=0)
 
-            session.add(row)
-            session.commit()
+                session.add(row)
+                session.commit()
+            except:
+                session.rollback()
 
             if not inactive:
                 iptables_accounting_manager.reset_box_counter(reg_key_query.id)
@@ -472,19 +481,25 @@ class AccountingThread(threading.Thread):
             session.close()
 
     def __update_traffic_values(self, session, traffic_query, ingress_used, egress_used):
-        traffic_query.ingress = traffic_query.ingress + ingress_used
-        traffic_query.egress = traffic_query.egress + egress_used
-        session.commit()
+        try:
+            traffic_query.ingress = traffic_query.ingress + ingress_used
+            traffic_query.egress = traffic_query.egress + egress_used
+            session.commit()
+        except:
+            session.rollback()
 
     def __update_traffic_shaped_values(self, session, traffic_query, ingress_used, egress_used):
-        traffic_query.ingress_shaped = traffic_query.ingress_shaped + ingress_used
-        traffic_query.egress_shaped = traffic_query.egress_shaped + egress_used
-        session.commit()
+        try:
+            traffic_query.ingress_shaped = traffic_query.ingress_shaped + ingress_used
+            traffic_query.egress_shaped = traffic_query.egress_shaped + egress_used
+            session.commit()
+        except:
+            session.rollback()
 
-    def __enable_traffic_shaping_for_reg_key(self, reg_key_query):
-        address_pair_query = self.session.query(AddressPair).filter_by(reg_key=reg_key_query.id).distinct()
+    def __enable_traffic_shaping_for_reg_key(self, session, reg_key_query):
+        address_pair_query = session.query(AddressPair).filter_by(reg_key=reg_key_query.id).distinct()
         for query in address_pair_query:
-            ip_address_query = self.session.query(IpAddress).filter_by(id=query.ip_address).first()
+            ip_address_query = session.query(IpAddress).filter_by(id=query.ip_address).first()
             shaping_manager.enable_shaping_for_ip(ip_address_query.id, ip_address_query.address_v4)
 
     def __disable_traffic_shaping_for_reg_key(self, session, reg_key_query):
