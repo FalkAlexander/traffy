@@ -11,6 +11,7 @@ db = SQLAlchemy()
 babel = Babel()
 login_manager = LoginManager()
 server = SocketManager().server
+client_version = "0.1"
 
 def create_app():
     app = Flask(__name__)

@@ -174,7 +174,7 @@ body:after{
 
 .scroll-box {
   overflow: auto;
-  height: 500px;
+  max-height: 500px;
   white-space: pre-line;
 }
 

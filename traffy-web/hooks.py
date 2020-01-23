@@ -1,7 +1,7 @@
 import multiprocessing
 import web
 
-#workers = multiprocessing.cpu_count() * 2 + 1
+workers = multiprocessing.cpu_count() * 2 + 1
 timeout = 120
 
 def on_starting(server):

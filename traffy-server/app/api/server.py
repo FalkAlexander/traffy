@@ -6,91 +6,109 @@ from dateutil import rrule
 from user_agents import parse
 import time
 import config
+import threading
 
 
 class ServerAPI:
     db = NotImplemented
     accounting_srv = NotImplemented
     dnsmasq_srv = NotImplemented
+    dev_mode_test = NotImplemented
+
+    server_version = "0.1"
+    api_version = "1.0"
 
     def __init__(self, server):
         self.db = server.db
         self.accounting_srv = server.accounting_srv
         self.dnsmasq_srv = server.dnsmasq_srv
+        self.dev_mode_test = server.dev_mode_test
+
+    def get_server_version(self):
+        return self.server_version
+
+    def get_api_version(self):
+        return self.api_version
 
     #
     # Config
     #
 
     def reg_key_exists(self, reg_key):
-        if self.get_reg_key_query_by_key(reg_key) is None:
-            return False
-        return True
+        session = self.db.create_session()
+        exists = True
+        if self.get_reg_key_query_by_key(session, reg_key) is None:
+            exists = False
+
+        session.close()
+        return exists
 
 
     #
     # Database Generic
     #
 
-    def database_commit(self):
+    def database_commit(self, session):
         try:
-            self.db.session.commit()
-        except:
+            session.commit()
+        except Exception as ex:
             raise DatabaseError(100)
 
-    def delete_query(self, query):
-        self.db.session.delete(query)
+    def delete_query(self, session, query):
+        session.delete(query)
 
     #
     # Queries
     #
 
-    def get_reg_key_query_by_key(self, reg_key):
-        return self.db.session.query(RegistrationKey).filter_by(key=reg_key).first()
+    def get_reg_key_query_by_key(self, session, reg_key):
+        return session.query(RegistrationKey).filter_by(key=reg_key).first()
 
-    def get_reg_key_query_by_id(self, reg_key_id):
-        return self.db.session.query(RegistrationKey).filter_by(id=reg_key_id).first()
+    def get_reg_key_query_by_id(self, session, reg_key_id):
+        return session.query(RegistrationKey).filter_by(id=reg_key_id).first()
 
-    def get_ip_address_query_by_ip(self, ip_address):
-        return self.db.session.query(IpAddress).filter_by(address_v4=ip_address).first()
+    def get_ip_address_query_by_ip(self, session, ip_address):
+        return session.query(IpAddress).filter_by(address_v4=ip_address).first()
 
-    def get_ip_address_query_by_id(self, ip_address_id):
-        return self.db.session.query(IpAddress).filter_by(id=ip_address_id).first()
+    def get_ip_address_query_by_id(self, session, ip_address_id):
+        return session.query(IpAddress).filter_by(id=ip_address_id).first()
 
-    def get_mac_address_query_by_mac(self, mac_address):
-        return self.db.session.query(MacAddress).filter_by(address=mac_address).first()
+    def get_mac_address_query_by_mac(self, session, mac_address):
+        return session.query(MacAddress).filter_by(address=mac_address).first()
 
-    def get_mac_address_query_by_id(self, mac_address_id):
-        return self.db.session.query(MacAddress).filter_by(id=mac_address_id).first()
+    def get_mac_address_query_by_id(self, session, mac_address_id):
+        return session.query(MacAddress).filter_by(id=mac_address_id).first()
 
-    def get_address_pair_query_by_ip(self, ip_address_query):
-        return self.db.session.query(AddressPair).filter_by(ip_address=ip_address_query.id).first()
+    def get_address_pair_query_by_ip(self, session, ip_address_query):
+        return session.query(AddressPair).filter_by(ip_address=ip_address_query.id).first()
 
-    def get_address_pair_query_by_mac_ip(self, mac_address_query, ip_address_query):
-        return self.db.session.query(AddressPair).filter_by(mac_address=mac_address_query.id, ip_address=ip_address_query.id).first()
+    def get_address_pair_query_by_mac_ip(self, session, mac_address_query, ip_address_query):
+        return session.query(AddressPair).filter_by(mac_address=mac_address_query.id, ip_address=ip_address_query.id).first()
 
     #
     # Registration
     #
 
     def register_device(self, reg_key, ip_address, user_agent):
-        reg_key_query = self.get_reg_key_query_by_key(reg_key)
+        session = self.db.create_session()
+
+        reg_key_query = self.get_reg_key_query_by_key(session, reg_key)
 
         # Rahmennetzordnung
         self.__set_reg_key_eula_accepted(reg_key_query, True)
 
         # Create IP Entry
-        self.__create_ip_entry(ip_address)
+        self.__create_ip_entry(session, ip_address)
 
         # Create MAC Entry
         mac_address = self.__get_mac_pair_for_ip(ip_address)
-        self.__create_mac_entry(mac_address, user_agent)
+        self.__create_mac_entry(session, mac_address, user_agent)
 
         # Create AddressPair
-        ip_address_query = self.__create_address_pair(reg_key_query, mac_address, ip_address)
+        ip_address_query = self.__create_address_pair(session, reg_key_query, mac_address, ip_address)
 
         # Write DB
-        self.database_commit()
+        self.database_commit(session)
 
         # Create Static Lease
         self.__add_static_lease(mac_address, ip_address)
@@ -99,7 +117,7 @@ class ServerAPI:
         self.__unlock_registered_device_firewall(ip_address)
 
         # Setup Accounting
-        self.__enable_device_accounting(reg_key_query, ip_address)
+        self.__enable_device_accounting(session, reg_key_query, ip_address)
 
         # Spoofing Protection
         self.__enable_spoofing_protection(ip_address, mac_address)
@@ -107,9 +125,14 @@ class ServerAPI:
         # Setup Shaping
         self.__enable_shaping(reg_key_query, ip_address_query)
 
+        session.close()
+
     def get_registered_devices_count(self, reg_key):
-        reg_key_query = self.get_reg_key_query_by_key(reg_key)
-        return self.db.session.query(AddressPair).filter_by(reg_key=reg_key_query.id).count()
+        session = self.db.create_session()
+        reg_key_query = self.get_reg_key_query_by_key(session, reg_key)
+        devices_count = session.query(AddressPair).filter_by(reg_key=reg_key_query.id).count()
+        session.close()
+        return devices_count
 
     def get_maximum_allowed_devices(self):
         return config.MAX_MAC_ADDRESSES_PER_REG_KEY
@@ -117,8 +140,8 @@ class ServerAPI:
     def __set_reg_key_eula_accepted(self, reg_key_query, accepted):
         reg_key_query.eula_accepted = True
 
-    def __create_ip_entry(self, ip_address):
-        self.db.session.add(IpAddress(address_v4=ip_address, address_v6=None))
+    def __create_ip_entry(self, session, ip_address):
+        session.add(IpAddress(address_v4=ip_address, address_v6=None))
 
     def __get_mac_pair_for_ip(self, ip_address):
         return lease_parser.get_mac_from_ip(ip_address)
@@ -126,27 +149,27 @@ class ServerAPI:
     def __get_static_lease_mac(self, ip_address):
         return dnsmasq_manager.get_static_lease_mac(ip_address)
 
-    def __create_mac_entry(self, mac_address, user_agent):
+    def __create_mac_entry(self, session, mac_address, user_agent):
         if mac_address is None:
             raise RegistrationError(125)
 
-        mac_address_query = self.db.session.query(MacAddress).filter_by(address=mac_address).first()
+        mac_address_query = session.query(MacAddress).filter_by(address=mac_address).first()
         if mac_address_query is None:
             if len(user_agent) > 500:
                 user_agent = user_agent[:500]
 
-            self.db.session.add(MacAddress(address=mac_address, user_agent=user_agent, first_known_since=datetime.now()))
+            session.add(MacAddress(address=mac_address, user_agent=user_agent, first_known_since=datetime.now()))
         else:
             raise RegistrationError(130)
 
-    def __create_address_pair(self, reg_key_query, mac_address, ip_address):
-        mac_address_query = self.db.session.query(MacAddress).filter_by(address=mac_address).first()
-        ip_address_query = self.db.session.query(IpAddress).filter_by(address_v4=ip_address).first()
+    def __create_address_pair(self, session, reg_key_query, mac_address, ip_address):
+        mac_address_query = session.query(MacAddress).filter_by(address=mac_address).first()
+        ip_address_query = session.query(IpAddress).filter_by(address_v4=ip_address).first()
 
         if mac_address_query is None or ip_address_query is None:
             raise RegistrationError(135)
 
-        self.db.session.add(AddressPair(reg_key=reg_key_query.id, mac_address=mac_address_query.id, ip_address=ip_address_query.id))
+        session.add(AddressPair(reg_key=reg_key_query.id, mac_address=mac_address_query.id, ip_address=ip_address_query.id))
         return ip_address_query
 
     def __add_static_lease(self, mac_address, ip_address):
@@ -156,8 +179,8 @@ class ServerAPI:
     def __unlock_registered_device_firewall(self, ip_address):
         iptables_rules_manager.unlock_registered_device(ip_address)
 
-    def __enable_device_accounting(self, reg_key_query, ip_address):
-        if self.db.session.query(AddressPair).filter_by(reg_key=reg_key_query.id).count() <= 1:
+    def __enable_device_accounting(self, session, reg_key_query, ip_address):
+        if session.query(AddressPair).filter_by(reg_key=reg_key_query.id).count() <= 1:
             iptables_accounting_manager.add_accounter_chain(reg_key_query.id)
 
         iptables_accounting_manager.add_ip_to_box(reg_key_query.id, ip_address)
@@ -173,11 +196,16 @@ class ServerAPI:
     # Deregistration
     #
 
-    def deregister_device(self, ip_address):
-        ip_address_query = self.get_ip_address_query_by_ip(ip_address)
-        address_pair_query = self.get_address_pair_query_by_ip(ip_address_query)
-        mac_address_query = self.get_mac_address_query_by_id(address_pair_query.mac_address)
-        reg_key_query = self.get_reg_key_query_by_id(address_pair_query.reg_key)
+    def deregister_device(self, ip_address, session=None):
+        close_session = False
+        if session is None:
+            session = self.db.create_session()
+            close_session = True
+
+        ip_address_query = self.get_ip_address_query_by_ip(session, ip_address)
+        address_pair_query = self.get_address_pair_query_by_ip(session, ip_address_query)
+        mac_address_query = self.get_mac_address_query_by_id(session, address_pair_query.mac_address)
+        reg_key_query = self.get_reg_key_query_by_id(session, address_pair_query.reg_key)
 
         mac_address = mac_address_query.address
 
@@ -185,19 +213,19 @@ class ServerAPI:
         self.__disable_shaping(reg_key_query, ip_address_query)
 
         # Delete AddressPair
-        self.delete_query(address_pair_query)
-        self.database_commit()
+        self.delete_query(session, address_pair_query)
+        self.database_commit(session)
 
         # Delete IP Address
-        self.delete_query(ip_address_query)
-        self.database_commit()
+        self.delete_query(session, ip_address_query)
+        self.database_commit(session)
 
         # Delete MAC Address
-        self.delete_query(mac_address_query)
-        self.database_commit()
+        self.delete_query(session, mac_address_query)
+        self.database_commit(session)
 
         # Disable Accounting
-        self.__disable_device_accounting(reg_key_query, ip_address)
+        self.__disable_device_accounting(session, reg_key_query, ip_address)
 
         # Spoofing Protection
         self.__disable_spoofing_protection(ip_address)
@@ -208,14 +236,17 @@ class ServerAPI:
         # Setup Firewall
         self.__relock_registered_device_firewall(ip_address)
 
+        if close_session is True:
+            session.close()
+
     def __disable_shaping(self, reg_key_query, ip_address_query):
         if reg_key_query.id in self.accounting_srv.shaped_reg_keys:
             shaping_manager.disable_shaping_for_ip(ip_address_query.id, ip_address_query.address_v4)
 
-    def __disable_device_accounting(self, reg_key_query, ip_address):
+    def __disable_device_accounting(self, session, reg_key_query, ip_address):
         iptables_accounting_manager.remove_ip_from_box(reg_key_query.id, ip_address)
 
-        if self.db.session.query(AddressPair).filter_by(reg_key=reg_key_query.id).count() == 0:
+        if session.query(AddressPair).filter_by(reg_key=reg_key_query.id).count() == 0:
             iptables_accounting_manager.remove_accounter_chain(reg_key_query.id)
 
     def __disable_spoofing_protection(self, ip_address):
@@ -233,57 +264,70 @@ class ServerAPI:
     #
 
     def delete_registration_key(self, reg_key):
-        reg_key_query = self.get_reg_key_query_by_key(reg_key)
+        session = self.db.create_session()
+
+        reg_key_query = self.get_reg_key_query_by_key(session, reg_key)
 
         try:
-            address_pair_query = self.db.session.query(AddressPair).filter_by(reg_key=reg_key_query.id).all()
+            address_pair_query = session.query(AddressPair).filter_by(reg_key=reg_key_query.id).all()
             for row in address_pair_query:
-                ip_address_query = self.get_ip_address_query_by_id(row.ip_address)
-                self.deregister_device(ip_address_query.address_v4)
+                ip_address_query = self.get_ip_address_query_by_id(session, row.ip_address)
+                self.deregister_device(ip_address_query.address_v4, session=session)
 
-            traffic_query = self.db.session.query(Traffic).filter_by(reg_key=reg_key_query.id).all()
+            traffic_query = session.query(Traffic).filter_by(reg_key=reg_key_query.id).all()
             for row in traffic_query:
-                self.delete_query(row)
+                self.delete_query(session, row)
+            self.database_commit(session)
 
-            self.delete_query(reg_key_query)
-            self.database_commit()
+            self.delete_query(session, reg_key_query)
+            self.database_commit(session)
 
-            identity_query = self.db.session.query(Identity).filter_by(id=reg_key_query.identity).first()
+            identity_query = session.query(Identity).filter_by(id=reg_key_query.identity).first()
 
-            self.delete_query(identity_query)
-            self.database_commit()
+            self.delete_query(session, identity_query)
+            self.database_commit(session)
             return True
         except Exception as ex:
-            print(ex)
+            session.rollback()
             raise DeregistrationError(300)
+        finally:
+            session.close()
 
     #
     # User Status
     #
 
     def access_check(self, ip_address):
+        session = self.db.create_session()
+
         mac_address = self.__get_mac_pair_for_ip(ip_address)
 
-        ip_address_query = self.get_ip_address_query_by_ip(ip_address)
-        mac_address_query = self.get_mac_address_query_by_mac(mac_address)
+        ip_address_query = self.get_ip_address_query_by_ip(session, ip_address)
+        mac_address_query = self.get_mac_address_query_by_mac(session, mac_address)
 
         if ip_address_query is None and mac_address_query is None:
+            session.close()
             return UserStatus(registered=False, deactivated=False, ip_stolen=False)
 
         if ip_address_query is None and mac_address_query is not None:
+            session.close()
             return UserStatus(registered=False, deactivated=False, ip_stolen=True)
 
         if ip_address_query is not None and mac_address_query is None:
+            session.close()
             return UserStatus(registered=False, deactivated=False, ip_stolen=True)
 
-        address_pair_query = self.get_address_pair_query_by_mac_ip(mac_address_query, ip_address_query)
+        address_pair_query = self.get_address_pair_query_by_mac_ip(session, mac_address_query, ip_address_query)
         if address_pair_query is None:
+            session.close()
             return UserStatus(registered=False, deactivated=False, ip_stolen=False)
         else:
-            reg_key_query = self.get_reg_key_query_by_id(address_pair_query.reg_key)
+            reg_key_query = self.get_reg_key_query_by_id(session, address_pair_query.reg_key)
             if reg_key_query.active is False:
+                session.close()
                 return UserStatus(registered=False, deactivated=True, ip_stolen=False)
             else:
+                session.close()
                 return UserStatus(registered=True, deactivated=False, ip_stolen=False)
 
     #
@@ -291,18 +335,25 @@ class ServerAPI:
     #
 
     def get_reg_key_credit_by_ip(self, ip_address):
-        ip_address_query = self.get_ip_address_query_by_ip(ip_address)
-        address_pair_query = self.get_address_pair_query_by_ip(ip_address_query)
-        reg_key_query = self.get_reg_key_query_by_id(address_pair_query.reg_key)
-        volume_left, credit = self.accounting_srv.get_credit(reg_key_query, gib=True)
+        session = self.db.create_session()
+
+        ip_address_query = self.get_ip_address_query_by_ip(session, ip_address)
+        address_pair_query = self.get_address_pair_query_by_ip(session, ip_address_query)
+        reg_key_query = self.get_reg_key_query_by_id(session, address_pair_query.reg_key)
+        volume_left, credit = self.accounting_srv.get_credit(session, reg_key_query, gib=True)
+
+        session.close()
+
         if volume_left < 0:
             volume_left = 0
         return volume_left, credit
 
     def set_device_user_agent(self, ip_address, user_agent):
-        ip_address_query = self.get_ip_address_query_by_ip(ip_address)
-        address_pair_query = self.get_address_pair_query_by_ip(ip_address_query)
-        mac_address_query = self.get_mac_address_query_by_id(address_pair_query.mac_address)
+        session = self.db.create_session()
+
+        ip_address_query = self.get_ip_address_query_by_ip(session, ip_address)
+        address_pair_query = self.get_address_pair_query_by_ip(session, ip_address_query)
+        mac_address_query = self.get_mac_address_query_by_id(session, address_pair_query.mac_address)
 
         if len(user_agent) > 500:
             user_agent = user_agent[:500]
@@ -310,13 +361,16 @@ class ServerAPI:
         if mac_address_query.user_agent != user_agent:
             mac_address_query.user_agent = user_agent
 
-        self.database_commit()
+        self.database_commit(session)
+        session.close()
 
     #
     # Supervisor Login
     #
 
     def get_supervisor_dashboard_stats(self):
+        session = self.db.create_session()
+
         today = datetime.today().date()
         passed_days = today - timedelta(days=10)
 
@@ -325,7 +379,7 @@ class ServerAPI:
         labels = []
 
         for date in rrule.rrule(rrule.DAILY, dtstart=passed_days, until=today):
-            traffic_query = self.db.session.query(Traffic).filter_by(timestamp=date).all()
+            traffic_query = session.query(Traffic).filter_by(timestamp=date).all()
             downlink = 0
             uplink = 0
             if traffic_query is not None:
@@ -337,13 +391,13 @@ class ServerAPI:
             values_uplink.append(uplink)
             labels.append(date.strftime("%d.%m."))
 
-        active_users = self.db.session.query(RegistrationKey).filter_by(active=True).count()
-        ip_adresses = self.db.session.query(IpAddress).count()
+        active_users = session.query(RegistrationKey).filter_by(active=True).count()
+        ip_adresses = session.query(IpAddress).count()
         ratio = "N/A"
         if ip_adresses != 0:
             ratio = round(active_users / ip_adresses, 1)
 
-        traffic_rows = self.db.session.query(Traffic).filter_by(timestamp=today).all()
+        traffic_rows = session.query(Traffic).filter_by(timestamp=today).all()
 
         average_credit = 0
         count = 0
@@ -359,17 +413,20 @@ class ServerAPI:
         else:
             average_credit = 0
 
+        session.close()
         return values_downlink, values_uplink, labels, active_users, ratio, average_credit, shaped_users
 
     def get_reg_codes_search_results(self, search_term):
+        session = self.db.create_session()
+
         search_results = []
         reg_key_query = []
 
-        for query in self.db.session.query(RegistrationKey).all():
+        for query in session.query(RegistrationKey).all():
             if search_term in query.key:
                 reg_key_query.append(query)
             else:
-                identity = self.db.session.query(Identity).filter_by(id=query.identity).first()
+                identity = session.query(Identity).filter_by(id=query.identity).first()
 
                 if search_term in identity.first_name.lower() or search_term in identity.last_name.lower() or search_term in identity.mail.lower():
                     reg_key_query.append(query)
@@ -377,118 +434,143 @@ class ServerAPI:
         reg_key_query.reverse()
 
         for row in reg_key_query:
-            identity = self.db.session.query(Identity).filter_by(id=row.identity).first()
-            credit = self.accounting_srv.get_credit(row, gib=True)[0]
+            identity = session.query(Identity).filter_by(id=row.identity).first()
+            credit = self.accounting_srv.get_credit(session, row, gib=True)[0]
             if credit < 0:
                 credit = 0
             search_results.append(KeyRow(row.key, identity.last_name, identity.first_name, credit, row.active))
 
+        session.close()
         return search_results
 
     def construct_reg_code_list(self):
+        session = self.db.create_session()
+
         rows = []
-        for row in self.db.session.query(RegistrationKey).all():
-            identity = self.db.session.query(Identity).filter_by(id=row.identity).first()
-            credit = self.accounting_srv.get_credit(row, gib=True)[0]
+        for row in session.query(RegistrationKey).all():
+            identity = session.query(Identity).filter_by(id=row.identity).first()
+            credit = self.accounting_srv.get_credit(session, row, gib=True)[0]
             if credit < 0:
                 credit = 0
             rows.append(KeyRow(row.key, identity.last_name, identity.first_name, credit, row.active))
         rows.reverse()
+        session.close()
         return rows
 
     def add_registration_code(self, first_name, surname, mail):
-        self.db.session.add(Identity(first_name=first_name, last_name=surname, mail=mail))
-        identity = self.db.session.query(Identity).filter_by(first_name=first_name, last_name=surname, mail=mail).first()
+        session = self.db.create_session()
+
+        session.add(Identity(first_name=first_name, last_name=surname, mail=mail))
+        identity = session.query(Identity).filter_by(first_name=first_name, last_name=surname, mail=mail).first()
 
         reg_key = generate_registration_key.generate()
 
-        self.db.session.add(RegistrationKey(key=reg_key, identity=identity.id))
-        reg_key_query = self.db.session.query(RegistrationKey).filter_by(key=reg_key).first()
+        session.add(RegistrationKey(key=reg_key, identity=identity.id))
+        reg_key_query = session.query(RegistrationKey).filter_by(key=reg_key).first()
 
-        self.db.session.add(Traffic(reg_key=reg_key_query.id, timestamp=datetime.today().date(), credit=config.DAILY_TOPUP_VOLUME, ingress=0, egress=0, ingress_shaped=0, egress_shaped=0))
-        self.db.session.commit()
-
+        session.add(Traffic(reg_key=reg_key_query.id, timestamp=datetime.today().date(), credit=config.DAILY_TOPUP_VOLUME, ingress=0, egress=0, ingress_shaped=0, egress_shaped=0))
+        session.commit()
+        session.close()
         return reg_key
 
     def set_reg_key_custom_credit(self, reg_key, value):
-        reg_key_query = self.get_reg_key_query_by_key(reg_key)
-        valid = self.accounting_srv.set_custom_credit(reg_key_query, value)
+        session = self.db.create_session()
+        reg_key_query = self.get_reg_key_query_by_key(session, reg_key)
+        valid = self.accounting_srv.set_custom_credit(session, reg_key_query, value)
+        session.close()
 
         if not valid:
             return False
         return True
 
     def set_reg_key_custom_topup(self, reg_key, value):
-        reg_key_query = self.get_reg_key_query_by_key(reg_key)
+        session = self.db.create_session()
+        reg_key_query = self.get_reg_key_query_by_key(session, reg_key)
         valid = self.accounting_srv.set_custom_topup(reg_key_query, value)
+        session.close()
 
         if not valid:
             return False
         return True
 
     def set_reg_key_disable_custom_topup(self, reg_key):
-        reg_key_query = self.get_reg_key_query_by_key(reg_key)
+        session = self.db.create_session()
+        reg_key_query = self.get_reg_key_query_by_key(session, reg_key)
         success = self.accounting_srv.disable_custom_topup(reg_key_query)
+        session.close()
 
         if not success:
             return False
         return True
 
     def set_reg_key_custom_max_enable(self, reg_key, value):
-        reg_key_query = self.get_reg_key_query_by_key(reg_key)
+        session = self.db.create_session()
+        reg_key_query = self.get_reg_key_query_by_key(session, reg_key)
         valid = self.accounting_srv.set_custom_max_volume(reg_key_query, value)
+        session.close()
 
         if not valid:
             return False
         return True
 
     def set_reg_key_custom_max_disable(self, reg_key):
-        reg_key_query = self.get_reg_key_query_by_key(reg_key)
+        session = self.db.create_session()
+        reg_key_query = self.get_reg_key_query_by_key(session, reg_key)
         success = self.accounting_srv.disable_custom_max_volume(reg_key_query)
+        session.close()
 
         if not success:
             return False
         return True
 
     def set_reg_key_enable_accounting(self, reg_key):
-        reg_key_query = self.get_reg_key_query_by_key(reg_key)
+        session = self.db.create_session()
+        reg_key_query = self.get_reg_key_query_by_key(session, reg_key)
         success = self.accounting_srv.enable_accounting_for_reg_key(reg_key_query)
+        session.close()
 
         if not success:
             return False
         return True
 
     def set_reg_key_disable_accounting(self, reg_key):
-        reg_key_query = self.get_reg_key_query_by_key(reg_key)
+        session = self.db.create_session()
+        reg_key_query = self.get_reg_key_query_by_key(session, reg_key)
         success = self.accounting_srv.disable_accounting_for_reg_key(reg_key_query)
+        session.close()
 
         if not success:
             return False
         return True
 
     def set_reg_key_activated(self, reg_key):
-        reg_key_query = self.get_reg_key_query_by_key(reg_key)
-        success = self.accounting_srv.activate_registration_key(reg_key_query)
+        session = self.db.create_session()
+        reg_key_query = self.get_reg_key_query_by_key(session, reg_key)
+        success = self.accounting_srv.activate_registration_key(session, reg_key_query)
+        session.close()
 
         if not success:
             return False
         return True
 
     def set_reg_key_deactivated(self, reg_key):
-        reg_key_query = self.get_reg_key_query_by_key(reg_key)
-        success = self.accounting_srv.deactivate_registration_key(reg_key_query)
+        session = self.db.create_session()
+        reg_key_query = self.get_reg_key_query_by_key(session, reg_key)
+        success = self.accounting_srv.deactivate_registration_key(session, reg_key_query)
+        session.close()
 
         if not success:
             return False
         return True
 
     def get_reg_code_statistics(self, reg_key):
-        reg_key_query = self.get_reg_key_query_by_key(reg_key)
+        session = self.db.create_session()
+        reg_key_query = self.get_reg_key_query_by_key(session, reg_key)
 
-        traffic_query = self.db.session.query(Traffic).filter_by(reg_key=reg_key_query.id).first()
-        stat_volume_left = self.accounting_srv.get_credit(reg_key_query, gib=True)[0]
+        traffic_query = session.query(Traffic).filter_by(reg_key=reg_key_query.id).first()
+        stat_volume_left = self.accounting_srv.get_credit(session, reg_key_query, gib=True)[0]
         stat_created_on = self.accounting_srv.get_reg_key_creation_timestamp(reg_key_query, "%d.%m.%Y")
-        stat_shaped = self.accounting_srv.is_reg_key_shaped(reg_key_query)
+        stat_shaped = self.accounting_srv.is_reg_key_shaped(session, reg_key_query)
         stat_status = self.accounting_srv.is_registration_key_active(reg_key_query)
 
         if stat_volume_left < 0:
@@ -504,7 +586,7 @@ class ServerAPI:
         passed_days = today - timedelta(days=10)
 
         for date in rrule.rrule(rrule.DAILY, dtstart=passed_days, until=today):
-            traffic_query = self.db.session.query(Traffic).filter_by(reg_key=reg_key_query.id, timestamp=date).all()
+            traffic_query = session.query(Traffic).filter_by(reg_key=reg_key_query.id, timestamp=date).all()
             downlink = 0
             downlink_shaped = 0
             uplink = 0
@@ -523,23 +605,28 @@ class ServerAPI:
             values_uplink_shaped.append(uplink_shaped)
             labels.append(date.strftime("%d.%m."))
 
+        session.close()
+
         return stat_volume_left, stat_created_on, stat_shaped, stat_status, labels, values_downlink, values_downlink_shaped, values_uplink, values_uplink_shaped
 
     def get_reg_code_device_list(self, reg_key):
-        reg_key_query = self.get_reg_key_query_by_key(reg_key)
+        session = self.db.create_session()
+        reg_key_query = self.get_reg_key_query_by_key(session, reg_key)
 
         device_list = []
-        for row in self.db.session.query(AddressPair).filter_by(reg_key=reg_key_query.id).all():
-            ip_address_query = self.db.session.query(IpAddress).filter_by(id=row.ip_address).first()
-            mac_address_query = self.db.session.query(MacAddress).filter_by(id=row.mac_address).first()
+        for row in session.query(AddressPair).filter_by(reg_key=reg_key_query.id).all():
+            ip_address_query = session.query(IpAddress).filter_by(id=row.ip_address).first()
+            mac_address_query = session.query(MacAddress).filter_by(id=row.mac_address).first()
 
             device_list.append(DeviceRow(ip_address_query.address_v4, mac_address_query.address, mac_address_query.user_agent, mac_address_query.first_known_since))
 
         device_list.reverse()
+        session.close()
         return device_list
 
     def get_reg_code_settings_values(self, reg_key):
-        reg_key_query = self.get_reg_key_query_by_key(reg_key)
+        session = self.db.create_session()
+        reg_key_query = self.get_reg_key_query_by_key(session, reg_key)
 
         # Custom Top-Up
         custom_volume_enabled = False
@@ -561,6 +648,7 @@ class ServerAPI:
         # Deactivate Registration Key
         key_active = reg_key_query.active
 
+        session.close()
         return custom_volume_enabled, value_custom_topup, custom_max_enabled, value_max_volume, accounting_enabled, key_active
 
     def get_instruction_pdf_values(self):
@@ -571,6 +659,19 @@ class ServerAPI:
         max_devices = config.MAX_MAC_ADDRESSES_PER_REG_KEY
 
         return max_saved_volume, daily_topup_volume, shaping_speed, traffy_url, max_devices
+
+    #
+    # Tests
+    #
+
+    def create_reg_key_test(self):
+        self.dev_mode_test.add_reg_key()
+
+    def register_device_test(self, reg_key, user_agent):
+        session = self.db.create_session()
+        reg_key_query = self.get_reg_key_query_by_key(session, reg_key)
+        self.dev_mode_test.register_device(self, reg_key_query, user_agent)
+        session.close()
 
     #
     # Util / Private

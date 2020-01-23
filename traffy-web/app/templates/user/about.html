@@ -18,14 +18,12 @@
       <div class="dialog-box dialog-box-small">
         <div class="padding-box">
           <h1>Traffy</h1>
-          <h2>v0.0.1</h2>
+          <h2>Web Client Version: {{ client_version }}</h2>
+          <h2>Server Version: {{ server_version }}</h2>
+          <h2>API Version: {{ api_version }}</h2>
           <div class="center-box">
             <p>{{ _("Developer") }}: Falk Seidl</p>
-            <div class="scroll-box">
-              <p>
-                {% include 'includes/changelog.txt' %}
-              </p>
-          </div>
+            <p>{{ _("Source Code") }}: <a href="https://github.com/FalkAlexander/traffy">GitHub</a></p>
           </div>
         </div>
       </div>

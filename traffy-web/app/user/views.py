@@ -1,7 +1,7 @@
 from flask import Flask, render_template, request, flash, session, redirect
 from flask_babel import lazy_gettext as _l
 from . import user
-from .. import server, babel
+from .. import server, babel, client_version
 import config
 
 
@@ -24,7 +24,11 @@ def index():
 
     ip_address = request.environ.get("HTTP_X_REAL_IP", request.remote_addr)
 
-    user = server.access_check(ip_address)
+    try:
+        user = server.access_check(ip_address)
+    except ConnectionRefusedError:
+        return render_template("errors/backend_lost.html")
+
     if user.get("registered") is False:
         return redirect("/register", code=307)
     elif user.get("registered") is True:
@@ -38,7 +42,11 @@ def index():
 def register():
     ip_address = request.environ.get("HTTP_X_REAL_IP", request.remote_addr)
 
-    user = server.access_check(ip_address)
+    try:
+        user = server.access_check(ip_address)
+    except ConnectionRefusedError:
+        return render_template("errors/backend_lost.html")
+
     if user.get("registered") is True:
         return redirect("/dashboard", code=307)
     elif user.get("deactivated") is True:
@@ -67,7 +75,11 @@ def register():
 @user.route("/conditions", methods=["POST"])
 def conditions():
     ip_address = request.environ.get("HTTP_X_REAL_IP", request.remote_addr)
-    user = server.access_check(ip_address)
+
+    try:
+        user = server.access_check(ip_address)
+    except ConnectionRefusedError:
+        return render_template("errors/backend_lost.html")
 
     if user.get("registered") is True:
         return redirect("/dashboard", code=307)
@@ -92,7 +104,11 @@ def conditions():
 @user.route("/dashboard", methods=["GET", "POST"])
 def dashboard():
     ip_address = request.environ.get("HTTP_X_REAL_IP", request.remote_addr)
-    user = server.access_check(ip_address)
+
+    try:
+        user = server.access_check(ip_address)
+    except ConnectionRefusedError:
+        return render_template("errors/backend_lost.html")
 
     if user.get("registered") is False:
         return redirect("/register", code=307)
@@ -121,7 +137,11 @@ def dashboard():
 @user.route("/reedem", methods=["POST"])
 def reedem():
     ip_address = request.environ.get("HTTP_X_REAL_IP", request.remote_addr)
-    user = server.access_check(ip_address)
+
+    try:
+        user = server.access_check(ip_address)
+    except ConnectionRefusedError:
+        return render_template("errors/backend_lost.html")
 
     if user.get("registered") is False:
         return redirect("/register", code=307)
@@ -140,11 +160,15 @@ def reedem():
             return redirect("/dashboard", code=307)
 
     return render_template("user/reedem.html")
-    
+
 @user.route("/deregister", methods=["POST"])
 def deregister():
     ip_address = request.environ.get("HTTP_X_REAL_IP", request.remote_addr)
-    user = server.access_check(ip_address)
+
+    try:
+        user = server.access_check(ip_address)
+    except ConnectionRefusedError:
+        return render_template("errors/backend_lost.html")
 
     if user.get("registered") is False:
         return redirect("/register", code=307)
@@ -163,7 +187,13 @@ def deregister():
 
 @user.route("/about", methods=["GET", "POST"])
 def about():
-    return render_template("user/about.html")
+    try:
+        server_version = server.get_server_version()
+        api_version = server.get_api_version()
+    except ConnectionRefusedError:
+        return render_template("errors/backend_lost.html")
+
+    return render_template("user/about.html", client_version=client_version, server_version=server_version, api_version=api_version)
 
 #
 # Private

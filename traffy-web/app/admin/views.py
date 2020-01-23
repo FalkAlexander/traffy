@@ -74,7 +74,7 @@ def reg_codes():
         return redirect("/admin/add-regcode")
 
     if "add_test_btn" in request.form:
-        #dev_mode_test.add_reg_key()
+        server.create_reg_key_test()
         return redirect("/admin/regcodes")
 
     return render_template("/admin/regcodes.html", rows=rows, dev_mode=config.DEV_MODE)
@@ -120,7 +120,7 @@ def reg_code(reg_key):
     if request.method == "POST":
         # Dev Mode
         if "fake_device_btn" in request.form:
-            #dev_mode_test.register_device(reg_key_query, request)
+            server.register_device_test(reg_key, request.headers.get("User-Agent"))
             return redirect("/admin/regcodes/" + reg_key)
 
         # Instruction Download
