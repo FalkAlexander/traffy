@@ -318,12 +318,13 @@ class AccountingThread(threading.Thread):
                 session = self.db.create_session()
 
                 reg_key_query = session.query(RegistrationKey).all()
-                for reg_key in reg_key_query[self.start_id:self.stop_id]:
+                for reg_key in reg_key_query[self.start_id:self.stop_id+1]:
                     if reg_key.active is False or reg_key.enable_accounting is False:
                         continue
 
                     if session.query(AddressPair).filter_by(reg_key=reg_key.id).count() != 0:
-                        self.update_interval_used_traffic(reg_key,
+                        self.update_interval_used_traffic(session,
+                                                          reg_key,
                                                           iptables_accounting_manager.get_box_ingress_bytes(reg_key.id),
                                                           iptables_accounting_manager.get_box_egress_bytes(reg_key.id))
                     else:
@@ -339,9 +340,7 @@ class AccountingThread(threading.Thread):
     # Calculate User Credit and Ingress / Egress
     #
 
-    def update_interval_used_traffic(self, reg_key_query, ingress_used, egress_used, inactive=False):
-        session = self.db.create_session()
-
+    def update_interval_used_traffic(self, session, reg_key_query, ingress_used, egress_used, inactive=False):
         # Every X Seconds Check
         date = datetime.today().date()
         traffic_query = session.query(Traffic).filter_by(reg_key=reg_key_query.id, timestamp=date).first()
@@ -372,15 +371,14 @@ class AccountingThread(threading.Thread):
 
             if not inactive:
                 iptables_accounting_manager.reset_box_counter(reg_key_query.id)
-            return
 
-            session.close()
+            return
 
         # New Day Check
         date = date - timedelta(days = 1)
         traffic_query = session.query(Traffic).filter_by(reg_key=reg_key_query.id, timestamp=date).first()
 
-        topup_volume = self.get_daily_topup_volume()
+        topup_volume = self.accounting_srv.get_daily_topup_volume()
         if reg_key_query.daily_topup_volume is not None:
             topup_volume = reg_key_query.daily_topup_volume
 
@@ -395,7 +393,7 @@ class AccountingThread(threading.Thread):
                 credit = topup_volume
             else:
                 credit = (credit - (ingress + egress)) + topup_volume
-                max_volume = self.get_max_saved_volume()
+                max_volume = self.accounting_srv.get_max_saved_volume()
                 if reg_key_query.max_volume is not None:
                     max_volume = reg_key_query.max_volume
 
@@ -417,9 +415,8 @@ class AccountingThread(threading.Thread):
 
             if not inactive:
                 iptables_accounting_manager.reset_box_counter(reg_key_query.id)
-            return
 
-        session.close()
+            return
 
         # First Ever Check
         date = datetime.today().date()
@@ -440,12 +437,11 @@ class AccountingThread(threading.Thread):
 
             if not inactive:
                 iptables_accounting_manager.reset_box_counter(reg_key_query.id)
-            return
 
-            session.close()
+            return
         else:
             # Missing Traffic Entries
-            day_range = int(self.get_max_saved_volume(gib=True) / self.get_daily_topup_volume(gib=True))
+            day_range = int(self.accounting_srv.get_max_saved_volume(gib=True) / self.accounting_srv.get_daily_topup_volume(gib=True))
             volume_start_day = date - timedelta(days=day_range)
             collected_credit = 0
             days_iterative = []
@@ -455,9 +451,9 @@ class AccountingThread(threading.Thread):
             days_iterative.reverse()
 
             for day in days_iterative:
-                traffic_query = Traffic.query.filter_by(reg_key=reg_key_query.id, timestamp=day).first()
+                traffic_query = session.query(Traffic).filter_by(reg_key=reg_key_query.id, timestamp=day).first()
                 if traffic_query is not None:
-                    collected_credit = traffic_query.credit + self.get_daily_topup_volume()
+                    collected_credit = traffic_query.credit + self.accounting_srv.get_daily_topup_volume()
                     break
 
             try:
@@ -476,11 +472,13 @@ class AccountingThread(threading.Thread):
 
             if not inactive:
                 iptables_accounting_manager.reset_box_counter(reg_key_query.id)
+
             return
 
-            session.close()
-
     def __update_traffic_values(self, session, traffic_query, ingress_used, egress_used):
+        print(traffic_query.reg_key)
+        if traffic_query.reg_key == 1:
+            print(str(egress_used), str(ingress_used))
         try:
             traffic_query.ingress = traffic_query.ingress + ingress_used
             traffic_query.egress = traffic_query.egress + egress_used

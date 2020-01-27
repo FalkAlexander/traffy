@@ -63,7 +63,7 @@ class Server():
             thread = threading.Thread(target=self.__unlock_device_thread, args=[row])
             thread.daemon = True
             thread.start()
-            thread.join()
+            #thread.join()
             #self.__unlock_device_thread(row)
         session.close()
 
@@ -102,34 +102,46 @@ class Server():
         session = self.db.create_session()
         address_pair_query = session.query(AddressPair.reg_key).filter(AddressPair.reg_key).distinct()
         for reg_key_fk in address_pair_query:
-            if reg_key_fk is None:
-                continue
+            thread = threading.Thread(target=self.__add_accounter_chain, args=[reg_key_fk])
+            thread.daemon = True
+            thread.start()
 
-            reg_key_query = session.query(RegistrationKey).filter_by(id=reg_key_fk.reg_key).first()
-            if reg_key_query is None:
-                continue
+        session.close()
 
-            if reg_key_query.active is True:
-                iptables_accounting_manager.add_accounter_chain(reg_key_query.id)
+    def __add_accounter_chain(self, reg_key_fk):
+        session = self.db.create_session()
 
-        address_pair_query = session.query(AddressPair.ip_address).filter(AddressPair.ip_address).distinct()
-        for ip_address_fk in address_pair_query:
-            if ip_address_fk is None:
-                continue
+        if reg_key_fk is None:
+            return
 
-            ip_address_query = session.query(IpAddress).filter_by(id=ip_address_fk.ip_address).first()
-            if ip_address_query is None:
-                continue
+        reg_key_query = session.query(RegistrationKey).filter_by(id=reg_key_fk.reg_key).first()
+        if reg_key_query is None:
+            return
 
-            address_pair_query = session.query(AddressPair).filter_by(ip_address=ip_address_fk.ip_address).first()
-            reg_key_query = session.query(RegistrationKey).filter_by(id=address_pair_query.reg_key).first()
-            ip_address_query = session.query(IpAddress).filter_by(id=address_pair_query.ip_address).first()
+        if reg_key_query.active is True:
+            iptables_accounting_manager.add_accounter_chain(reg_key_query.id)
 
-            if reg_key_query.active is True:
-                iptables_accounting_manager.add_ip_to_box(reg_key_query.id, ip_address_query.address_v4)
-            # Spoofing Protection
-            mac_address_query = session.query(MacAddress).filter_by(id=address_pair_query.mac_address).first()
-            arp_manager.add_static_arp_entry(ip_address_query.address_v4, mac_address_query.address)
+            query = session.query(AddressPair.ip_address).filter_by(reg_key=reg_key_fk.reg_key).distinct()
+
+            for ip_address_fk in query:
+                if ip_address_fk is None:
+                    return
+
+                ip_address_query = session.query(IpAddress).filter_by(id=ip_address_fk.ip_address).first()
+                if ip_address_query is None:
+                    return
+
+                address_pair_query = session.query(AddressPair).filter_by(ip_address=ip_address_fk.ip_address).first()
+                reg_key_query = session.query(RegistrationKey).filter_by(id=address_pair_query.reg_key).first()
+                ip_address_query = session.query(IpAddress).filter_by(id=address_pair_query.ip_address).first()
+
+                if reg_key_query.active is True:
+                    iptables_accounting_manager.add_ip_to_box(reg_key_query.id, ip_address_query.address_v4)
+
+                # Spoofing Protection
+                mac_address_query = session.query(MacAddress).filter_by(id=address_pair_query.mac_address).first()
+                arp_manager.add_static_arp_entry(ip_address_query.address_v4, mac_address_query.address)
+
         session.close()
 
     def remove_accounting_chains(self):
