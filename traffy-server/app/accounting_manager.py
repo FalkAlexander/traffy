@@ -476,9 +476,6 @@ class AccountingThread(threading.Thread):
             return
 
     def __update_traffic_values(self, session, traffic_query, ingress_used, egress_used):
-        print(traffic_query.reg_key)
-        if traffic_query.reg_key == 1:
-            print(str(egress_used), str(ingress_used))
         try:
             traffic_query.ingress = traffic_query.ingress + ingress_used
             traffic_query.egress = traffic_query.egress + egress_used

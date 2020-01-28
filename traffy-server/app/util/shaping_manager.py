@@ -60,22 +60,22 @@ def setup_shaping():
             ], stdout=subprocess.PIPE, preexec_fn=os.setsid).wait()
 
     # Create shaping exception classes
-    for interface in [config.DNSMASQ_LISTEN_INTERFACE, config.BRIDGE_INGRESS_INTERFACE]:
-        subprocess.Popen([
-            "sudo",
-            "tc",
-            "class",
-            "add",
-            "dev",
-            interface,
-            "parent",
-            "1:",
-            "classid",
-            "1:0",
-            "htb",
-            "rate",
-            "10gbit"
-            ], stdout=subprocess.PIPE, preexec_fn=os.setsid).wait()
+    # for interface in [config.DNSMASQ_LISTEN_INTERFACE, config.BRIDGE_INGRESS_INTERFACE]:
+    #     subprocess.Popen([
+    #         "sudo",
+    #         "tc",
+    #         "class",
+    #         "add",
+    #         "dev",
+    #         interface,
+    #         "parent",
+    #         "1:",
+    #         "classid",
+    #         "1:0",
+    #         "htb",
+    #         "rate",
+    #         "10gbit"
+    #         ], stdout=subprocess.PIPE, preexec_fn=os.setsid).wait()
 
     for ip in config.SHAPING_EXCEPTIONS:
         __add_shaping_exception_for_ip(ip)
