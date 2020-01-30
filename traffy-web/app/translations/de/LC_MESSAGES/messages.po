@@ -2,344 +2,451 @@
 # Copyright (C) 2019 ORGANIZATION
 # This file is distributed under the same license as the PROJECT project.
 # FIRST AUTHOR <EMAIL@ADDRESS>, 2019.
+# friday26 <uta.l@mailbox.org>, 2020.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2019-11-30 01:02+0200\n"
-"PO-Revision-Date: 2019-11-19 18:48+0200\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"POT-Creation-Date: 2020-01-30 18:20+0100\n"
+"PO-Revision-Date: 2020-01-30 18:40+0100\n"
+"Last-Translator: friday26 <uta.l@mailbox.org>\n"
 "Language: de\n"
-"Language-Team: de <LL@li.org>\n"
+"Language-Team: German <gnome-de@gnome.org>\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=utf-8\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 2.7.0\n"
+"Generated-By: Babel 2.8.0\n"
+"X-Generator: Gtranslator 3.34.0\n"
 
-#: app/admin/views.py:34
-msgid "Wrong credentials. This attempt got reported."
-msgstr "Falsche Zugangsdaten. Dieser Fehlversuch wird gemeldet."
+#: app/templates/admin/account-page.html:6
+msgid "Supervisor Account Page"
+msgstr "Supervisor Accountseite"
 
-#: app/admin/views.py:44 app/admin/views.py:294
-msgid "Downlink"
-msgstr "Herunterladen"
-
-#: app/admin/views.py:45 app/admin/views.py:296
-msgid "Uplink"
-msgstr "Hochladen"
-
-#: app/admin/views.py:155
-msgid "Please fill out all input forms."
-msgstr "Bitte alle Eingabefelder ausfüllen"
-
-#: app/admin/views.py:180 app/admin/views.py:401 app/user/views.py:47
-#: app/user/views.py:76
-msgid "Invalid registration key."
-msgstr "Ungültiger Registrierungsschlüssel."
-
-#: app/admin/views.py:195 app/admin/views.py:205 app/admin/views.py:224
-msgid "Input entered is invalid."
-msgstr "Die Eingabe ist ungültig"
-
-#: app/admin/views.py:214 app/admin/views.py:233 app/admin/views.py:242
-#: app/admin/views.py:251 app/admin/views.py:260 app/admin/views.py:269
-msgid "An error occured."
-msgstr "Es ist ein Fehler aufgetreten"
-
-#: app/admin/views.py:285
-msgid "Yes"
-msgstr "Ja"
-
-#: app/admin/views.py:287
-msgid "No"
-msgstr "Nein"
-
-#: app/admin/views.py:290 app/templates/admin/key-page.html:112
-#: app/templates/admin/key-page.html:136
-msgid "Enabled"
-msgstr "Aktiviert"
-
-#: app/admin/views.py:292 app/templates/admin/key-page.html:115
-#: app/templates/admin/key-page.html:139
-msgid "Disabled"
-msgstr "Deaktiviert"
-
-#: app/admin/views.py:295
-msgid "Shaped Downlink"
-msgstr "Gedrosselter Downlink"
-
-#: app/admin/views.py:297
-msgid "Shaped Uplink"
-msgstr "Gedrosselter Uplink"
-
-#: app/admin/views.py:393
-msgid "Login to access that resource."
-msgstr "Anmelden zur Nutzung der Ressource."
-
-#: app/admin/views.py:461
-msgid "Unknown"
-msgstr "Unbekannt"
-
-#: app/templates/admin/add-regcode.html:6
-msgid "Supervisor Add Registration Code"
-msgstr "Supervisor Registrierungscode Erstellen"
-
+#: app/templates/admin/account-page.html:10
+#: app/templates/admin/accounts.html:10 app/templates/admin/add-account.html:10
 #: app/templates/admin/add-regcode.html:11 app/templates/admin/dashboard.html:6
 #: app/templates/admin/dashboard.html:11 app/templates/admin/key-page.html:11
 #: app/templates/admin/regcodes.html:11
 msgid "Supervisor Dashboard"
 msgstr "Supervisor Dashboard"
 
+#: app/templates/admin/account-page.html:14
+#: app/templates/admin/accounts.html:14 app/templates/admin/add-account.html:14
 #: app/templates/admin/add-regcode.html:15
 #: app/templates/admin/dashboard.html:15 app/templates/admin/key-page.html:15
 #: app/templates/admin/regcodes.html:15
 msgid "Overview"
 msgstr "Übersicht"
 
+#: app/templates/admin/account-page.html:15
+#: app/templates/admin/accounts.html:15 app/templates/admin/add-account.html:15
 #: app/templates/admin/add-regcode.html:16
 #: app/templates/admin/dashboard.html:16 app/templates/admin/key-page.html:16
 #: app/templates/admin/regcodes.html:16
 msgid "Registration Codes"
 msgstr "Registrierungscodes"
 
-#: app/templates/admin/add-regcode.html:17
-#: app/templates/admin/dashboard.html:17 app/templates/admin/key-page.html:17
-#: app/templates/admin/regcodes.html:17
-msgid "Voucher"
-msgstr "Aktionscodes"
-
+#: app/templates/admin/account-page.html:17
+#: app/templates/admin/accounts.html:17 app/templates/admin/add-account.html:17
 #: app/templates/admin/add-regcode.html:18
 #: app/templates/admin/dashboard.html:18 app/templates/admin/key-page.html:18
 #: app/templates/admin/regcodes.html:18
+msgid "Accounts"
+msgstr "Accounts"
+
+#: app/templates/admin/account-page.html:19
+#: app/templates/admin/accounts.html:19 app/templates/admin/add-account.html:19
+#: app/templates/admin/add-regcode.html:20
+#: app/templates/admin/dashboard.html:20 app/templates/admin/key-page.html:20
+#: app/templates/admin/regcodes.html:20
 msgid "Logout"
 msgstr "Abmelden"
 
-#: app/templates/admin/add-regcode.html:35 app/templates/admin/regcodes.html:44
-msgid "Add Registration Code"
-msgstr "Erstelle Registrierungscode"
+#: app/templates/admin/account-page.html:38
+msgid "Account:"
+msgstr "Account:"
 
-#: app/templates/admin/add-regcode.html:42 app/templates/admin/regcodes.html:58
-msgid "First name"
-msgstr "Vorname"
+#: app/templates/admin/account-page.html:44
+msgid "Notifications"
+msgstr "Benachrichtigungen"
 
-#: app/templates/admin/add-regcode.html:44 app/templates/admin/regcodes.html:57
-msgid "Surname"
-msgstr "Nachname"
-
-#: app/templates/admin/add-regcode.html:46
-msgid "Mail"
-msgstr "E-Mail"
-
-#: app/templates/admin/add-regcode.html:54
-msgid "Add"
-msgstr "Hinzufügen"
-
-#: app/templates/admin/add-regcode.html:55
-msgid "Cancel"
-msgstr "Abbrechen"
-
-#: app/templates/admin/dashboard.html:34
-msgid "Total Traffic Consumption"
-msgstr "Gesamtverbrauch"
-
-#: app/templates/admin/dashboard.html:40
-msgid "Miscellaneous statistics"
-msgstr "Sonstige Statistiken"
-
-#: app/templates/admin/dashboard.html:44
-msgid "Active Users"
-msgstr "Aktive Nutzer"
-
-#: app/templates/admin/dashboard.html:48
-msgid "Device/User Ratio"
-msgstr "Gerät/Nutzer Verhältnis"
-
-#: app/templates/admin/dashboard.html:52
-msgid "Average Credit"
-msgstr "Durchschnittliches Datenvolumen"
-
-#: app/templates/admin/dashboard.html:56
-msgid "Shaped Users"
-msgstr "Gedrosselte Nutzer"
-
-#: app/templates/admin/key-page.html:6
-msgid "Supervisor User Page"
-msgstr "Supervisor Nutzerseite"
-
-#: app/templates/admin/key-page.html:37
-msgid "Download Instruction"
-msgstr "Anleitung herunterladen"
-
-#: app/templates/admin/key-page.html:39
-msgid "Registration Code:"
-msgstr "Registrierungscode:"
-
-#: app/templates/admin/key-page.html:49 app/templates/admin/regcodes.html:59
-msgid "Credit"
-msgstr "Datenvolumen"
-
-#: app/templates/admin/key-page.html:53
-msgid "Shaped"
-msgstr "Gedrosselt"
-
-#: app/templates/admin/key-page.html:57
-msgid "Status"
-msgstr "Status"
-
-#: app/templates/admin/key-page.html:61
-msgid "Created On"
-msgstr "Erstellt am"
-
-#: app/templates/admin/key-page.html:66
-msgid "Devices"
-msgstr "Geräte"
-
-#: app/templates/admin/key-page.html:71
-msgid "IP Address"
-msgstr "IP Adresse"
-
-#: app/templates/admin/key-page.html:72
-msgid "Mac Address"
-msgstr "MAC Adresse"
-
-#: app/templates/admin/key-page.html:73
-msgid "Type"
-msgstr "Art"
-
-#: app/templates/admin/key-page.html:74
-msgid "Registered Since"
-msgstr "Registriert seit"
-
-#: app/templates/admin/key-page.html:86
-msgid "No devices registered yet"
-msgstr "Keine Geräte registriert"
-
-#: app/templates/admin/key-page.html:89
-msgid "User Settings"
-msgstr "Nutzereinstellungen"
-
-#: app/templates/admin/key-page.html:94
-msgid "Custom Credit"
-msgstr "Benutzerdefiniertes Datenvolumen"
-
-#: app/templates/admin/key-page.html:95 app/templates/admin/key-page.html:108
-#: app/templates/admin/key-page.html:132 app/templates/admin/key-page.html:156
-#: app/templates/admin/key-page.html:175
+#: app/templates/admin/account-page.html:45
+#: app/templates/admin/account-page.html:70
+#: app/templates/admin/account-page.html:82
+#: app/templates/admin/account-page.html:95
+#: app/templates/admin/key-page.html:117 app/templates/admin/key-page.html:130
+#: app/templates/admin/key-page.html:154 app/templates/admin/key-page.html:178
+#: app/templates/admin/key-page.html:198 app/templates/admin/key-page.html:217
 msgid "Description:"
 msgstr "Beschreibung:"
 
-#: app/templates/admin/key-page.html:95
-msgid "Sets this users credit to a custom value."
-msgstr "Setzt das Datenvolumen dieses Nutzers zu einem beliebigen Wert."
+#: app/templates/admin/account-page.html:45
+msgid "Changes the mail notifications behaviour."
+msgstr "Ändert das Verhalten der Mailbenachrichtigungen"
 
-#: app/templates/admin/key-page.html:96 app/templates/admin/key-page.html:109
-#: app/templates/admin/key-page.html:133
+#: app/templates/admin/account-page.html:48
+msgid "Shaping events"
+msgstr "Drosselungsereignisse"
+
+#: app/templates/admin/account-page.html:53
+msgid "Failed login attempts"
+msgstr "Fehlgeschlagene Loginversuche"
+
+#: app/templates/admin/account-page.html:58
+msgid "Critical log events"
+msgstr "Kritische Log-Ereignisse"
+
+#: app/templates/admin/account-page.html:62
+msgid "Update Behaviour"
+msgstr "Verhalten ändern"
+
+#: app/templates/admin/account-page.html:69
+#: app/templates/admin/add-account.html:52 app/templates/admin/login.html:23
+msgid "Password"
+msgstr "Passwort"
+
+#: app/templates/admin/account-page.html:70
+msgid "Changes the supervisor account password."
+msgstr "Ändert das Passwort des Supervisor-Accounts"
+
+#: app/templates/admin/account-page.html:71
+msgid "Requirements:"
+msgstr "Voraussetzungen:"
+
+#: app/templates/admin/account-page.html:74
+msgid "Change Password"
+msgstr "Passwort ändern"
+
+#: app/templates/admin/account-page.html:81
+msgid "Mail Address"
+msgstr "Emailadresse"
+
+#: app/templates/admin/account-page.html:82
+msgid "Changes the mail address."
+msgstr "Ändert die Emailadresse"
+
+#: app/templates/admin/account-page.html:83
+#: app/templates/admin/key-page.html:118 app/templates/admin/key-page.html:131
+#: app/templates/admin/key-page.html:155
 msgid "Allowed Values:"
 msgstr "Erlaubte Werte:"
 
-#: app/templates/admin/key-page.html:97 app/templates/admin/key-page.html:110
-#: app/templates/admin/key-page.html:134
-msgid "Unit:"
-msgstr "Einheit:"
+#: app/templates/admin/account-page.html:83
+#: app/templates/admin/add-account.html:50
+msgid "Only trusted mail servers: "
+msgstr "Vertrauenswürdige Mailserver:"
 
-#: app/templates/admin/key-page.html:100 app/templates/admin/key-page.html:119
-#: app/templates/admin/key-page.html:143
-msgid "Set"
-msgstr "Anwenden"
+#: app/templates/admin/account-page.html:84
+msgid "Current Value:"
+msgstr "Aktueller Wert:"
 
-#: app/templates/admin/key-page.html:107
-msgid "Custom Daily Top-Up Volume"
-msgstr "Benutzerdefiniertes Top-Up Datenvolumen"
+#: app/templates/admin/account-page.html:87
+msgid "Change Mail Address"
+msgstr "Mailadresse ändern"
 
-#: app/templates/admin/key-page.html:108
-msgid "Grants this user a custom daily top-up volume."
-msgstr "Setzt das täglich hinzukommende Datenvolumen des Nutzers."
+#: app/templates/admin/account-page.html:94
+msgid "Delete Account"
+msgstr "Account löschen"
 
-#: app/templates/admin/key-page.html:112 app/templates/admin/key-page.html:115
-#: app/templates/admin/key-page.html:136 app/templates/admin/key-page.html:139
-#: app/templates/admin/key-page.html:158 app/templates/admin/key-page.html:160
-#: app/templates/admin/key-page.html:177 app/templates/admin/key-page.html:179
-msgid "Status:"
-msgstr "Status:"
+#: app/templates/admin/account-page.html:95
+msgid "Use this if a supervisor is not in an administrative position anymore."
+msgstr ""
+"Benutzen Sie diese Option, wenn der Supervisor keine administrative Position "
+"mehr innehat."
 
-#: app/templates/admin/key-page.html:113 app/templates/admin/key-page.html:137
-msgid "Value:"
-msgstr "Wert:"
+#: app/templates/admin/account-page.html:97
+msgid "Delete Supervisor Account"
+msgstr "Supervisor-Account löschen"
 
-#: app/templates/admin/key-page.html:123
-msgid "Disable Custom Top-Up Volume"
-msgstr "Benutzerdefiniertes Datenvolumen deaktivieren"
+#: app/templates/admin/accounts.html:6 app/templates/admin/accounts.html:35
+msgid "Supervisor Accounts"
+msgstr "Supervisor-Accounts"
 
-#: app/templates/admin/key-page.html:131
-msgid "Custom Maximum Volume"
-msgstr "Benutzerdefiniertes maximales Datenvolumen"
+#: app/templates/admin/accounts.html:43
+msgid "Add Account"
+msgstr "Account hinzufügen"
 
-#: app/templates/admin/key-page.html:132
-msgid "Grants this user a custom maximum volume."
-msgstr "Setzt das maximal mögliche Datenvolumen des Nutzers."
-
-#: app/templates/admin/key-page.html:147
-msgid "Disable Custom Max Volume"
-msgstr "Benutzerdefiniertes Datenvolumen deaktivieren"
-
-#: app/templates/admin/key-page.html:155 app/templates/admin/key-page.html:164
-msgid "Disable Accounting"
-msgstr "Zählung deaktivieren"
-
-#: app/templates/admin/key-page.html:156
-msgid ""
-"Disables traffic accounting for this user. Use this to grant unlimited "
-"traffic to this user."
-msgstr "Deaktiviert die Datenvolumenszählung für den Nutzer. Benutzen Sie diese Funktion um dem Nutzer unlimitiertes Volumen zu gewähren"
-
-#: app/templates/admin/key-page.html:158
-msgid "Accounting Enabled"
-msgstr "Zählung aktiviert"
-
-#: app/templates/admin/key-page.html:160
-msgid "Accounting Disabled"
-msgstr "Zählung deaktiviert"
-
-#: app/templates/admin/key-page.html:166
-msgid "Enable Accounting"
-msgstr "Zählung aktivieren"
-
-#: app/templates/admin/key-page.html:174 app/templates/admin/key-page.html:183
-msgid "Deactivate Registration Code"
-msgstr "Registrierungscode deaktivieren"
-
-#: app/templates/admin/key-page.html:175
-msgid ""
-"Use this if an user moved out of his apartment or violated the terms of "
-"use. All devices which have registered with this code will not be able to"
-" go online anymore."
-msgstr "Benutzen Sie diese Funktion, wenn ein Nutzer keinen gültigen Mietvertrag mehr besitzt, oder gegen die Rahmennetzordnung verstoßen hat. Alle Geräte die mit diesem Registrierungscode registriert wurden, werden sich nicht mehr mit dem Internet verbinden können."
-
-#: app/templates/admin/key-page.html:177
-msgid "Registration Code Active"
-msgstr "Registrierungscode aktiviert"
-
-#: app/templates/admin/key-page.html:179
-msgid "Registration Code Deactivated"
-msgstr "Registrierungscode deaktiviert"
-
-#: app/templates/admin/key-page.html:185
-msgid "Activate Registration Code"
-msgstr "Aktiviere Registrierungscode"
-
-#: app/templates/admin/login.html:6 app/templates/admin/login.html:20
-msgid "Supervisor Login"
-msgstr "Supervisor Anmeldung"
-
+#: app/templates/admin/accounts.html:50 app/templates/admin/add-account.html:43
 #: app/templates/admin/login.html:21
 msgid "Username"
 msgstr "Benutzername"
 
-#: app/templates/admin/login.html:23
-msgid "Password"
-msgstr "Passwort"
+#: app/templates/admin/accounts.html:51 app/templates/admin/add-account.html:47
+#: app/templates/admin/add-regcode.html:46 app/templates/admin/regcodes.html:64
+msgid "Surname"
+msgstr "Nachname"
+
+#: app/templates/admin/accounts.html:52 app/templates/admin/add-account.html:45
+#: app/templates/admin/add-regcode.html:44 app/templates/admin/regcodes.html:65
+msgid "First name"
+msgstr "Vorname"
+
+#: app/templates/admin/accounts.html:53 app/templates/admin/add-account.html:55
+msgid "Role"
+msgstr "Rolle"
+
+#: app/templates/admin/add-account.html:6
+msgid "Supervisor Add Account"
+msgstr "Supervisor - Account hinzufügen"
+
+#: app/templates/admin/add-account.html:36
+msgid "Add Supervisor Account"
+msgstr "Supervisor-Account hinzufügen"
+
+#: app/templates/admin/add-account.html:49
+#: app/templates/admin/add-regcode.html:48
+msgid "Mail"
+msgstr "E-Mail"
+
+#: app/templates/admin/add-account.html:53
+msgid ""
+"Minimum 20 characters, at least 5 numbers, 5 capital letters, 5 lower case "
+"letters, 5 special characters."
+msgstr ""
+"Mindestens 20 Zeichen, davon mindestens 5 Zahlen, 3 Großbuchstaben, 5 "
+"Kleinbuchstaben und 5 Sonderzeichen"
+
+#: app/templates/admin/add-account.html:67
+#: app/templates/admin/add-regcode.html:56
+msgid "Add"
+msgstr "Hinzufügen"
+
+#: app/templates/admin/add-account.html:68
+#: app/templates/admin/add-regcode.html:57
+msgid "Cancel"
+msgstr "Abbrechen"
+
+#: app/templates/admin/add-regcode.html:6
+msgid "Supervisor Add Registration Code"
+msgstr "Supervisor Registrierungscode Erstellen"
+
+#: app/templates/admin/add-regcode.html:37 app/templates/admin/regcodes.html:46
+msgid "Add Registration Code"
+msgstr "Erstelle Registrierungscode"
+
+#: app/templates/admin/dashboard.html:36
+msgid "Total Traffic Consumption"
+msgstr "Gesamtverbrauch"
+
+#: app/templates/admin/dashboard.html:42
+msgid "Miscellaneous statistics"
+msgstr "Sonstige Statistiken"
+
+#: app/templates/admin/dashboard.html:46
+msgid "Active Users"
+msgstr "Aktive Nutzer"
+
+#: app/templates/admin/dashboard.html:50
+msgid "Device/User Ratio"
+msgstr "Gerät/Nutzer Verhältnis"
+
+#: app/templates/admin/dashboard.html:54
+msgid "Average Credit"
+msgstr "Durchschnittliches Datenvolumen"
+
+#: app/templates/admin/dashboard.html:58
+msgid "Shaped Users"
+msgstr "Gedrosselte Nutzer"
+
+#: app/templates/admin/key-page.html:6
+msgid "Supervisor Registration Key Page"
+msgstr "Supervisor Registrierungskeyseite"
+
+#: app/templates/admin/key-page.html:39
+msgid "Download Instruction"
+msgstr "Anleitung herunterladen"
+
+#: app/templates/admin/key-page.html:43
+msgid "Add Fake Device"
+msgstr "Ein virtuelles Gerät zum Testen hinzufügen"
+
+#: app/templates/admin/key-page.html:46
+msgid "Registration Code:"
+msgstr "Registrierungscode:"
+
+#: app/templates/admin/key-page.html:56 app/templates/admin/regcodes.html:66
+msgid "Credit"
+msgstr "Datenvolumen"
+
+#: app/templates/admin/key-page.html:60
+msgid "Shaped"
+msgstr "Gedrosselt"
+
+#: app/templates/admin/key-page.html:64
+msgid "Status"
+msgstr "Status"
+
+#: app/templates/admin/key-page.html:68
+msgid "Created On"
+msgstr "Erstellt am"
+
+#: app/templates/admin/key-page.html:74
+msgid "Devices"
+msgstr "Geräte"
+
+#: app/templates/admin/key-page.html:79
+msgid "IP Address"
+msgstr "IP Adresse"
+
+#: app/templates/admin/key-page.html:80
+msgid "Mac Address"
+msgstr "MAC Adresse"
+
+#: app/templates/admin/key-page.html:81
+msgid "Type"
+msgstr "Art"
+
+#: app/templates/admin/key-page.html:82
+msgid "Registered Since"
+msgstr "Registriert seit"
+
+#: app/templates/admin/key-page.html:106
+msgid "No devices registered yet"
+msgstr "Keine Geräte registriert"
+
+#: app/templates/admin/key-page.html:110
+msgid "User Settings"
+msgstr "Nutzereinstellungen"
+
+#: app/templates/admin/key-page.html:116
+msgid "Custom Credit"
+msgstr "Benutzerdefiniertes Datenvolumen"
+
+#: app/templates/admin/key-page.html:117
+msgid "Sets this users credit to a custom value."
+msgstr "Setzt das Datenvolumen dieses Nutzers zu einem beliebigen Wert."
+
+#: app/templates/admin/key-page.html:119 app/templates/admin/key-page.html:132
+#: app/templates/admin/key-page.html:156
+msgid "Unit:"
+msgstr "Einheit:"
+
+#: app/templates/admin/key-page.html:122 app/templates/admin/key-page.html:141
+#: app/templates/admin/key-page.html:165
+msgid "Set"
+msgstr "Anwenden"
+
+#: app/templates/admin/key-page.html:129
+msgid "Custom Daily Top-Up Volume"
+msgstr "Benutzerdefiniertes Top-Up Datenvolumen"
+
+#: app/templates/admin/key-page.html:130
+msgid "Grants this user a custom daily top-up volume."
+msgstr "Setzt das täglich hinzukommende Datenvolumen des Nutzers."
+
+#: app/templates/admin/key-page.html:134 app/templates/admin/key-page.html:137
+#: app/templates/admin/key-page.html:158 app/templates/admin/key-page.html:161
+#: app/templates/admin/key-page.html:180 app/templates/admin/key-page.html:182
+#: app/templates/admin/key-page.html:200 app/templates/admin/key-page.html:202
+msgid "Status:"
+msgstr "Status:"
+
+#: app/templates/admin/key-page.html:134 app/templates/admin/key-page.html:158
+msgid "Enabled"
+msgstr "Aktiviert"
+
+#: app/templates/admin/key-page.html:135 app/templates/admin/key-page.html:159
+msgid "Value:"
+msgstr "Wert:"
+
+#: app/templates/admin/key-page.html:137 app/templates/admin/key-page.html:161
+msgid "Disabled"
+msgstr "Deaktiviert"
+
+#: app/templates/admin/key-page.html:145
+msgid "Disable Custom Top-Up Volume"
+msgstr "Benutzerdefiniertes Datenvolumen deaktivieren"
+
+#: app/templates/admin/key-page.html:153
+msgid "Custom Maximum Volume"
+msgstr "Benutzerdefiniertes maximales Datenvolumen"
+
+#: app/templates/admin/key-page.html:154
+msgid "Grants this user a custom maximum volume."
+msgstr "Setzt das maximal mögliche Datenvolumen des Nutzers."
+
+#: app/templates/admin/key-page.html:169
+msgid "Disable Custom Max Volume"
+msgstr "Benutzerdefiniertes Datenvolumen deaktivieren"
+
+#: app/templates/admin/key-page.html:177 app/templates/admin/key-page.html:186
+msgid "Disable Accounting"
+msgstr "Zählung deaktivieren"
+
+#: app/templates/admin/key-page.html:178
+msgid ""
+"Disables traffic accounting for this user. Use this to grant unlimited "
+"traffic to this user."
+msgstr ""
+"Deaktiviert die Datenvolumenszählung für den Nutzer. Benutzen Sie diese "
+"Funktion um dem Nutzer unlimitiertes Volumen zu gewähren"
+
+#: app/templates/admin/key-page.html:180
+msgid "Accounting Enabled"
+msgstr "Zählung aktiviert"
+
+#: app/templates/admin/key-page.html:182
+msgid "Accounting Disabled"
+msgstr "Zählung deaktiviert"
+
+#: app/templates/admin/key-page.html:188
+msgid "Enable Accounting"
+msgstr "Zählung aktivieren"
+
+#: app/templates/admin/key-page.html:197 app/templates/admin/key-page.html:206
+msgid "Deactivate Registration Code"
+msgstr "Registrierungscode deaktivieren"
+
+#: app/templates/admin/key-page.html:198
+msgid ""
+"Use this if an user temporarily moved out of his apartment or violated the "
+"terms of use. All devices which have registered with this code will not be "
+"able to go online until activated again."
+msgstr ""
+"Benutzen Sie diese Option, wenn ein Nutzer zeitweise aus seiner Wohnung "
+"ausgezogen ist oder gegen die Nutzungsrichtlinien verstoßen hat. Alle "
+"Geräte, die mit diesem Code registriert wurden, haben dann keinen "
+"Onlinezugriff mehr, bis der Code wieder aktiviert wurde."
+
+#: app/templates/admin/key-page.html:200
+msgid "Registration Code Active"
+msgstr "Registrierungscode aktiviert"
+
+#: app/templates/admin/key-page.html:202
+msgid "Registration Code Deactivated"
+msgstr "Registrierungscode deaktiviert"
+
+#: app/templates/admin/key-page.html:208
+msgid "Activate Registration Code"
+msgstr "Aktiviere Registrierungscode"
+
+#: app/templates/admin/key-page.html:216 app/templates/admin/key-page.html:220
+msgid "Delete Registration Code"
+msgstr "Registrierungscode löschen"
+
+#: app/templates/admin/key-page.html:217
+msgid ""
+"Use this if an user moved out of his apartment permanently. All user data "
+"will get deleted and all devices registered with this code will go offline "
+"immediately."
+msgstr ""
+"Benutzen Sie diese Option, wenn ein Nutzer permanent ausgezogen ist. Alle "
+"Nutzerdaten werden gelöscht und alle mit diesem Code registrierten Geräte "
+"werden sofort vom Netz getrennt."
+
+#: app/templates/admin/key-page.html:218
+msgid "Important:"
+msgstr "Wichtig:"
+
+#: app/templates/admin/key-page.html:218
+msgid "This action can not be made undone!"
+msgstr "Diese Aktion kann nicht rückgängig gemacht werden!"
+
+#: app/templates/admin/login.html:6 app/templates/admin/login.html:20
+msgid "Supervisor Login"
+msgstr "Supervisor Anmeldung"
 
 #: app/templates/admin/login.html:26
 msgid "Login"
@@ -349,19 +456,23 @@ msgstr "Anmelden"
 msgid "Supervisor Registration Codes"
 msgstr "Supervisor Registrierungscodes"
 
-#: app/templates/admin/regcodes.html:34
+#: app/templates/admin/regcodes.html:36
 msgid "User Management"
 msgstr "Nutzerverwaltung"
 
-#: app/templates/admin/regcodes.html:39
+#: app/templates/admin/regcodes.html:41
 msgid "Search…"
 msgstr "Suche…"
 
-#: app/templates/admin/regcodes.html:48
+#: app/templates/admin/regcodes.html:50
+msgid "Add Test Code"
+msgstr "Testcode hinzufügen"
+
+#: app/templates/admin/regcodes.html:55
 msgid "Clear Results"
 msgstr "Suchergebnisse bereinigen"
 
-#: app/templates/admin/regcodes.html:56
+#: app/templates/admin/regcodes.html:63
 msgid "Registration Key"
 msgstr "Registrierungscode"
 
@@ -379,8 +490,7 @@ msgstr "Ungültige Anfrage"
 #: app/templates/errors/403.html:15 app/templates/errors/404.html:15
 #: app/templates/errors/405.html:15
 msgid ""
-"The request could not be processed because you have insufficient "
-"permissions."
+"The request could not be processed because you have insufficient permissions."
 msgstr ""
 "Die Anfrage konnte nicht bearbeitet werden, da Sie nicht die nötigen "
 "Berechtigungen besitzen."
@@ -393,6 +503,18 @@ msgstr "Verarbeitungsfehler"
 msgid "The request could not be processed."
 msgstr "Die Anfrage konnte nicht bearbeitet werden."
 
+#: app/templates/errors/backend_lost.html:7
+msgid "Backend Connection Lost"
+msgstr "Keine Verbindung zum Backend"
+
+#: app/templates/errors/backend_lost.html:14
+msgid "Lonely Client / YOLO Network"
+msgstr "Lonely Client / YOLO-Netzwerk"
+
+#: app/templates/errors/backend_lost.html:15
+msgid "Lost connection to Traffy backend server."
+msgstr "Keine Verbindung zum Traffy-Backendserver"
+
 #: app/templates/errors/deactivated.html:7
 #: app/templates/errors/deactivated.html:14
 msgid "Access Deactivated"
@@ -400,12 +522,16 @@ msgstr "Zugriff deaktiviert"
 
 #: app/templates/errors/deactivated.html:15
 msgid ""
-"Your registration key has been deactivated. Possible reasons could be "
-"that your tenancy agreement with Studentenwerk Dresden has expired or "
-"that you have violated against the Rahmennetzordnung. If you think that "
-"this is a mistake, then please inform the network administrator. Code: "
+"Your registration key has been deactivated. Possible reasons could be that "
+"your tenancy agreement with Studentenwerk Dresden has expired or that you "
+"have violated against the Rahmennetzordnung. If you think that this is a "
+"mistake, then please inform the network administrator. Code: 995"
+msgstr ""
+"Dein Registrierungscode wurde deaktiviert. Mögliche Gründe dafür sind, dass "
+"dein Mietvertrag mit dem Studentenwerk Dresden ausgelaufen ist oder das du "
+"gegen die Rahmennetzordnung verstoßen hast. Wenn du glaubst, dass dies ein "
+"Missverständnis ist, dann informiere bitte den Netzwerkadministrator. Code: "
 "995"
-msgstr "Dein Registrierungscode wurde deaktiviert. Mögliche Gründe dafür sind, dass dein Mietvertrag mit dem Studentenwerk Dresden ausgelaufen ist oder das du gegen die Rahmennetzordnung verstoßen hast. Wenn du glaubst, dass dies ein Missverständnis ist, dann informiere bitte den Netzwerkadministrator. Code: 995"
 
 #: app/templates/errors/ip_stolen.html:7 app/templates/errors/ip_stolen.html:14
 msgid "Access Manipulation"
@@ -414,28 +540,31 @@ msgstr "Zugriffsmanipulation"
 #: app/templates/errors/ip_stolen.html:15
 msgid ""
 "A misconfigured device has attempted to gain access to the network using "
-"forged credentials that match yours. For security reasons, your access "
-"has been temporarily blocked. Please contact the network administrator. "
-"Code: 950"
-msgstr "Ein fehlerhaft konfiguriertes Endgerät hat versucht, mit gefälschten Zugangsdaten - welchen deinen entsprechen, Zugriff auf das Netzwerk zu erhalten. Aus Sicherheitsgründen wirde dein Zugang daher vorübergehend gesperrt. Bitte informiere den Netzwerkadministrator. Code: 950"
+"forged credentials that match yours. For security reasons, your access has "
+"been temporarily blocked. Please contact the network administrator. Code: 950"
+msgstr ""
+"Ein fehlerhaft konfiguriertes Endgerät hat versucht, mit gefälschten "
+"Zugangsdaten - welchen deinen entsprechen, Zugriff auf das Netzwerk zu "
+"erhalten. Aus Sicherheitsgründen wirde dein Zugang daher vorübergehend "
+"gesperrt. Bitte informiere den Netzwerkadministrator. Code: 950"
 
 #: app/templates/includes/sidebar.html:6
 msgid "Contact and Information"
 msgstr "Kontakt und Informationen"
 
-#: app/templates/includes/sidebar.html:12
+#: app/templates/includes/sidebar.html:15
 msgid "In support cases and for questions:"
 msgstr "Bei techn. Problemen und Fragen zum Anschluss:"
 
-#: app/templates/includes/sidebar.html:21
+#: app/templates/includes/sidebar.html:24
 msgid "Network Administrator"
 msgstr "Netzadministrator"
 
-#: app/templates/includes/sidebar.html:26
+#: app/templates/includes/sidebar.html:29
 msgid "In case of defects with passive network equipment:"
 msgstr "Bei defekten an passiver Netzwerktechnik:"
 
-#: app/templates/includes/sidebar.html:33
+#: app/templates/includes/sidebar.html:36
 msgid "Facility Management"
 msgstr "Hausmeister"
 
@@ -443,9 +572,13 @@ msgstr "Hausmeister"
 msgid "About"
 msgstr "Über"
 
-#: app/templates/user/about.html:23
+#: app/templates/user/about.html:25
 msgid "Developer"
 msgstr "Entwickler"
+
+#: app/templates/user/about.html:26
+msgid "Source Code"
+msgstr "Quellcode"
 
 #: app/templates/user/conditions.html:6 app/templates/user/conditions.html:19
 msgid "Terms and Conditions"
@@ -481,12 +614,11 @@ msgstr "Geräteabmeldung"
 
 #: app/templates/user/deregister.html:21
 msgid ""
-"Deregistering this device allows you to plug in another device at this "
-"port. After deregistration you will be redirected to the registration "
-"prompt."
+"Deregistering this device allows you to plug in another device at this port. "
+"After deregistration you will be redirected to the registration prompt."
 msgstr ""
-"Die Abmeldung dieses Geräts dient dazu, dass Sie ein anderes Gerät an "
-"diesem Netzanschluss anmelden können. Nach der Abmeldung werden Sie zur "
+"Die Abmeldung dieses Geräts dient dazu, dass Sie ein anderes Gerät an diesem "
+"Netzanschluss anmelden können. Nach der Abmeldung werden Sie zur "
 "Registrierungsmaske weitergeleitet."
 
 #: app/templates/user/deregister.html:23
@@ -521,18 +653,69 @@ msgstr "Ein Registrierungsschlüssel wird für den Netzwerkzugriff benötigt"
 msgid "Register"
 msgstr "Anmelden"
 
-#: app/user/views.py:53
-msgid "Maximum number of devices already registered."
-msgstr "Maximale Anzahl an Geräten ist bereits angemeldet."
-
-#: app/user/views.py:89 app/user/views.py:95 app/user/views.py:105
-msgid "Error during registration."
-msgstr "Fehler während der Anmeldung."
-
-#: app/user/views.py:188
-msgid "Invalid voucher"
-msgstr "Ungültiger Aktionscode"
-
 #~ msgid "Active IPs"
 #~ msgstr "Aktive IPs"
 
+#~ msgid "Wrong credentials. This attempt got reported."
+#~ msgstr "Falsche Zugangsdaten. Dieser Fehlversuch wird gemeldet."
+
+#~ msgid "Downlink"
+#~ msgstr "Herunterladen"
+
+#~ msgid "Uplink"
+#~ msgstr "Hochladen"
+
+#~ msgid "Please fill out all input forms."
+#~ msgstr "Bitte alle Eingabefelder ausfüllen"
+
+#~ msgid "Invalid registration key."
+#~ msgstr "Ungültiger Registrierungsschlüssel."
+
+#~ msgid "Input entered is invalid."
+#~ msgstr "Die Eingabe ist ungültig"
+
+#~ msgid "An error occured."
+#~ msgstr "Es ist ein Fehler aufgetreten"
+
+#~ msgid "Yes"
+#~ msgstr "Ja"
+
+#~ msgid "No"
+#~ msgstr "Nein"
+
+#~ msgid "Shaped Downlink"
+#~ msgstr "Gedrosselter Downlink"
+
+#~ msgid "Shaped Uplink"
+#~ msgstr "Gedrosselter Uplink"
+
+#~ msgid "Login to access that resource."
+#~ msgstr "Anmelden zur Nutzung der Ressource."
+
+#~ msgid "Unknown"
+#~ msgstr "Unbekannt"
+
+#~ msgid "Voucher"
+#~ msgstr "Aktionscodes"
+
+#~ msgid "Supervisor User Page"
+#~ msgstr "Supervisor Nutzerseite"
+
+#~ msgid ""
+#~ "Use this if an user moved out of his apartment or violated the terms of "
+#~ "use. All devices which have registered with this code will not be able to "
+#~ "go online anymore."
+#~ msgstr ""
+#~ "Benutzen Sie diese Funktion, wenn ein Nutzer keinen gültigen Mietvertrag "
+#~ "mehr besitzt, oder gegen die Rahmennetzordnung verstoßen hat. Alle Geräte "
+#~ "die mit diesem Registrierungscode registriert wurden, werden sich nicht "
+#~ "mehr mit dem Internet verbinden können."
+
+#~ msgid "Maximum number of devices already registered."
+#~ msgstr "Maximale Anzahl an Geräten ist bereits angemeldet."
+
+#~ msgid "Error during registration."
+#~ msgstr "Fehler während der Anmeldung."
+
+#~ msgid "Invalid voucher"
+#~ msgstr "Ungültiger Aktionscode"
