@@ -11,7 +11,7 @@ def setup_shaping():
         "qdisc",
         "add",
         "dev",
-        config.DNSMASQ_LISTEN_INTERFACE,
+        config.WAN_INTERFACE,
         "handle",
         "ffff:",
         "ingress"
@@ -24,7 +24,7 @@ def setup_shaping():
         "filter",
         "add",
         "dev",
-        config.DNSMASQ_LISTEN_INTERFACE,
+        config.WAN_INTERFACE,
         "parent",
         "ffff:",
         "protocol",
@@ -43,7 +43,7 @@ def setup_shaping():
         ], stdout=subprocess.PIPE, preexec_fn=os.setsid).wait()
 
     # Create root queueing disciplines
-    for interface in [config.DNSMASQ_LISTEN_INTERFACE, config.BRIDGE_INGRESS_INTERFACE]:
+    for interface in [config.WAN_INTERFACE, config.BRIDGE_INGRESS_INTERFACE]:
         subprocess.Popen([
             "sudo",
             "tc",
@@ -60,7 +60,7 @@ def setup_shaping():
             ], stdout=subprocess.PIPE, preexec_fn=os.setsid).wait()
 
     # Create shaping exception classes
-    # for interface in [config.DNSMASQ_LISTEN_INTERFACE, config.BRIDGE_INGRESS_INTERFACE]:
+    # for interface in [config.WAN_INTERFACE, config.BRIDGE_INGRESS_INTERFACE]:
     #     subprocess.Popen([
     #         "sudo",
     #         "tc",
@@ -83,7 +83,7 @@ def setup_shaping():
     logging.info("Prepared traffic shaping queueing discipline")
 
 def enable_shaping_for_ip(ip_id, ip_address):
-    for interface in [config.DNSMASQ_LISTEN_INTERFACE, config.BRIDGE_INGRESS_INTERFACE]:
+    for interface in [config.WAN_INTERFACE, config.BRIDGE_INGRESS_INTERFACE]:
         # Create shaping class for ip
         subprocess.Popen([
             "sudo",
@@ -128,7 +128,7 @@ def enable_shaping_for_ip(ip_id, ip_address):
     logging.debug("Enabled traffic shaping for " + ip_address)
 
 def disable_shaping_for_ip(ip_id, ip_address):
-    for interface in [config.DNSMASQ_LISTEN_INTERFACE, config.BRIDGE_INGRESS_INTERFACE]:
+    for interface in [config.WAN_INTERFACE, config.BRIDGE_INGRESS_INTERFACE]:
         # Remove matching filter
         for handle in __get_rule_handles(interface, ip_address):
             subprocess.Popen([
@@ -166,7 +166,7 @@ def disable_shaping_for_ip(ip_id, ip_address):
     logging.debug("Disabled traffic shaping for " + ip_address)
 
 def shutdown_shaping():
-    for interface in [config.DNSMASQ_LISTEN_INTERFACE, config.BRIDGE_INGRESS_INTERFACE]:
+    for interface in [config.WAN_INTERFACE, config.BRIDGE_INGRESS_INTERFACE]:
         subprocess.Popen([
             "sudo",
             "tc",
@@ -183,7 +183,7 @@ def shutdown_shaping():
         "qdisc",
         "del",
         "dev",
-        config.DNSMASQ_LISTEN_INTERFACE,
+        config.WAN_INTERFACE,
         "ingress"
         ], stdout=subprocess.PIPE, preexec_fn=os.setsid).wait()
 
@@ -195,7 +195,7 @@ def shutdown_shaping():
 
 def __add_shaping_exception_for_ip(ip_address): # ip _can_ contain decimal subnet mask: x.x.x.x/xx
     for direction in ["src", "dst"]:
-        for interface in [config.DNSMASQ_LISTEN_INTERFACE, config.BRIDGE_INGRESS_INTERFACE]:
+        for interface in [config.WAN_INTERFACE, config.BRIDGE_INGRESS_INTERFACE]:
             subprocess.Popen([
                 "sudo",
                 "tc",

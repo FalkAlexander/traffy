@@ -8,31 +8,35 @@ class DnsmasqService():
     dnsmasq = NotImplemented
 
     def start(self):
-        logging.info("Starting DHCP server on interface " + config.DNSMASQ_LISTEN_INTERFACE)
+        logging.info("Starting DHCP server")
         executable = "dnsmasq"
         port = "--port=" + "0"
-        interface = "--interface=" + config.DNSMASQ_LISTEN_INTERFACE
+        interfaces = []
+        for interface in config.IP_RANGES:
+            interfaces.append("--interface=" + interface[0])
         conf = "--conf-file=" + config.DNSMASQ_CONFIG_FILE
         hosts = "--dhcp-hostsfile=" + config.DNSMASQ_HOSTS_FILE
         lease_file = "--dhcp-leasefile=" + config.DNSMASQ_LEASE_FILE
-        dhcp_range = "--dhcp-range=" + config.IP_RANGE_START + "," + config.IP_RANGE_END + ",15m"
-        dhcp_option = "--dhcp-option=option:dns-server," + config.DNS_SERVER
+        dhcp_ranges = []
+        for subnet in config.IP_RANGES:
+            dhcp_ranges.append("--dhcp-range=" + subnet[0] + "," + subnet[2] + "," + subnet[3] + ",15m")
+        dhcp_options = []
+        for gateway in config.IP_RANGES:
+            dhcp_options.append("--dhcp-option=" + gateway[0] + ",3," + gateway[1])
+        dhcp_options.append("--dhcp-option=6," + config.DNS_SERVER)
         force_lease = "--no-ping"
         authoritative = "--dhcp-authoritative" # edgy
         self.dnsmasq = subprocess.Popen(["sudo",
                                         executable,
                                         port,
-                                        interface,
                                         conf,
                                         #force_lease,
-                                        authoritative,
+                                        #authoritative,
                                         hosts,
-                                        lease_file,
-                                        dhcp_range,
-                                        dhcp_option
-                                         ], stdout=subprocess.PIPE, preexec_fn=os.setsid).wait()
+                                        lease_file
+                                        ] + dhcp_ranges + interfaces + dhcp_options, stdout=subprocess.PIPE, preexec_fn=os.setsid).wait()
 
-        logging.info("Listening to " + config.IP_RANGE_START + " to " + config.IP_RANGE_END)
+        logging.info("Started DHCP server ")
 
     def reload(self):
         if self.dnsmasq is NotImplemented:

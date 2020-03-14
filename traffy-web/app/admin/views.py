@@ -409,14 +409,15 @@ def create_instruction_pdf(reg_key):
         flash(_l("Invalid registration key."))
         return redirect("/admin/regcodes")
 
-    max_saved_volume, daily_topup_volume, shaping_speed, traffy_url, max_devices = server.get_instruction_pdf_values()
+    max_saved_volume, daily_topup_volume, shaping_speed, traffy_ip, traffy_domain, max_devices = server.get_instruction_pdf_values()
 
     return render_template("/admin/pdf/instruction.html",
                            reg_key=reg_key,
                            daily_topup_volume=daily_topup_volume,
                            max_saved_volume=max_saved_volume,
                            shaping_speed=shaping_speed,
-                           traffy_url=traffy_url,
+                           traffy_ip=traffy_ip,
+                           traffy_domain=traffy_domain,
                            max_devices=max_devices,
                            admin_name=config.ADMIN_NAME,
                            admin_mail=config.ADMIN_MAIL,

@@ -412,7 +412,7 @@ class ServerAPI:
                 shaped_users += 1
 
         if count != 0:
-            average_credit = round(average_credit, 3)
+            average_credit = round(average_credit / count, 3)
         else:
             average_credit = 0
 
@@ -663,10 +663,11 @@ class ServerAPI:
         max_saved_volume = self.__to_gib(self.accounting_srv.get_max_saved_volume(), decimals=0)
         daily_topup_volume = self.__to_gib(self.accounting_srv.get_daily_topup_volume(), decimals=0)
         shaping_speed = config.SHAPING_SPEED
-        traffy_url = config.THIS_SERVER_IP_WAN
+        traffy_ip = config.WAN_IP_ADDRESS
+        traffy_domain = config.DOMAIN
         max_devices = config.MAX_MAC_ADDRESSES_PER_REG_KEY
 
-        return max_saved_volume, daily_topup_volume, shaping_speed, traffy_url, max_devices
+        return max_saved_volume, daily_topup_volume, shaping_speed, traffy_ip, traffy_domain, max_devices
 
     #
     # Tests
