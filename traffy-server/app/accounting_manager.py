@@ -267,6 +267,12 @@ class AccountingService():
         else:
             return config.MAX_SAVED_VOLUME
 
+    def get_initial_volume(self, gib=False):
+        if gib is True:
+            return self.__to_gib(config.INITIAL_VOLUME, decimals=1)
+        else:
+            return config.INITIAL_VOLUME
+
     #
     # Private Functions
     #
@@ -316,9 +322,8 @@ class AccountingThread(threading.Thread):
         while self.run:
             try:
                 session = self.db.create_session()
-
-                reg_key_query = session.query(RegistrationKey).all()
-                for reg_key in reg_key_query[self.start_id:self.stop_id+1]:
+                reg_key_query = session.query(RegistrationKey).offset(self.start_id).limit(self.stop_id - self.start_id + 1).all()
+                for reg_key in reg_key_query:
                     if reg_key.active is False or reg_key.enable_accounting is False:
                         continue
 
@@ -328,7 +333,7 @@ class AccountingThread(threading.Thread):
                                                           iptables_accounting_manager.get_box_ingress_bytes(reg_key.id),
                                                           iptables_accounting_manager.get_box_egress_bytes(reg_key.id))
                     else:
-                        self.update_interval_used_traffic(reg_key, 0, 0, inactive=True)
+                        self.update_interval_used_traffic(session, reg_key, 0, 0, inactive=True)
 
                 session.close()
             except:
@@ -421,10 +426,11 @@ class AccountingThread(threading.Thread):
         # First Ever Check
         date = datetime.today().date()
         if session.query(Traffic).filter_by(reg_key=reg_key_query.id).count() == 0:
+            initial_volume = self.accounting_srv.get_initial_volume()
             try:
                 row = Traffic(reg_key=reg_key_query.id,
                                       timestamp=date,
-                                      credit=topup_volume,
+                                      credit=initial_volume,
                                       ingress=ingress_used,
                                       egress=egress_used,
                                       ingress_shaped=0,

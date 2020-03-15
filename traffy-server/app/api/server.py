@@ -460,12 +460,12 @@ class ServerAPI:
         session.close()
         return rows
 
-    def add_registration_code(self, first_name, surname, mail):
+    def add_registration_code(self, first_name, surname, mail, room):
         try:
             session = self.db.create_session()
 
-            session.add(Identity(first_name=first_name, last_name=surname, mail=mail))
-            identity = session.query(Identity).filter_by(first_name=first_name, last_name=surname, mail=mail).first()
+            session.add(Identity(first_name=first_name, last_name=surname, mail=mail, room=room))
+            identity = session.query(Identity).filter_by(first_name=first_name, last_name=surname, mail=mail, room=room).first()
 
             reg_key = generate_registration_key.generate()
 
@@ -661,13 +661,26 @@ class ServerAPI:
 
     def get_instruction_pdf_values(self):
         max_saved_volume = self.__to_gib(self.accounting_srv.get_max_saved_volume(), decimals=0)
+        initial_volume = self.__to_gib(self.accounting_srv.get_initial_volume(), decimals=0)
         daily_topup_volume = self.__to_gib(self.accounting_srv.get_daily_topup_volume(), decimals=0)
         shaping_speed = config.SHAPING_SPEED
         traffy_ip = config.WAN_IP_ADDRESS
         traffy_domain = config.DOMAIN
         max_devices = config.MAX_MAC_ADDRESSES_PER_REG_KEY
 
-        return max_saved_volume, daily_topup_volume, shaping_speed, traffy_ip, traffy_domain, max_devices
+        return max_saved_volume, initial_volume, daily_topup_volume, shaping_speed, traffy_ip, traffy_domain, max_devices
+
+    def get_reg_code_identity(self, reg_key):
+        session = self.db.create_session()
+        reg_key_query = self.get_reg_key_query_by_key(session, reg_key)
+
+        identity_query = session.query(Identity).filter_by(id=reg_key_query.identity).first()
+        first_name = identity_query.first_name
+        last_name = identity_query.last_name
+        room = identity_query.room
+
+        session.close()
+        return first_name, last_name, room
 
     #
     # Tests

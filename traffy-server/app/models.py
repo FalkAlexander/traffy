@@ -72,14 +72,16 @@ class Identity(Base):
     __tablename__ = "identity"
 
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    first_name = db.Column(db.String(50), unique=False, nullable=True)
-    last_name = db.Column(db.String(50), unique=False, nullable=True)
-    mail = db.Column(db.String(50), unique=False, nullable=True)
+    first_name = db.Column(db.String(50), unique=False, nullable=False)
+    last_name = db.Column(db.String(50), unique=False, nullable=False)
+    mail = db.Column(db.String(50), unique=False, nullable=False)
+    room = db.Column(db.String(20), unique=True, nullable=False)
     
-    def __init__(self, first_name, last_name, mail):
+    def __init__(self, first_name, last_name, mail, room):
         self.first_name = first_name
         self.last_name = last_name
         self.mail = mail
+        self.room = room
     
     def __repr__(self):
         return "<Identity %r>" % self.first_name

@@ -23,6 +23,10 @@ def create_app():
     babel.init_app(app)
     login_manager.init_app(app)
 
+    @app.context_processor
+    def inject():
+        return dict(admins=config.ADMINS, facility_management=config.FACILITY_MANAGEMENT)
+
     # User Interface
     from .user import user as user_blueprint
     app.register_blueprint(user_blueprint)

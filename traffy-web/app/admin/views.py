@@ -9,6 +9,7 @@ from . import admin, supervisor_functions
 from .. import db, server, login_manager
 from ..models import SupervisorAccount, Role
 import config
+import time
 
 
 @admin.route("/admin", methods=["GET"])
@@ -90,11 +91,12 @@ def add_regcode():
             first_name = request.form["first_name"]
             surname = request.form["surname"]
             mail = request.form["mail"]
-            if first_name == "" or surname == "" or mail == "":
+            room = request.form["room"]
+            if first_name == "" or surname == "" or mail == "" or room == "":
                 flash(_l("Please fill out all input forms."))
                 return render_template("/admin/add-regcode.html")
             else:
-                reg_key = server.add_registration_code(first_name, surname, mail)
+                reg_key = server.add_registration_code(first_name, surname, mail, room)
                 return redirect("/admin/regcodes/" + reg_key)
 
     return render_template("/admin/add-regcode.html")
@@ -125,7 +127,27 @@ def reg_code(reg_key):
 
         # Instruction Download
         if "download_btn" in request.form:
-            return render_pdf(url_for("admin.create_instruction_pdf", reg_key=reg_key))
+            max_saved_volume, initial_volume, daily_topup_volume, shaping_speed, traffy_ip, traffy_domain, max_devices = server.get_instruction_pdf_values()
+            first_name, last_name, room = server.get_reg_code_identity(reg_key)
+            creation_date = str(int(time.time()))
+            current_supervisor = current_user.get_last_name() + ", " + current_user.get_first_name() + " (" + current_user.get_role() + ")"
+
+            html = render_template("/admin/pdf/instruction.html",
+                                   reg_key=reg_key,
+                                   initial_volume=initial_volume,
+                                   daily_topup_volume=daily_topup_volume,
+                                   max_saved_volume=max_saved_volume,
+                                   shaping_speed=shaping_speed,
+                                   traffy_ip=traffy_ip,
+                                   traffy_domain=traffy_domain,
+                                   max_devices=max_devices,
+                                   first_name=first_name,
+                                   last_name=last_name,
+                                   room=room,
+                                   creation_date=creation_date,
+                                   current_user=current_user)
+
+            return render_pdf(HTML(string=html), download_filename=last_name.encode("ascii", errors="xmlcharrefreplace").decode() + "," + first_name.encode("ascii", errors="xmlcharrefreplace").decode() + "_Instruction.pdf")
 
         # Set Custom Credit
         if "custom_credit_enable" in request.form:
@@ -402,26 +424,6 @@ def load_user(user_id):
 def unauthorized():
     flash(_l("Login to access that resource."))
     return redirect("/admin/login")
-
-@admin.route("/admin/regcodes/render-instruction-pdf/<reg_key>", methods=["GET"])
-def create_instruction_pdf(reg_key):
-    if server.reg_key_exists(reg_key) is False:
-        flash(_l("Invalid registration key."))
-        return redirect("/admin/regcodes")
-
-    max_saved_volume, daily_topup_volume, shaping_speed, traffy_ip, traffy_domain, max_devices = server.get_instruction_pdf_values()
-
-    return render_template("/admin/pdf/instruction.html",
-                           reg_key=reg_key,
-                           daily_topup_volume=daily_topup_volume,
-                           max_saved_volume=max_saved_volume,
-                           shaping_speed=shaping_speed,
-                           traffy_ip=traffy_ip,
-                           traffy_domain=traffy_domain,
-                           max_devices=max_devices,
-                           admin_name=config.ADMIN_NAME,
-                           admin_mail=config.ADMIN_MAIL,
-                           admin_room=config.ADMIN_ROOM)
 
 class AccountRow():
     username = ""

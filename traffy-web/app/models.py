@@ -63,6 +63,20 @@ class SupervisorAccount(db.Model, UserMixin):
         else:
             return False
 
+    def get_first_name(self):
+        return self.first_name
+
+    def get_last_name(self):
+        return self.last_name
+
+    def get_role(self):
+        if self.is_admin():
+            return "Admin"
+        elif is_helpdesk():
+            return "Helpdesk"
+        elif is_clerk():
+            return "Sachbearbeiter*in"
+
     def __repr__(self):
         return "<SupervisorAccount %r>" % self.username
 

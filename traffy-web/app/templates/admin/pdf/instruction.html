@@ -15,11 +15,11 @@
     </div>
         
     <div class="info-box">
-        <p>Dein Startvolumen beträgt: <strong>{{ daily_topup_volume }} GiB</strong></p>
+        <p>Dein Startvolumen beträgt: <strong>{{ initial_volume }} GiB</strong></p>
     </div>
     
     <div class="justify">
-        <p><strong>Ansparmodell: </strong>Du erhälst jeden Tag <strong>{{ daily_topup_volume }} GiB</strong> gutgeschrieben. Am Ende des Tages wird dein unverbrauchtes Datenvolumen in den darauf folgenden Tag mitgenommen. Das Ansparmodell erlaubt es dir, insgesamt <strong>{{ max_saved_volume}} GiB</strong> anzusparen.</p>
+        <p><strong>Ansparmodell: </strong>Du erhältst jeden Tag <strong>{{ daily_topup_volume }} GiB</strong> gutgeschrieben. Am Ende des Tages wird dein unverbrauchtes Datenvolumen in den darauf folgenden Tag mitgenommen. Das Ansparmodell erlaubt es dir, insgesamt <strong>{{ max_saved_volume}} GiB</strong> anzusparen.</p>
         
         <p><strong>Aufbrauch: </strong>Nach Aufbrauch deines Datenvolumens wird dein Internetzugang auf eine Geschwindigkeit von <strong>{{ shaping_speed }}/s</strong> gedrosselt. Einzig die Hochschulinfrastruktur (z.B. Lernplattformen) ist weiterhin in voller Geschwindigkeit abrufbar. Sobald der Tag herum ist und du somit <strong>{{ daily_topup_volume}} GiB</strong> gutgeschrieben bekommst, ist die Geschwindigkeitsbeschränkung wieder aufgehoben.</p>
     </div>
@@ -35,7 +35,7 @@
     </div>
         
     <div class="info-box">
-        <p>Your initial data volume is: <strong>{{ daily_topup_volume }} GiB</strong></p>
+        <p>Your initial data volume is: <strong>{{ initial_volume }} GiB</strong></p>
     </div>
     
     <div class="justify">
@@ -47,13 +47,21 @@
     <div class="divider"></div>
 
     <div class="justify">
-        <p><strong>Netzadministrator / Network administrator: </strong>{{ admin_name }}</p>
-        <p><strong>Mail: </strong>{{ admin_mail }}</p>
-        <p><strong>Zi-Nr. / Room No.: </strong>{{ admin_room }}</p>
+        {% for admin in admins %}
+        <p><strong>Netzadministrator: </strong>{{ admin[0] }}<br/>
+        <strong>E-Mail: </strong>{{ admin[1] }}<br/>
+        <strong>Zi-Nr. / Room: </strong>{{ admin[2] }}</p>
+        {% endfor %}
         <br/>
-        <p>Feel free to contact me if you run into any problems!</p>
     </div>
     
+    <footer>
+      <hr></hr>
+        <p>Mieter / Tenant: {{ last_name }}, {{ first_name }} | Raum / Room: {{ room }}<br/>
+        Formular-ID: {{ creation_date }} | Ausgestellt von {{ current_user.get_role() }}: {{ current_user.get_last_name() }}, {{ current_user.get_first_name() }}
+        </p>
+    </footer>
+
 
     <div class="header">
         <h3>Anleitung</h3>
@@ -79,10 +87,10 @@
         <div class="instruction-description">
             <p>Dein Browser öffnet sich und leitet dich auf die Registrierungsseite weiter. Falls nicht, besuche folgende URL im Browser:</p>
             <div class="info-box">
-                <p>→ <strong>{{ traffy_ip }}</strong> oder <strong>{{ traffy_domain }}</strong></p>
+                <p><strong>{{ traffy_ip }}</strong> oder <strong>{{ traffy_domain }}</strong></p>
             </div>
         </div>
-        
+
         <div class="instruction-count">
             <h2>3</h2>
         </div>
@@ -91,9 +99,9 @@
         </div>
 
         <div class="instruction-description">
-            <p>Eine Registrierung ist für jedes Gerät nur beim Ersten verbinden nötig. Du kannst maximal {{ max_devices }} Geräte mit deinem Registrierungsschlüssel verknüpfen. Es ist dir allerdings jederzeit möglich ein Gerät zu deregistrieren um dafür ein anderes zu registrieren. Dein Registrierungsschlüssel:</p>
+            <p>Eine Registrierung ist für jedes Gerät nur beim ersten Verbinden nötig. Du kannst maximal {{ max_devices }} Geräte mit deinem Registrierungsschlüssel verknüpfen. Es ist dir allerdings jederzeit möglich ein Gerät zu deregistrieren um dafür ein anderes zu registrieren. Dein Registrierungsschlüssel:</p>
             <div class="info-box">
-                <p>→ <strong>{{ reg_key }}</strong></p>
+                <p><strong>{{ reg_key }}</strong></p>
                 <p>Achte darauf deinen Registrierungsschlüssel nicht zu verlieren und halte ihn geheim!</p>
             </div>
         </div>
@@ -127,10 +135,20 @@
         </div>
  
         <div class="instruction-description">
-            <p><strong>Netzadministrator: </strong>{{ admin_name }}</p>
-            <p><strong>E-Mail: </strong>{{ admin_mail }}</p>
-            <p><strong>Zi-Nr.: </strong>{{ admin_room }}</p>
+            <br/>
+            {% for admin in admins %}
+            <p><strong>Netzadministrator: </strong>{{ admin[0] }}<br/>
+            <strong>E-Mail: </strong>{{ admin[1] }}<br/>
+            <strong>Zi-Nr. / Room: </strong>{{ admin[2] }}</p>
+            {% endfor %}
         </div>
+
+        <footer>
+          <hr></hr>
+            <p>Mieter / Tenant: {{ last_name }}, {{ first_name }} | Raum / Room: {{ room }}<br/>
+            Formular-ID: {{ creation_date }} | Ausgestellt von {{ current_user.get_role() }}: {{ current_user.get_last_name() }}, {{ current_user.get_first_name() }}
+            </p>
+        </footer>
     </div>
   </body>
 </html>

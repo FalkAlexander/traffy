@@ -124,3 +124,8 @@ h3 {
 .instruction-description .info-box p {
   margin: 0 0 0 0;
 }
+
+footer p {
+  font-family: OpenSans-Regular;
+  font-size: 12px;
+}

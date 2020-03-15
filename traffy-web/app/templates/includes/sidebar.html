@@ -13,29 +13,33 @@
         <div class="slide-content">
           <div class="contact-box">
             <h1>{{ _("In support cases and for questions:") }}</h1>
+            {% for admin in admins %}
             <div class="contact-flow">
               <div class="contact-button">
-                <a href="mailto:admin.goerlitz@wh.studentenwerk-dresden.de">
+                <a href="mailto:{{ admin[1] }}">
                   <img class="button-image" src="{{ url_for('static', filename='icons/mail.svg') }}"/>
                 </a>
               </div>
               <div class="contact-name">
-                <p>Falk Seidl</p>
+                <p>{{ admin[0] }}</p>
                 <p class="subtitle">{{ _("Network Administrator") }}</p>
               </div>
             </div>
+            {% endfor %}
           </div>
           <div class="contact-box">
             <h1>{{ _("In case of defects with passive network equipment:") }}</h1>
+            {% for manager in facility_management %}
             <div class="contact-flow">
-              <a href="mailto:Georg.Wohlfahrt@studentenwerk-dresden.de">
+              <a href="mailto:{{ manager[1] }}">
                   <img class="button-image" src="{{ url_for('static', filename='icons/mail.svg') }}"/>
                 </a>
               <div class="contact-name">
-                <p>Georg Wohlfahrt</p>
+                <p>{{ manager[0] }}</p>
                 <p class="subtitle">{{ _("Facility Management") }}</p>
               </div>
             </div>
+            {% endfor %}
           </div>
         </div>
       </div>
