@@ -196,7 +196,7 @@ def reg_code(reg_key):
         
         # Change User Room
         if "change_room_number" in request.form:
-            success = server.set_reg_key_room_number(reg_key, request.form["change_room_number"])
+            success = server.set_reg_key_room_number(reg_key, request.form["change_room_number"], request.form["change_room_number_date"])
 
             if not success:
                 flash(_l("An error occured."))
@@ -241,7 +241,7 @@ def reg_code(reg_key):
 
         # Delete Registration Code
         if "delete_code" in request.form:
-            success = server.delete_registration_key(reg_key)
+            success = server.delete_registration_key(reg_key, request.form["delete_code_date"])
 
             if not success:
                 flash(_l("An error occured."))

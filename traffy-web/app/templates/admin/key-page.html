@@ -199,8 +199,8 @@
             <p><strong>{{ _("Description:") }}</strong> {{ _("Use this if an user moved into another room.") }}</p>
             <p><strong>{{ _("Current Room:") }}</strong> {{ room }}</p>
             <form method="POST">
+              <p><strong>{{ _("Scheduled Date (optional):") }}</strong> <input type="date" name="change_room_number_date" value=""/></p>
               <input type="text" name="change_room_number" value=""/>
-              <input type="date" name="change_room_number_date" value=""/>
               <input name="change_room_number" type="submit" value="{{ _('Change Room') }}"/>
             </form>
           </div>
@@ -231,6 +231,7 @@
             <p><strong>{{ _("Description:") }}</strong> {{ _("Use this if an user moved out of his apartment permanently. All user data will get deleted and all devices registered with this code will go offline immediately.") }}</p>
             <p><strong>{{ _("Important:") }}</strong> {{ _("This action can not be made undone!") }}</p>
             <form method="POST">
+              <p><strong>{{ _("Scheduled Date (optional):") }}</strong> <input type="date" name="delete_code_date" value=""/></p>
               <input name="delete_code" type="submit" value="{{ _('Delete Registration Code') }}"/>
             </form>
           </div>

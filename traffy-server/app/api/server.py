@@ -156,13 +156,23 @@ class ServerAPI:
         session.close()
         return identity.room
 
-    def set_reg_key_room_number(self, reg_key, room):
+    def set_reg_key_room_number(self, reg_key, room, date):
         error = False
         session = self.db.create_session()
         try:
-            reg_key = session.query(RegistrationKey).filter_by(key=reg_key).first()
-            identity = session.query(Identity).filter_by(id=reg_key.identity).first()
-            identity.room = room
+            reg_key_query = session.query(RegistrationKey).filter_by(key=reg_key).first()
+            identity_query = session.query(Identity).filter_by(id=reg_key_query.identity).first()
+            identity_query.room = room
+            deletion_date = None
+            if date != "":
+                deletion_date = datetime.strptime(date, "%Y-%m-%d")
+            
+            for address_pair in session.query(AddressPair).filter_by(reg_key=reg_key_query.id).all():
+                if deletion_date is not None:
+                    address_pair.deletion_date = deletion_date
+                else:
+                    address_pair.deletion_date = None
+
             session.commit()
         except:
             error = True
@@ -304,31 +314,41 @@ class ServerAPI:
     # Registration Key Deletion
     #
 
-    def delete_registration_key(self, reg_key):
+    def delete_registration_key(self, reg_key, date):
         session = self.db.create_session()
 
         reg_key_query = self.get_reg_key_query_by_key(session, reg_key)
 
         try:
-            address_pair_query = session.query(AddressPair).filter_by(reg_key=reg_key_query.id).all()
-            for row in address_pair_query:
-                ip_address_query = self.get_ip_address_query_by_id(session, row.ip_address)
-                self.deregister_device(ip_address_query.address_v4, session=session)
+            deletion_date = None
+            if date != "":
+                deletion_date = datetime.strptime(date, "%Y-%m-%d")
+            
+            if deletion_date is not None:
+                print("1")
+                reg_key_query.deletion_date = deletion_date
+                self.database_commit(session)
+            else:
+                print("2")
+                address_pair_query = session.query(AddressPair).filter_by(reg_key=reg_key_query.id).all()
+                for row in address_pair_query:
+                    ip_address_query = self.get_ip_address_query_by_id(session, row.ip_address)
+                    self.deregister_device(ip_address_query.address_v4, session=session)
 
-            traffic_query = session.query(Traffic).filter_by(reg_key=reg_key_query.id).all()
-            for row in traffic_query:
-                self.delete_query(session, row)
-            self.database_commit(session)
+                traffic_query = session.query(Traffic).filter_by(reg_key=reg_key_query.id).all()
+                for row in traffic_query:
+                    self.delete_query(session, row)
+                self.database_commit(session)
 
-            self.delete_query(session, reg_key_query)
-            self.database_commit(session)
+                self.delete_query(session, reg_key_query)
+                self.database_commit(session)
 
-            identity_query = session.query(Identity).filter_by(id=reg_key_query.identity).first()
+                identity_query = session.query(Identity).filter_by(id=reg_key_query.identity).first()
 
-            self.delete_query(session, identity_query)
-            self.database_commit(session)
+                self.delete_query(session, identity_query)
+                self.database_commit(session)
             return True
-        except Exception as ex:
+        except:
             session.rollback()
             raise DeregistrationError(300)
         finally:
