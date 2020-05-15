@@ -162,7 +162,6 @@ class ServerAPI:
         try:
             reg_key_query = session.query(RegistrationKey).filter_by(key=reg_key).first()
             identity_query = session.query(Identity).filter_by(id=reg_key_query.identity).first()
-            identity_query.room = room
             deletion_date = None
             if date != "":
                 deletion_date = datetime.strptime(date, "%Y-%m-%d")
@@ -170,8 +169,10 @@ class ServerAPI:
             for address_pair in session.query(AddressPair).filter_by(reg_key=reg_key_query.id).all():
                 if deletion_date is not None:
                     address_pair.deletion_date = deletion_date
+                    identity_query.new_room = room
                 else:
                     address_pair.deletion_date = None
+                    identity_query.room = room
 
             session.commit()
         except:
@@ -325,11 +326,9 @@ class ServerAPI:
                 deletion_date = datetime.strptime(date, "%Y-%m-%d")
             
             if deletion_date is not None:
-                print("1")
                 reg_key_query.deletion_date = deletion_date
                 self.database_commit(session)
             else:
-                print("2")
                 address_pair_query = session.query(AddressPair).filter_by(reg_key=reg_key_query.id).all()
                 for row in address_pair_query:
                     ip_address_query = self.get_ip_address_query_by_id(session, row.ip_address)
