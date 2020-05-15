@@ -109,7 +109,7 @@ class ServerAPI:
             self.database_commit(session)
 
             # Create Static Lease
-            self.__add_static_lease(mac_address, ip_address)
+            #self.__add_static_lease(mac_address, ip_address)
 
             # Setup Firewall
             self.__unlock_registered_device_firewall(ip_address)
@@ -137,6 +137,44 @@ class ServerAPI:
     def get_maximum_allowed_devices(self):
         return config.MAX_MAC_ADDRESSES_PER_REG_KEY
 
+    def get_in_unlimited_time_range(self):
+        in_unlimited_time_range = False
+        now = datetime.now()
+        current_time = now.strftime("%H:%M:%S")
+        for range in config.TIME_RANGES_UNLIMITED_DATA:
+            start = range[0]
+            end = range[1]
+            if current_time > start and current_time < end:
+                in_unlimited_time_range = True
+                break
+        return in_unlimited_time_range
+
+    def get_reg_code_room(self, reg_key):
+        session = self.db.create_session()
+        reg_key = session.query(RegistrationKey).filter_by(key=reg_key).first()
+        identity = session.query(Identity).filter_by(id=reg_key.identity).first()
+        session.close()
+        return identity.room
+
+    def set_reg_key_room_number(self, reg_key, room):
+        error = False
+        session = self.db.create_session()
+        try:
+            reg_key = session.query(RegistrationKey).filter_by(key=reg_key).first()
+            identity = session.query(Identity).filter_by(id=reg_key.identity).first()
+            identity.room = room
+            session.commit()
+        except:
+            error = True
+            session.rollback()
+        finally:
+            session.close()
+
+        if error:
+            return False
+        else:
+            return True
+
     def __set_reg_key_eula_accepted(self, reg_key_query, accepted):
         reg_key_query.eula_accepted = True
 
@@ -146,8 +184,8 @@ class ServerAPI:
     def __get_mac_pair_for_ip(self, ip_address):
         return lease_parser.get_mac_from_ip(ip_address)
 
-    def __get_static_lease_mac(self, ip_address):
-        return dnsmasq_manager.get_static_lease_mac(ip_address)
+    #def __get_static_lease_mac(self, ip_address):
+    #    return dnsmasq_manager.get_static_lease_mac(ip_address)
 
     def __create_mac_entry(self, session, mac_address, user_agent):
         if mac_address is None:
@@ -237,7 +275,7 @@ class ServerAPI:
         self.__disable_spoofing_protection(ip_address)
 
         # Delete Static Lease
-        self.__remove_static_lease(mac_address, ip_address)
+        #self.__remove_static_lease(mac_address, ip_address)
 
         # Setup Firewall
         self.__relock_registered_device_firewall(ip_address)

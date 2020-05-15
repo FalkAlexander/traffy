@@ -19,7 +19,7 @@
     </div>
     
     <div class="justify">
-        <p><strong>Ansparmodell: </strong>Du erhältst jeden Tag <strong>{{ daily_topup_volume }} GiB</strong> gutgeschrieben. Am Ende des Tages wird dein unverbrauchtes Datenvolumen in den darauf folgenden Tag mitgenommen. Das Ansparmodell erlaubt es dir, insgesamt <strong>{{ max_saved_volume}} GiB</strong> anzusparen.</p>
+        <p><strong>Ansparmodell: </strong>Du erhältst jeden Tag <strong>{{ daily_topup_volume }} GiB</strong> gutgeschrieben. Von 8 bis 18 Uhr erfolgt keine Verbrauchszählung. Am Ende des Tages wird dein unverbrauchtes Datenvolumen in den darauf folgenden Tag mitgenommen. Das Ansparmodell erlaubt es dir, insgesamt <strong>{{ max_saved_volume}} GiB</strong> anzusparen.</p>
         
         <p><strong>Aufbrauch: </strong>Nach Aufbrauch deines Datenvolumens wird dein Internetzugang auf eine Geschwindigkeit von <strong>{{ shaping_speed }}/s</strong> gedrosselt. Einzig die Hochschulinfrastruktur (z.B. Lernplattformen) ist weiterhin in voller Geschwindigkeit abrufbar. Sobald der Tag herum ist und du somit <strong>{{ daily_topup_volume}} GiB</strong> gutgeschrieben bekommst, ist die Geschwindigkeitsbeschränkung wieder aufgehoben.</p>
     </div>
@@ -39,7 +39,7 @@
     </div>
     
     <div class="justify">
-        <p><strong>Savings: </strong>Each day you get a credit of <strong>{{ daily_topup_volume }} GiB</strong>. At the end of the day, your remaining data volume will be transferred to the following day. This allows you to save a total amount of <strong>{{ max_saved_volume}} GiB</strong>.</p>
+        <p><strong>Savings: </strong>Each day you get a credit of <strong>{{ daily_topup_volume }} GiB</strong>. There is no traffic accounting from 8 AM to 6 PM. At the end of the day, your remaining data volume will be transferred to the following day. This allows you to save a total amount of <strong>{{ max_saved_volume}} GiB</strong>.</p>
         
         <p><strong>Used up: </strong>After using up your data volume, your Internet access will be limited to a speed of <strong>{{ shaping_speed }}/s</strong>. The university infrastructure (e.g. learning platforms) remains to be accessible at full speed. As soon as the day is over and you're getting another <strong>{{ daily_topup_volume}} GiB</strong>, the speed limitation will be removed.</p>
     </div>
@@ -52,7 +52,6 @@
         <strong>E-Mail: </strong>{{ admin[1] }}<br/>
         <strong>Zi-Nr. / Room: </strong>{{ admin[2] }}</p>
         {% endfor %}
-        <br/>
     </div>
     
     <footer>

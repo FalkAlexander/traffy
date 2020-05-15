@@ -14,6 +14,7 @@
         <ul>
           <li><a href="{{ url_for('admin.dashboard') }}">{{ _("Overview") }}</a></li>
           <li class="active"><a href="{{ url_for('admin.reg_codes') }}">{{ _("Registration Codes") }}</a></li>
+<!--          <li><a href="{{ url_for('admin.infrastructure') }}">{{ _("Infrastructure") }}</a></li> -->
           {% if current_user.is_admin() %}
           <li><a href="{{ url_for('admin.accounts') }}">{{ _("Accounts") }}</a></li>
           {% endif %}
@@ -191,6 +192,19 @@
           </div>
         </div>
         {% endif %}
+
+        <div class="settings-box">
+          <div class="settings-box-content">
+            <h2>{{ _("Move User to Another Apartment") }}</h2>
+            <p><strong>{{ _("Description:") }}</strong> {{ _("Use this if an user moved into another room.") }}</p>
+            <p><strong>{{ _("Current Room:") }}</strong> {{ room }}</p>
+            <form method="POST">
+              <input type="text" name="change_room_number" value=""/>
+              <input type="date" name="change_room_number_date" value=""/>
+              <input name="change_room_number" type="submit" value="{{ _('Change Room') }}"/>
+            </form>
+          </div>
+        </div>
 
         <div class="settings-box">
           <div class="settings-box-content">

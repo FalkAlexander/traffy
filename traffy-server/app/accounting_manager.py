@@ -1,4 +1,4 @@
-from app.models import RegistrationKey, IpAddress, AddressPair, Traffic
+from app.models import RegistrationKey, IpAddress, AddressPair, Traffic, Identity
 from app.util import iptables_accounting_manager, iptables_rules_manager, shaping_manager, helpers
 from datetime import datetime, timedelta
 from dateutil import rrule
@@ -9,11 +9,13 @@ import logging
 
 class AccountingService():
     db = NotImplemented
+    mail_helper = NotImplemented
     shaped_reg_keys = []
     threads = []
 
-    def __init__(self, db):
+    def __init__(self, db, mail_helper):
         self.db = db
+        self.mail_helper = mail_helper
 
     #
     # Accounting Threads Management
@@ -329,9 +331,9 @@ class AccountingThread(threading.Thread):
 
                     if session.query(AddressPair).filter_by(reg_key=reg_key.id).count() != 0:
                         self.update_interval_used_traffic(session,
-                                                          reg_key,
-                                                          iptables_accounting_manager.get_box_ingress_bytes(reg_key.id),
-                                                          iptables_accounting_manager.get_box_egress_bytes(reg_key.id))
+                                                        reg_key,
+                                                        iptables_accounting_manager.get_box_ingress_bytes(reg_key.id),
+                                                        iptables_accounting_manager.get_box_egress_bytes(reg_key.id))
                     else:
                         self.update_interval_used_traffic(session, reg_key, 0, 0, inactive=True)
 
@@ -351,33 +353,50 @@ class AccountingThread(threading.Thread):
         traffic_query = session.query(Traffic).filter_by(reg_key=reg_key_query.id, timestamp=date).first()
 
         if traffic_query is not None:
-            credit = traffic_query.credit
+            in_unlimited_time_range = False
+            now = datetime.now()
+            current_time = now.strftime("%H:%M:%S")
+            try:
+                for range in config.TIME_RANGES_UNLIMITED_DATA:
+                    start = range[0]
+                    end = range[1]
+                    if current_time > start and current_time < end:
+                        in_unlimited_time_range = True
+                        break
+            except:
+                in_unlimited_time_range = False
 
-            if traffic_query.ingress + traffic_query.egress + ingress_used + egress_used >= credit or credit <= 0:
-                if inactive:
-                    return
+            if in_unlimited_time_range is False:
+                credit = traffic_query.credit
 
-                if reg_key_query.id in self.accounting_srv.shaped_reg_keys:
-                    self.__update_traffic_shaped_values(session, traffic_query, ingress_used, egress_used)
+                if traffic_query.ingress + traffic_query.egress + ingress_used + egress_used >= credit or credit <= 0:
+                    if inactive:
+                        return
+
+                    if reg_key_query.id in self.accounting_srv.shaped_reg_keys:
+                        self.__update_traffic_shaped_values(session, traffic_query, ingress_used, egress_used)
+                    else:
+                        self.__update_traffic_values(session, traffic_query, ingress_used, egress_used)
+                        self.accounting_srv.shaped_reg_keys.append(reg_key_query.id)
+                        self.__enable_traffic_shaping_for_reg_key(session, reg_key_query)
+
+                        identity_query = session.query(Identity).filter_by(id=reg_key_query.identity).first()
+                        #self.mail_helper.send_shaped_notification(identity_query.first_name, identity_query.last_name, identity_query.room)
                 else:
-                    self.__update_traffic_values(session, traffic_query, ingress_used, egress_used)
-                    self.accounting_srv.shaped_reg_keys.append(reg_key_query.id)
-                    self.__enable_traffic_shaping_for_reg_key(session, reg_key_query)
-            else:
-                if inactive:
-                    return
+                    if inactive:
+                        return
 
-                if reg_key_query.id not in self.accounting_srv.shaped_reg_keys:
-                    self.__update_traffic_values(session, traffic_query, ingress_used, egress_used)
-                else:
-                    self.__disable_traffic_shaping_for_reg_key(session, reg_key_query)
-                    self.__update_traffic_shaped_values(session, traffic_query, ingress_used, egress_used)
-                    self.accounting_srv.shaped_reg_keys.remove(reg_key_query.id)
+                    if reg_key_query.id not in self.accounting_srv.shaped_reg_keys:
+                        self.__update_traffic_values(session, traffic_query, ingress_used, egress_used)
+                    else:
+                        self.__disable_traffic_shaping_for_reg_key(session, reg_key_query)
+                        self.__update_traffic_shaped_values(session, traffic_query, ingress_used, egress_used)
+                        self.accounting_srv.shaped_reg_keys.remove(reg_key_query.id)
 
-            if not inactive:
-                iptables_accounting_manager.reset_box_counter(reg_key_query.id)
+                if not inactive:
+                    iptables_accounting_manager.reset_box_counter(reg_key_query.id)
 
-            return
+                return
 
         # New Day Check
         date = date - timedelta(days = 1)

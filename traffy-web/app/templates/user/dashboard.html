@@ -25,13 +25,16 @@
           <div class="center-box">
             <div class="flex-bottom-box">
               <div class="progress-box"></div>
+              {% if in_unlimited_time_range == true %}
+              <div class="progress-subtitle-box">{{ _("Currently No Traffic Accounting") }}</div>
+              {% else %}
               <div class="progress-subtitle-box">{{ _("Remaining Traffic Volume") }}</div>
+              {% endif %}
               <script src="{{ url_for('static', filename='js/progressbar.js') }}"></script>
             </div>
             <div class="divider-horizontal"></div>
             <div class="button-box">
               <form method="POST">
-                <input name="reedem_dashboard_btn" type="submit" value="{{ _('Reedem Voucher') }}"/>
                 <input name="deregister_dashboard_btn" type="submit" value="{{ _('Deregister This Device') }}"/>
               </form>
             </div>

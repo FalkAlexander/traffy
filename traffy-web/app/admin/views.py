@@ -193,6 +193,15 @@ def reg_code(reg_key):
                 flash(_l("An error occured."))
 
             return redirect("/admin/regcodes/" + reg_key)
+        
+        # Change User Room
+        if "change_room_number" in request.form:
+            success = server.set_reg_key_room_number(reg_key, request.form["change_room_number"])
+
+            if not success:
+                flash(_l("An error occured."))
+            
+            return redirect("/admin/regcodes/" + reg_key)
 
         # Enable Accounting
         if "enable_accounting" in request.form:
@@ -263,6 +272,9 @@ def reg_code(reg_key):
     # User Settings Variables
     custom_volume_enabled, value_custom_topup, custom_max_enabled, value_max_volume, accounting_enabled, key_active = server.get_reg_code_settings_values(reg_key)
 
+    # Room
+    room = server.get_reg_code_room(reg_key)
+
     return render_template("/admin/key-page.html",
                            dev_mode=config.DEV_MODE,
                            reg_key=reg_key,
@@ -285,7 +297,8 @@ def reg_code(reg_key):
                            custom_max_enabled=custom_max_enabled,
                            value_max_volume=value_max_volume,
                            accounting_enabled=accounting_enabled,
-                           key_active=key_active)
+                           key_active=key_active,
+                           room=room)
 
 @admin.route("/admin/accounts", methods=["GET", "POST"])
 @login_required
@@ -406,6 +419,31 @@ def add_account():
                 return redirect("/admin/accounts/" + username)
 
     return render_template("/admin/add-account.html", roles=roles)
+
+@admin.route("/admin/infrastructure", methods=["GET", "POST"])
+@login_required
+def infrastructure():
+    date = datetime.today().date()
+
+    if "search_box" in request.form:
+        search_term = request.form["search_box"].lower()
+        search_results = server.get_reg_codes_search_results(search_term)
+
+        return render_template("/admin/infrastructure.html", rows=search_results, clear_button=True)
+
+    rows = server.construct_reg_code_list()
+
+    if "clear_btn" in request.form:
+        return render_template("/admin/infrastructure.html", rows=rows, dev_mode=config.DEV_MODE)
+
+    if "add_key_btn" in request.form:
+        return redirect("/admin/add-regcode")
+
+    if "add_test_btn" in request.form:
+        server.create_reg_key_test()
+        return redirect("/admin/infrastructure")
+
+    return render_template("/admin/infrastructure.html", rows=rows, dev_mode=config.DEV_MODE)
 
 @admin.route("/admin/logout")
 @login_required

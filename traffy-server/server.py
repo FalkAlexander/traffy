@@ -3,6 +3,7 @@ from app.socket_manager import SocketManager
 from app.models import RegistrationKey, IpAddress, MacAddress, AddressPair
 from app.tests.dev_mode import DevModeTest
 from app.util import iptables_rules_manager, iptables_accounting_manager, shaping_manager, arp_manager
+from app.util.mail_helper import MailHelper
 from datetime import datetime
 from app.accounting_manager import AccountingService
 from app.util.dnsmasq_manager import DnsmasqService
@@ -18,6 +19,7 @@ class Server():
     boot_timestamp = NotImplemented
     db = NotImplemented
     dnsmasq_srv = NotImplemented
+    mail_helper = NotImplemented
     accounting_srv = NotImplemented
     sm = NotImplemented
     dev_mode_test = NotImplemented
@@ -29,7 +31,8 @@ class Server():
         self.db = DatabaseManager()
 
         self.dnsmasq_srv = DnsmasqService()
-        self.accounting_srv = AccountingService(self.db)
+        self.mail_helper = MailHelper()
+        self.accounting_srv = AccountingService(self.db, self.mail_helper)
         self.sm = SocketManager(self)
 
         signal.signal(signal.SIGINT, self.shutdown)

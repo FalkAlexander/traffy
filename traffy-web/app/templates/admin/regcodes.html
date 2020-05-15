@@ -14,6 +14,7 @@
         <ul>
           <li><a href="{{ url_for('admin.dashboard') }}">{{ _("Overview") }}</a></li>
           <li class="active"><a href="#">{{ _("Registration Codes") }}</a></li>
+<!--          <li><a href="{{ url_for('admin.infrastructure') }}">{{ _("Infrastructure") }}</a></li> -->
           {% if current_user.is_admin() %}
           <li><a href="{{ url_for('admin.accounts') }}">{{ _("Accounts") }}</a></li>
           {% endif %}

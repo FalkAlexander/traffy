@@ -907,7 +907,8 @@ nav a:hover {
 }
 
 .settings-box input[type=text],
-.settings-box input[type=password] {
+.settings-box input[type=password],
+.settings-box input[type=date] {
   all: unset;
   background-color: #fff;
   border: solid 1px #e2e8f0;
@@ -920,11 +921,16 @@ nav a:hover {
   display: inline-block;
   font-family: Cantarell-Regular;
 	font-size: 15px;
-	text-align: left;
+  text-align: left;
+}
+
+.settings-box input[type=date] {
+  width: auto;
 }
 
 .settings-box input[type=text]:focus,
-.settings-box input[type=password]:focus {
+.settings-box input[type=password]:focus
+.settings-box input[type=date]:focus {
   border: solid 1px #667690;
   transition: width 2s;
 }

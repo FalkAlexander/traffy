@@ -9,18 +9,20 @@ Base = declarative_base()
 class RegistrationKey(Base):
     __tablename__ = "registration_key"
 
-    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    id = db.Column(db.BigInteger, primary_key=True, autoincrement=True)
     key = db.Column(db.String(80), unique=True, nullable=False)
     created_on = db.Column(db.DateTime, nullable=False)
     active = db.Column(db.Boolean(True), nullable=False)
     eula_accepted = db.Column(db.Boolean(False), nullable=False)
-    identity = db.Column(db.Integer, db.ForeignKey("identity.id"))
+    identity = db.Column(db.BigInteger, db.ForeignKey("identity.id"))
     enable_accounting = db.Column(db.Boolean(True), nullable=False)
     daily_topup_volume = db.Column(db.BigInteger, nullable=True)
     max_volume = db.Column(db.BigInteger, nullable=True)
     block_traffic = db.Column(db.Boolean(False), nullable=False)
-    ingress_speed = db.Column(db.Integer, nullable=True)
-    egress_speed = db.Column(db.Integer, nullable=True)
+    ingress_speed = db.Column(db.BigInteger, nullable=True)
+    egress_speed = db.Column(db.BigInteger, nullable=True)
+    activation_date = db.Column(db.DateTime, nullable=True)
+    deletion_date = db.Column(db.DateTime, nullable=True)
     
     def __init__(self, key, identity):
         self.key = key
@@ -41,7 +43,7 @@ class RegistrationKey(Base):
 class MacAddress(Base):
     __tablename__ = "mac_address"
 
-    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    id = db.Column(db.BigInteger, primary_key=True, autoincrement=True)
     address = db.Column(db.String(25), unique=True, nullable=False)
     user_agent = db.Column(db.String(500), unique=False, nullable=True)
     first_known_since = db.Column(db.DateTime, nullable=False)
@@ -57,7 +59,7 @@ class MacAddress(Base):
 class IpAddress(Base):
     __tablename__ = "ip_address"
 
-    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    id = db.Column(db.BigInteger, primary_key=True, autoincrement=True)
     address_v4 = db.Column(db.String(15), unique=True, nullable=False)
     address_v6 = db.Column(db.String(100), unique=True, nullable=True)
     
@@ -71,11 +73,11 @@ class IpAddress(Base):
 class Identity(Base):
     __tablename__ = "identity"
 
-    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    first_name = db.Column(db.String(50), unique=False, nullable=False)
-    last_name = db.Column(db.String(50), unique=False, nullable=False)
-    mail = db.Column(db.String(50), unique=False, nullable=False)
-    room = db.Column(db.String(20), unique=True, nullable=False)
+    id = db.Column(db.BigInteger, primary_key=True, autoincrement=True)
+    first_name = db.Column(db.String(500), unique=False, nullable=False)
+    last_name = db.Column(db.String(500), unique=False, nullable=False)
+    mail = db.Column(db.String(500), unique=False, nullable=False)
+    room = db.Column(db.String(20), unique=False, nullable=False)
     
     def __init__(self, first_name, last_name, mail, room):
         self.first_name = first_name
@@ -89,8 +91,8 @@ class Identity(Base):
 class Traffic(Base):
     __tablename__ = "traffic"
 
-    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    reg_key = db.Column(db.Integer, db.ForeignKey("registration_key.id"))
+    id = db.Column(db.BigInteger, primary_key=True, autoincrement=True)
+    reg_key = db.Column(db.BigInteger, db.ForeignKey("registration_key.id"))
     timestamp = db.Column(db.DateTime, nullable=False)
     credit = db.Column(db.BigInteger, nullable=False)
     ingress = db.Column(db.BigInteger, nullable=False)
@@ -113,7 +115,7 @@ class Traffic(Base):
 class Voucher(Base):
     __tablename__ = "voucher"
 
-    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    id = db.Column(db.BigInteger, primary_key=True, autoincrement=True)
     code = db.Column(db.String(50), unique=True, nullable=False)
     valid_until = db.Column(db.DateTime, nullable=True)
     all_users = db.Column(db.Boolean(False), nullable=False)
@@ -129,9 +131,9 @@ class Voucher(Base):
 class VoucherUser(Base):
     __tablename__ = "voucher_user"
 
-    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    code = db.Column(db.Integer, db.ForeignKey("voucher.id"))
-    reg_key = db.Column(db.Integer, db.ForeignKey("registration_key.id"))
+    id = db.Column(db.BigInteger, primary_key=True, autoincrement=True)
+    code = db.Column(db.BigInteger, db.ForeignKey("voucher.id"))
+    reg_key = db.Column(db.BigInteger, db.ForeignKey("registration_key.id"))
     date = db.Column(db.DateTime, nullable=False)
     
     def __init__(self, code, reg_key, date):
@@ -145,10 +147,11 @@ class VoucherUser(Base):
 class AddressPair(Base):
     __tablename__ = "address_pair"
 
-    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    reg_key = db.Column(db.Integer, db.ForeignKey("registration_key.id"))
-    mac_address = db.Column(db.Integer, db.ForeignKey("mac_address.id"))
-    ip_address = db.Column(db.Integer, db.ForeignKey("ip_address.id"))
+    id = db.Column(db.BigInteger, primary_key=True, autoincrement=True)
+    reg_key = db.Column(db.BigInteger, db.ForeignKey("registration_key.id"))
+    mac_address = db.Column(db.BigInteger, db.ForeignKey("mac_address.id"))
+    ip_address = db.Column(db.BigInteger, db.ForeignKey("ip_address.id"))
+    deletion_date = db.Column(db.DateTime, nullable=True)
     
     def __init__(self, reg_key, mac_address, ip_address):
         self.reg_key = reg_key

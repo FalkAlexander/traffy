@@ -1,5 +1,6 @@
 import config
 import smtplib
+from email.mime.text import MIMEText
 
 
 class MailHelper():
@@ -19,20 +20,18 @@ class MailHelper():
     def update_recipients(self, shaped_recipients, login_recipients, failure_recipients):
         pass
 
-    def send_shaped_notification(self, reg_key_query):
-        mail_subject = ""
-        mail_text = "Traffic shaping activated for user: "
+    def send_shaped_notification(self, first_name, last_name, room):
+        mail_subject = "Tenant " + last_name + ", " + first_name + " has exceeded the data limit"
+        mail_text = "The user : "
 
-        message = """\
-        From: %s
-        To: %s
-        Subject: %s
+        msg = MIMEText('This is test mail')
 
-        %s
-        """ % (sender_address, ", ".join(self.shaped_recipients), mail_subject, mail_text)
+        msg['Subject'] = 'Test mail'
+        msg['From'] = 'admin@example.com'
+        msg['To'] = 'info@example.com'
 
-        self.send_mail(self.shaped_recipients, message)
+        self.__send_mail(self.shaped_recipients, message)
 
-    def send_mail(self, recipients, message):
+    def __send_mail(self, recipients, message):
         mail_server.sendmail(self.sender_address, recipients, message)
 
