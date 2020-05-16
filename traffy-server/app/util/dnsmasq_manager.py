@@ -11,9 +11,10 @@ class DnsmasqService():
         logging.info("Starting DHCP server")
         executable = "dnsmasq"
         port = "--port=" + "0"
-        interfaces = []
-        for interface in config.IP_RANGES:
-            interfaces.append("--interface=" + interface[0])
+        #interfaces = []
+        #for interface in config.IP_RANGES:
+        #    interfaces.append("--interface=" + interface[0])
+        interfaces = ["--interface=" + config.DHCP_INTERFACE]
         conf = "--conf-file=" + config.DNSMASQ_CONFIG_FILE
         hosts = "--dhcp-hostsfile=" + config.DNSMASQ_HOSTS_FILE
         lease_file = "--dhcp-leasefile=" + config.DNSMASQ_LEASE_FILE
