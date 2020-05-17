@@ -70,10 +70,19 @@ body:after{
   height: 100%;
 }
 
+.agb {
+  width: 100%;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: auto;
+}
+
 .dialog-box {
   background-color: #ffffff;
   border-radius: 5px;
   box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+  z-index: 1000;
 }
 
 .dialog-box-small {
@@ -81,7 +90,8 @@ body:after{
 }
 
 .dialog-box-wide {
-  width: 800px;
+  width: 100%;
+  height: auto;
 }
 
 @media screen and (max-width: 500px) {
@@ -174,7 +184,6 @@ body:after{
 
 .scroll-box {
   overflow: auto;
-  max-height: 500px;
   white-space: pre-line;
 }
 
