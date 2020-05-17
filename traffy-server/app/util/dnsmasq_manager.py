@@ -21,10 +21,7 @@ class DnsmasqService():
         dhcp_ranges = []
         for subnet in config.IP_RANGES:
             dhcp_ranges.append("--dhcp-range=" + subnet[0] + "," + subnet[2] + "," + subnet[3] + ",15m")
-        dhcp_options = []
-        for gateway in config.IP_RANGES:
-            dhcp_options.append("--dhcp-option=" + gateway[0] + ",3," + gateway[1])
-        dhcp_options.append("--dhcp-option=6," + config.DNS_SERVER)
+        dhcp_options = ("--dhcp-option=6," + config.DNS_SERVER)
         force_lease = "--no-ping"
         authoritative = "--dhcp-authoritative" # edgy
         self.dnsmasq = subprocess.Popen(["sudo",
