@@ -78,7 +78,7 @@ class Identity(Base):
     last_name = db.Column(db.String(500), unique=False, nullable=False)
     mail = db.Column(db.String(500), unique=False, nullable=False)
     room = db.Column(db.String(20), unique=False, nullable=False)
-    new_room = db.Column(db.String(20), unique=False, nullable=False)
+    new_room = db.Column(db.String(20), unique=False, nullable=True)
     
     def __init__(self, first_name, last_name, mail, room):
         self.first_name = first_name
