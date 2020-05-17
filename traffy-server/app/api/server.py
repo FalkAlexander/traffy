@@ -439,40 +439,44 @@ class ServerAPI:
         values_uplink = []
         labels = []
 
-        for date in rrule.rrule(rrule.DAILY, dtstart=passed_days, until=today):
-            traffic_query = session.query(func.sum(Traffic.ingress), func.sum(Traffic.egress)).filter_by(timestamp=date).all()
-            ingress, egress = traffic_query[0]
+        try:
+            for date in rrule.rrule(rrule.DAILY, dtstart=passed_days, until=today):
+                traffic_query = session.query(func.sum(Traffic.ingress), func.sum(Traffic.egress)).filter_by(timestamp=date).all()
+                ingress, egress = traffic_query[0]
 
-            if ingress is not None:
-                ingress = round(float(ingress), 3)
-            if egress is not None:
-                egress = round(float(egress), 3)
+                if ingress is not None:
+                    ingress = round(float(ingress), 3)
+                if egress is not None:
+                    egress = round(float(egress), 3)
 
-            values_downlink.append(self.__to_gib(ingress))
-            values_uplink.append(self.__to_gib(egress))
-            labels.append(date.strftime("%d.%m."))
+                values_downlink.append(self.__to_gib(ingress))
+                values_uplink.append(self.__to_gib(egress))
+                labels.append(date.strftime("%d.%m."))
 
-        active_users = session.query(RegistrationKey).filter_by(active=True).count()
-        ip_adresses = session.query(IpAddress).count()
-        registered_users = session.query(AddressPair).count()
+            active_users = session.query(RegistrationKey).filter_by(active=True).count()
+            ip_adresses = session.query(IpAddress).count()
+            registered_users = session.query(AddressPair).count()
 
-        traffic_rows = session.query(Traffic).filter_by(timestamp=today).all()
+            traffic_rows = session.query(Traffic).filter_by(timestamp=today).all()
 
-        average_credit = 0
-        count = 0
-        shaped_users = 0
-        for row in traffic_rows:
-            count += 1
-            average_credit += (row.credit - (row.ingress + row.egress)) / 1073741824
-            if row.ingress + row.egress >= row.credit or row.credit <= 0:
-                shaped_users += 1
-
-        if count != 0:
-            average_credit = round(average_credit / count, 3)
-        else:
             average_credit = 0
+            count = 0
+            shaped_users = 0
+            for row in traffic_rows:
+                count += 1
+                average_credit += (row.credit - (row.ingress + row.egress)) / 1073741824
+                if row.ingress + row.egress >= row.credit or row.credit <= 0:
+                    shaped_users += 1
 
-        session.close()
+            if count != 0:
+                average_credit = round(average_credit / count, 3)
+            else:
+                average_credit = 0
+        except:
+            session.rollback()
+        finally:
+            session.close()
+
         return values_downlink, values_uplink, labels, active_users, registered_users, average_credit, shaped_users
 
     def get_reg_codes_search_results(self, search_term):
