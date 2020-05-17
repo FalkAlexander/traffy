@@ -49,13 +49,13 @@ class Server():
             if not os.path.exists(os.path.dirname(cfile)):
                 try:
                     os.makedirs(os.path.dirname(cfile))
-                except e:
+                except:
                     raise
 
             if not os.path.exists(cfile):
                 try:
                     open(cfile, "a").close()
-                except e:
+                except:
                     raise
 
     def firewall_unlock_registered_devices(self):

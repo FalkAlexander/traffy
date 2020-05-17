@@ -243,14 +243,14 @@ class AccountingService():
 
         volume_left = credit - self.get_ingress_egress_amount(traffic_query)
 
-        daily_topup_volume = self.get_daily_topup_volume()
+        initial_volume = self.get_initial_volume()
         max_saved_volume = self.get_max_saved_volume()
 
         if traffic_query is None:
             if gib is True:
-                return self.__to_gib(daily_topup_volume, decimals), self.__to_gib(daily_topup_volume, decimals)
+                return self.__to_gib(initial_volume, decimals), self.__to_gib(initial_volume, decimals)
             else:
-                return daily_topup_volume, daily_topup_volume
+                return initial_volume, initial_volume
         else:
             if gib is True:
                 return self.__to_gib(volume_left, decimals), self.__to_gib(credit, decimals)
@@ -505,7 +505,7 @@ class AccountingThread(threading.Thread):
             traffic_query.ingress = traffic_query.ingress + ingress_used
             traffic_query.egress = traffic_query.egress + egress_used
             session.commit()
-        except:
+        except Exception as ex:
             session.rollback()
 
     def __update_traffic_shaped_values(self, session, traffic_query, ingress_used, egress_used):

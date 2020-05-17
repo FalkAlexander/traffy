@@ -4,6 +4,7 @@ from ..util import arp_manager, generate_registration_key, dnsmasq_manager, leas
 from datetime import datetime, timedelta
 from dateutil import rrule
 from user_agents import parse
+from sqlalchemy.sql import func
 import time
 import config
 import threading
@@ -439,23 +440,21 @@ class ServerAPI:
         labels = []
 
         for date in rrule.rrule(rrule.DAILY, dtstart=passed_days, until=today):
-            traffic_query = session.query(Traffic).filter_by(timestamp=date).all()
-            downlink = 0
-            uplink = 0
-            if traffic_query is not None:
-                for row in traffic_query:
-                    downlink += self.__to_gib(row.ingress)
-                    uplink += self.__to_gib(row.egress)
+            traffic_query = session.query(func.sum(Traffic.ingress), func.sum(Traffic.egress)).filter_by(timestamp=date).all()
+            ingress, egress = traffic_query[0]
 
-            values_downlink.append(downlink)
-            values_uplink.append(uplink)
+            if ingress is not None:
+                ingress = round(float(ingress), 3)
+            if egress is not None:
+                egress = round(float(egress), 3)
+
+            values_downlink.append(self.__to_gib(ingress))
+            values_uplink.append(self.__to_gib(egress))
             labels.append(date.strftime("%d.%m."))
 
         active_users = session.query(RegistrationKey).filter_by(active=True).count()
         ip_adresses = session.query(IpAddress).count()
-        ratio = "N/A"
-        if ip_adresses != 0:
-            ratio = round(active_users / ip_adresses, 1)
+        registered_users = session.query(AddressPair).count()
 
         traffic_rows = session.query(Traffic).filter_by(timestamp=today).all()
 
@@ -474,7 +473,7 @@ class ServerAPI:
             average_credit = 0
 
         session.close()
-        return values_downlink, values_uplink, labels, active_users, ratio, average_credit, shaped_users
+        return values_downlink, values_uplink, labels, active_users, registered_users, average_credit, shaped_users
 
     def get_reg_codes_search_results(self, search_term):
         session = self.db.create_session()
@@ -757,7 +756,10 @@ class ServerAPI:
     #
 
     def __to_gib(self, bytes, decimals=3):
-        return round(bytes / 1073741824, decimals)
+        try:
+            return round(bytes / 1073741824, decimals)
+        except:
+            return 0
 
     def __to_bytes(self, gib):
         return int(gib * 1073741824)

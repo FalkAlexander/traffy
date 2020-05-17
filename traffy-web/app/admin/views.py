@@ -42,7 +42,7 @@ def dashboard():
     legend_downlink = _l("Downlink") + " (GiB)"
     legend_uplink = _l("Uplink") + " (GiB)"
 
-    values_downlink, values_uplink, labels, active_users, ratio, average_credit, shaped_users = server.get_supervisor_dashboard_stats()
+    values_downlink, values_uplink, labels, active_users, registered_users, average_credit, shaped_users = server.get_supervisor_dashboard_stats()
 
     return render_template("/admin/dashboard.html",
                            labels=labels,
@@ -51,7 +51,7 @@ def dashboard():
                            legend_downlink=legend_downlink,
                            legend_uplink=legend_uplink,
                            active_users=active_users,
-                           ratio=ratio,
+                           registered_users=registered_users,
                            average_credit=average_credit,
                            shaped_users=shaped_users)
 
