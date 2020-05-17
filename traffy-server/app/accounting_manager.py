@@ -396,7 +396,7 @@ class AccountingThread(threading.Thread):
                 if not inactive:
                     iptables_accounting_manager.reset_box_counter(reg_key_query.id)
 
-                return
+            return
 
         # New Day Check
         date = date - timedelta(days = 1)
