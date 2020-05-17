@@ -5,7 +5,7 @@ import logging
 
 
 def apply_redirect_rule(delete=False):
-    ports = ["80", "443"]
+    ports = ["80"]
     chain_rule = "-A"
 
     if delete is True:
@@ -33,7 +33,52 @@ def apply_redirect_rule(delete=False):
                 "-j",
                 "DNAT",
                 "--to-destination",
-                subnet[1] + ":80"
+                subnet[1]
+                ], stdout=subprocess.PIPE, preexec_fn=os.setsid).wait()
+        
+        for subnet in config.IP_RANGES:
+            ip_range = subnet[2] + "-" + subnet[3]
+
+            subprocess.Popen([
+                "sudo",
+                "iptables",
+                "-t",
+                "nat",
+                chain_rule,
+                "PREROUTING",
+                "-m",
+                "iprange",
+                "--src-range",
+                ip_range,
+                "-p",
+                "tcp",
+                "--dport",
+                "443",
+                "-d",
+                subnet[1],
+                "-j",
+                "ACCEPT"
+                ], stdout=subprocess.PIPE, preexec_fn=os.setsid).wait()
+            
+            subprocess.Popen([
+                "sudo",
+                "iptables",
+                "-t",
+                "nat",
+                chain_rule,
+                "PREROUTING",
+                "-m",
+                "iprange",
+                "--src-range",
+                ip_range,
+                "-p",
+                "tcp",
+                "--dport",
+                "443",
+                "-d",
+                config.WAN_IP_ADDRESS,
+                "-j",
+                "ACCEPT"
                 ], stdout=subprocess.PIPE, preexec_fn=os.setsid).wait()
 
     logging.info("Applied captive portal ACLs")
