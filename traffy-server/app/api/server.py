@@ -532,12 +532,14 @@ class ServerAPI:
             session.add(RegistrationKey(key=reg_key, identity=identity.id))
             reg_key_query = session.query(RegistrationKey).filter_by(key=reg_key).first()
 
-            session.add(Traffic(reg_key=reg_key_query.id, timestamp=datetime.today().date(), credit=config.DAILY_TOPUP_VOLUME, ingress=0, egress=0, ingress_shaped=0, egress_shaped=0))
+            session.add(Traffic(reg_key=reg_key_query.id, timestamp=datetime.today().date(), credit=config.INITIAL_VOLUME, ingress=0, egress=0, ingress_shaped=0, egress_shaped=0))
             session.commit()
         except:
             session.rollback()
         finally:
             session.close()
+        
+        self.accounting_srv.restart()
 
         return reg_key
 

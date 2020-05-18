@@ -10,6 +10,7 @@ import logging
 class AccountingService():
     db = NotImplemented
     mail_helper = NotImplemented
+    interval = NotImplemented
     shaped_reg_keys = []
     threads = []
 
@@ -22,6 +23,7 @@ class AccountingService():
     #
 
     def start(self, interval):
+        self.interval = interval
         keys_per_thread = 25
 
         session = self.db.create_session()
@@ -40,6 +42,10 @@ class AccountingService():
     def stop(self):
         for thread in self.threads:
             thread.stop()
+
+    def restart(self):
+        self.stop()
+        self.start(self.interval)
 
     #
     # Out of Interval Traffic Actions
