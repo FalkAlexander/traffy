@@ -19,11 +19,13 @@ class DnsmasqService():
         hosts = "--dhcp-hostsfile=" + config.DNSMASQ_HOSTS_FILE
         lease_file = "--dhcp-leasefile=" + config.DNSMASQ_LEASE_FILE
         dhcp_ranges = []
-        for subnet in config.IP_RANGES:
-            dhcp_ranges.append("--dhcp-range=" + subnet[0] + "," + subnet[2] + "," + subnet[3] + ",15m")
+        if not hasattr(config, "DNSMASQ_STATIC_HOSTS_FILE"):
+            for subnet in config.IP_RANGES:
+                dhcp_ranges.append("--dhcp-range=" + subnet[0] + "," + subnet[2] + "," + subnet[3] + ",15m")
         dhcp_options = ["--dhcp-option=6," + config.DNS_SERVER]
         force_lease = "--no-ping"
         authoritative = "--dhcp-authoritative" # edgy
+        logging = "--log-dhcp=" + config.DNSMASQ_LOG_FILE
         self.dnsmasq = subprocess.Popen(["sudo",
                                         executable,
                                         port,
@@ -31,6 +33,7 @@ class DnsmasqService():
                                         #force_lease,
                                         #authoritative,
                                         hosts,
+                                        logging,
                                         lease_file
                                         ] + dhcp_ranges + interfaces + dhcp_options, stdout=subprocess.PIPE, preexec_fn=os.setsid).wait()
 
