@@ -1,6 +1,6 @@
 from app.exceptions.user_exceptions import RegistrationError, DatabaseError, DeregistrationError
 from ..models import RegistrationKey, IpAddress, MacAddress, AddressPair, Traffic, Identity
-from ..util import arp_manager, generate_registration_key, dnsmasq_manager, lease_parser, iptables_rules_manager, iptables_accounting_manager, shaping_manager
+from ..util import arp_manager, generate_registration_key, lease_parser, iptables_rules_manager, iptables_accounting_manager, shaping_manager
 from datetime import datetime, timedelta
 from dateutil import rrule
 from user_agents import parse
@@ -13,7 +13,6 @@ import threading
 class ServerAPI:
     db = NotImplemented
     accounting_srv = NotImplemented
-    dnsmasq_srv = NotImplemented
     dev_mode_test = NotImplemented
 
     server_version = "0.1"
@@ -22,7 +21,6 @@ class ServerAPI:
     def __init__(self, server):
         self.db = server.db
         self.accounting_srv = server.accounting_srv
-        self.dnsmasq_srv = server.dnsmasq_srv
         self.dev_mode_test = server.dev_mode_test
 
     def get_server_version(self):
@@ -109,9 +107,6 @@ class ServerAPI:
             # Write DB
             self.database_commit(session)
 
-            # Create Static Lease
-            #self.__add_static_lease(mac_address, ip_address)
-
             # Setup Firewall
             self.__unlock_registered_device_firewall(ip_address)
 
@@ -196,9 +191,6 @@ class ServerAPI:
     def __get_mac_pair_for_ip(self, ip_address):
         return lease_parser.get_mac_from_ip(ip_address)
 
-    #def __get_static_lease_mac(self, ip_address):
-    #    return dnsmasq_manager.get_static_lease_mac(ip_address)
-
     def __create_mac_entry(self, session, mac_address, user_agent):
         if mac_address is None:
             raise RegistrationError(125)
@@ -221,10 +213,6 @@ class ServerAPI:
 
         session.add(AddressPair(reg_key=reg_key_query.id, mac_address=mac_address_query.id, ip_address=ip_address_query.id))
         return ip_address_query
-
-    def __add_static_lease(self, mac_address, ip_address):
-        dnsmasq_manager.add_static_lease(mac_address, ip_address)
-        self.dnsmasq_srv.reload()
 
     def __unlock_registered_device_firewall(self, ip_address):
         iptables_rules_manager.unlock_registered_device(ip_address)
@@ -286,9 +274,6 @@ class ServerAPI:
         # Spoofing Protection
         self.__disable_spoofing_protection(ip_address)
 
-        # Delete Static Lease
-        #self.__remove_static_lease(mac_address, ip_address)
-
         # Setup Firewall
         self.__relock_registered_device_firewall(ip_address)
 
@@ -304,10 +289,6 @@ class ServerAPI:
 
     def __disable_spoofing_protection(self, ip_address):
         arp_manager.remove_static_arp_entry(ip_address)
-
-    def __remove_static_lease(self, mac_address, ip_address):
-        dnsmasq_manager.remove_static_lease(mac_address, ip_address)
-        self.dnsmasq_srv.reload()
 
     def __relock_registered_device_firewall(self, ip_address):
         iptables_rules_manager.relock_registered_device(ip_address)

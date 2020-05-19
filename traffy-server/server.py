@@ -6,7 +6,6 @@ from app.util import iptables_rules_manager, iptables_accounting_manager, shapin
 from app.util.mail_helper import MailHelper
 from datetime import datetime
 from app.accounting_manager import AccountingService
-from app.util.dnsmasq_manager import DnsmasqService
 import os
 import logging
 import threading
@@ -18,7 +17,6 @@ import sys
 class Server():
     boot_timestamp = NotImplemented
     db = NotImplemented
-    dnsmasq_srv = NotImplemented
     mail_helper = NotImplemented
     accounting_srv = NotImplemented
     sm = NotImplemented
@@ -27,10 +25,8 @@ class Server():
     def __init__(self):
         self.boot_timestamp = datetime.now()
         self.setup_logging()
-        self.init_configs()
         self.db = DatabaseManager()
 
-        self.dnsmasq_srv = DnsmasqService()
         self.mail_helper = MailHelper()
         self.accounting_srv = AccountingService(self.db, self.mail_helper)
         self.sm = SocketManager(self)
@@ -41,22 +37,6 @@ class Server():
 
     def setup_logging(self):
         logging.basicConfig(format="[%(asctime)s] [%(process)d] [%(levelname)s] %(message)s", datefmt="%Y-%m-%d %H:%M:%S %z", level=logging.INFO)
-
-    def init_configs(self):
-        configs = [config.DNSMASQ_CONFIG_FILE, config.DNSMASQ_HOSTS_FILE, config.DNSMASQ_LEASE_FILE]
-
-        for cfile in configs:
-            if not os.path.exists(os.path.dirname(cfile)):
-                try:
-                    os.makedirs(os.path.dirname(cfile))
-                except:
-                    raise
-
-            if not os.path.exists(cfile):
-                try:
-                    open(cfile, "a").close()
-                except:
-                    raise
 
     def firewall_unlock_registered_devices(self):
         session = self.db.create_session()
@@ -195,9 +175,6 @@ class Server():
         # Stop Accounting
         self.accounting_srv.stop()
 
-        # Stop dnsmasq
-        self.dnsmasq_srv.stop()
-
         # Shutdown Shaping
         shaping_manager.shutdown_shaping()
 
@@ -217,9 +194,6 @@ class Server():
         logging.info("Network not managed anymore")
 
     def startup(self):
-        # Start dnsmasq
-        self.dnsmasq_srv.start()
-
         # Setup Shaping
         shaping_manager.setup_shaping()
 
