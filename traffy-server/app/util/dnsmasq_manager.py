@@ -25,7 +25,7 @@ class DnsmasqService():
         dhcp_options = ["--dhcp-option=6," + config.DNS_SERVER]
         force_lease = "--no-ping"
         authoritative = "--dhcp-authoritative" # edgy
-        logging = "--log-dhcp=" + config.DNSMASQ_LOG_FILE
+        log = "--log-dhcp=" + config.DNSMASQ_LOG_FILE
         self.dnsmasq = subprocess.Popen(["sudo",
                                         executable,
                                         port,
@@ -33,7 +33,7 @@ class DnsmasqService():
                                         #force_lease,
                                         #authoritative,
                                         hosts,
-                                        logging,
+                                        log,
                                         lease_file
                                         ] + dhcp_ranges + interfaces + dhcp_options, stdout=subprocess.PIPE, preexec_fn=os.setsid).wait()
 
