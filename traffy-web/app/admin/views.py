@@ -250,11 +250,13 @@ def reg_code(reg_key):
 
 
     # Statistics
-    legend_downlink = _l("Downlink") + " (GiB)"
-    legend_downlink_shaped = _l("Shaped Downlink") + " (GiB)"
-    legend_uplink = _l("Uplink") + " (GiB)"
-    legend_uplink_shaped = _l("Shaped Uplink") + " (GiB)"
-    stat_volume_left, stat_created_on, stat_shaped, stat_status, labels, values_downlink, values_downlink_shaped, values_uplink, values_uplink_shaped = server.get_reg_code_statistics(reg_key)
+    legend_downlink = _l("Down") + " (GiB)"
+    legend_downlink_unlimited_range = _l("Down Timerule") + " (GiB)"
+    legend_downlink_shaped = _l("Down Shaped") + " (GiB)"
+    legend_uplink = _l("Up") + " (GiB)"
+    legend_uplink_unlimited_range = _l("Up Timerule") + " (GiB)"
+    legend_uplink_shaped = _l("Up Shaped") + " (GiB)"
+    stat_volume_left, stat_created_on, stat_shaped, stat_status, labels, values_downlink, values_downlink_unlimited_range, values_downlink_shaped, values_uplink, values_uplink_unlimited_range, values_uplink_shaped = server.get_reg_code_statistics(reg_key)
 
     if stat_shaped:
         stat_shaped = _l("Yes")
@@ -284,12 +286,16 @@ def reg_code(reg_key):
                            stat_status=stat_status,
                            labels=labels,
                            values_downlink=values_downlink,
+                           values_downlink_unlimited_range=values_downlink_unlimited_range,
                            values_downlink_shaped=values_downlink_shaped,
                            values_uplink=values_uplink,
+                           values_uplink_unlimited_range=values_uplink_unlimited_range,
                            values_uplink_shaped=values_uplink_shaped,
                            legend_downlink=legend_downlink,
+                           legend_downlink_unlimited_range=legend_downlink_unlimited_range,
                            legend_downlink_shaped=legend_downlink_shaped,
                            legend_uplink=legend_uplink,
+                           legend_uplink_unlimited_range=legend_uplink_unlimited_range,
                            legend_uplink_shaped=legend_uplink_shaped,
                            device_list=device_list,
                            custom_volume_enabled=custom_volume_enabled,

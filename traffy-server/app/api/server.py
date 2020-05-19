@@ -441,13 +441,14 @@ class ServerAPI:
 
         try:
             for date in rrule.rrule(rrule.DAILY, dtstart=passed_days, until=today):
-                traffic_query = session.query(func.sum(Traffic.ingress), func.sum(Traffic.egress)).filter_by(timestamp=date).all()
+                traffic_query = session.query(func.sum(Traffic.ingress + Traffic.ingress_shaped + Traffic.ingress_unlimited_range), func.sum(Traffic.egress + Traffic.egress_shaped + Traffic.egress_unlimited_range)).filter_by(timestamp=date).all()
                 ingress, egress = traffic_query[0]
 
                 if ingress is not None:
                     ingress = round(float(ingress), 3)
                 if egress is not None:
                     egress = round(float(egress), 3)
+
 
                 values_downlink.append(self.__to_gib(ingress))
                 values_uplink.append(self.__to_gib(egress))
@@ -532,7 +533,7 @@ class ServerAPI:
             session.add(RegistrationKey(key=reg_key, identity=identity.id))
             reg_key_query = session.query(RegistrationKey).filter_by(key=reg_key).first()
 
-            session.add(Traffic(reg_key=reg_key_query.id, timestamp=datetime.today().date(), credit=config.INITIAL_VOLUME, ingress=0, egress=0, ingress_shaped=0, egress_shaped=0))
+            session.add(Traffic(reg_key=reg_key_query.id, timestamp=datetime.today().date(), credit=config.INITIAL_VOLUME, ingress=0, egress=0, ingress_shaped=0, egress_shaped=0, ingress_unlimited_range=0, egress_unlimited_range=0))
             session.commit()
         except:
             session.rollback()
@@ -647,8 +648,10 @@ class ServerAPI:
             stat_volume_left = 0
 
         values_downlink = []
+        values_downlink_unlimited_range = []
         values_downlink_shaped = []
         values_uplink = []
+        values_uplink_unlimited_range = []
         values_uplink_shaped = []
         labels = []
 
@@ -658,26 +661,32 @@ class ServerAPI:
         for date in rrule.rrule(rrule.DAILY, dtstart=passed_days, until=today):
             traffic_query = session.query(Traffic).filter_by(reg_key=reg_key_query.id, timestamp=date).all()
             downlink = 0
+            downlink_unlimited_range = 0
             downlink_shaped = 0
             uplink = 0
+            uplink_unlimited_range = 0
             uplink_shaped = 0
 
             if traffic_query is not None:
                 for row in traffic_query:
                     downlink += self.__to_gib(row.ingress)
+                    downlink_unlimited_range += self.__to_gib(row.ingress_unlimited_range)
                     downlink_shaped += self.__to_gib(row.ingress_shaped)
                     uplink += self.__to_gib(row.egress)
+                    uplink_unlimited_range += self.__to_gib(row.egress_unlimited_range)
                     uplink_shaped += self.__to_gib(row.egress_shaped)
 
             values_downlink.append(downlink)
+            values_downlink_unlimited_range.append(downlink_unlimited_range)
             values_downlink_shaped.append(downlink_shaped)
             values_uplink.append(uplink)
+            values_uplink_unlimited_range.append(uplink_unlimited_range)
             values_uplink_shaped.append(uplink_shaped)
             labels.append(date.strftime("%d.%m."))
 
         session.close()
 
-        return stat_volume_left, stat_created_on, stat_shaped, stat_status, labels, values_downlink, values_downlink_shaped, values_uplink, values_uplink_shaped
+        return stat_volume_left, stat_created_on, stat_shaped, stat_status, labels, values_downlink, values_downlink_unlimited_range, values_downlink_shaped, values_uplink, values_uplink_unlimited_range, values_uplink_shaped
 
     def get_reg_code_device_list(self, reg_key):
         session = self.db.create_session()

@@ -100,8 +100,10 @@ class Traffic(Base):
     egress = db.Column(db.BigInteger, nullable=False)
     ingress_shaped = db.Column(db.BigInteger, nullable=False)
     egress_shaped = db.Column(db.BigInteger, nullable=False)
+    ingress_unlimited_range = db.Column(db.BigInteger, nullable=False)
+    egress_unlimited_range = db.Column(db.BigInteger, nullable=False)
     
-    def __init__(self, reg_key, timestamp, credit, ingress, egress, ingress_shaped, egress_shaped):
+    def __init__(self, reg_key, timestamp, credit, ingress, egress, ingress_shaped, egress_shaped, ingress_unlimited_range, egress_unlimited_range):
         self.reg_key = reg_key
         self.timestamp = timestamp
         self.credit = credit
@@ -109,6 +111,8 @@ class Traffic(Base):
         self.egress = egress
         self.ingress_shaped = ingress_shaped
         self.egress_shaped = egress_shaped
+        self.ingress_unlimited_range = ingress_unlimited_range
+        self.egress_unlimited_range = egress_unlimited_range
     
     def __repr__(self):
         return "<Traffic %r>" % self.reg_key

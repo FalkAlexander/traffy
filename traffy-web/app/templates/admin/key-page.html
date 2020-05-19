@@ -257,8 +257,16 @@
                     {% endfor %}],
             spanGaps: false
         }, {
-            label: '{{ legend_downlink_shaped }}',
+            label: '{{ legend_downlink_unlimited_range }}',
             backgroundColor: "rgba(45,55,72,0.7)",
+            stack: "Stack 0",
+            data : [{% for item in values_downlink_unlimited_range %}
+                      {{item}},
+                    {% endfor %}],
+            spanGaps: false
+        }, {
+            label: '{{ legend_downlink_shaped }}',
+            backgroundColor: "rgba(45,55,72,0.5)",
             stack: "Stack 0",
             data : [{% for item in values_downlink_shaped %}
                       {{item}},
@@ -273,8 +281,16 @@
                     {% endfor %}],
             spanGaps: false
         }, {
+            label: '{{ legend_uplink_unlimited_range }}',
+            backgroundColor: "rgba(156,26,26,0.9)",
+            stack: "Stack 1",
+            data : [{% for item in values_uplink_unlimited_range %}
+                      {{item}},
+                    {% endfor %}],
+            spanGaps: false
+        }, {
             label: '{{ legend_uplink_shaped }}',
-            backgroundColor: "rgba(156,26,26,0.7)",
+            backgroundColor: "rgba(156,26,26,0.5)",
             stack: "Stack 1",
             data : [{% for item in values_uplink_shaped %}
                       {{item}},
