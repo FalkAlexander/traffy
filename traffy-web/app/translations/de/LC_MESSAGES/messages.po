@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
 "POT-Creation-Date: 2020-05-21 11:58+0200\n"
-"PO-Revision-Date: 2020-05-21 12:06+0200\n"
+"PO-Revision-Date: 2020-05-21 12:35+0200\n"
 "Last-Translator: Falk Seidl <hi@falsei.de>\n"
 "Language: de\n"
 "Language-Team: German <hi@falsei.de>\n"
@@ -621,7 +621,7 @@ msgid ""
 "Disables traffic accounting for this user. Use this to grant unlimited "
 "traffic to this user."
 msgstr ""
-"Deaktiviert die Datenvolumenszählung für den Nutzer. Benutzen Sie diese "
+"Deaktiviert die Datenvolumenzählung für den Nutzer. Benutzen Sie diese "
 "Funktion um dem Nutzer unlimitiertes Volumen zu gewähren"
 
 #: app/templates/admin/key-page.html:181
@@ -860,7 +860,7 @@ msgstr "Übersicht"
 
 #: app/templates/user/dashboard.html:29
 msgid "Currently No Traffic Accounting"
-msgstr "Derzeit keine Datenvolumenszählung"
+msgstr "Derzeit keine Datenvolumenzählung"
 
 #: app/templates/user/dashboard.html:31
 msgid "Remaining Traffic Volume"
