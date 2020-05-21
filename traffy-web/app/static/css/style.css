@@ -282,7 +282,7 @@ body:after{
 
 .progress-box * {
   display: inline-block !important;
-  width: 75% !important;
+  width: 220px !important;
 }
 
 .progress-subtitle-box {

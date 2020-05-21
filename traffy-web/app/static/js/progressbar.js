@@ -25,7 +25,7 @@ var bar = new ProgressBar.Circle(".progress-box", {
 });
 
 bar.text.style.fontFamily = "Cantarell-Regular";
-bar.text.style.fontSize = "19px";
+bar.text.style.fontSize = "22px";
 
 oneValue = 1 / credit
 
