@@ -276,10 +276,13 @@ body:after{
 
 .progress-box {
   margin: 20px;
-  width: 200px;
-  height: 200px;
   position: relative;
   text-align: center;
+}
+
+.progress-box * {
+  display: inline-block !important;
+  width: 75% !important;
 }
 
 .progress-subtitle-box {
