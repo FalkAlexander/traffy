@@ -34,12 +34,12 @@ body.background-dashboard {
 }
 
 body.background-about {
-  background-image: url("../img/bg-about.jpg");
+  background-image: url("../img/bg-network.jpg");
   background-size: cover;
 }
 
 body.supervisor-login {
-  background-image: url("../img/bg-login.jpg");
+  background-image: url("../img/bg-network.jpg");
   background-size: cover;
 }
 

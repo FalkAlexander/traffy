@@ -14,7 +14,7 @@ var bar = new ProgressBar.Circle(".progress-box", {
     circle.path.setAttribute("stroke-width", state.width);
 
     var num = circle.value() * credit;
-    var value = num.toFixed(2)
+    var value = num.toFixed(3)
     if (value === 0) {
       circle.setText("");
     } else {
