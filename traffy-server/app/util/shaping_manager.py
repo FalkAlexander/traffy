@@ -4,46 +4,8 @@ import subprocess
 import logging
 
 def setup_shaping():
-    # Create bridge queueing discipline
-    subprocess.Popen([
-        "sudo",
-        "tc",
-        "qdisc",
-        "add",
-        "dev",
-        config.WAN_INTERFACE,
-        "handle",
-        "ffff:",
-        "ingress"
-        ], stdout=subprocess.PIPE, preexec_fn=os.setsid).wait()
-
-    # Mirror ingress traffic
-    subprocess.Popen([
-        "sudo",
-        "tc",
-        "filter",
-        "add",
-        "dev",
-        config.WAN_INTERFACE,
-        "parent",
-        "ffff:",
-        "protocol",
-        "ip",
-        "u32",
-        "match",
-        "u32",
-        "0",
-        "0",
-        "action",
-        "mirred",
-        "egress",
-        "redirect",
-        "dev",
-        config.BRIDGE_INGRESS_INTERFACE
-        ], stdout=subprocess.PIPE, preexec_fn=os.setsid).wait()
-
     # Create root queueing disciplines
-    for interface in [config.WAN_INTERFACE, config.BRIDGE_INGRESS_INTERFACE]:
+    for interface in config.LAN_INTERFACES:
         subprocess.Popen([
             "sudo",
             "tc",
@@ -83,7 +45,7 @@ def setup_shaping():
     logging.info("Prepared traffic shaping queueing discipline")
 
 def enable_shaping_for_ip(ip_id, ip_address):
-    for interface in [config.WAN_INTERFACE, config.BRIDGE_INGRESS_INTERFACE]:
+    for interface in config.LAN_INTERFACES:
         # Create shaping class for ip
         subprocess.Popen([
             "sudo",
@@ -128,7 +90,7 @@ def enable_shaping_for_ip(ip_id, ip_address):
     logging.debug("Enabled traffic shaping for " + ip_address)
 
 def disable_shaping_for_ip(ip_id, ip_address):
-    for interface in [config.WAN_INTERFACE, config.BRIDGE_INGRESS_INTERFACE]:
+    for interface in config.LAN_INTERFACES:
         # Remove matching filter
         for handle in __get_rule_handles(interface, ip_address):
             subprocess.Popen([
@@ -166,7 +128,7 @@ def disable_shaping_for_ip(ip_id, ip_address):
     logging.debug("Disabled traffic shaping for " + ip_address)
 
 def shutdown_shaping():
-    for interface in [config.WAN_INTERFACE, config.BRIDGE_INGRESS_INTERFACE]:
+    for interface in config.LAN_INTERFACES:
         subprocess.Popen([
             "sudo",
             "tc",
@@ -177,16 +139,6 @@ def shutdown_shaping():
             "root"
             ], stdout=subprocess.PIPE, preexec_fn=os.setsid).wait()
 
-    subprocess.Popen([
-        "sudo",
-        "tc",
-        "qdisc",
-        "del",
-        "dev",
-        config.WAN_INTERFACE,
-        "ingress"
-        ], stdout=subprocess.PIPE, preexec_fn=os.setsid).wait()
-
     logging.info("Removed traffic shaping queueing discipline")
 
 #
@@ -195,7 +147,7 @@ def shutdown_shaping():
 
 def __add_shaping_exception_for_ip(ip_address): # ip _can_ contain decimal subnet mask: x.x.x.x/xx
     for direction in ["src", "dst"]:
-        for interface in [config.WAN_INTERFACE, config.BRIDGE_INGRESS_INTERFACE]:
+        for interface in config.LAN_INTERFACES:
             subprocess.Popen([
                 "sudo",
                 "tc",

@@ -1,5 +1,6 @@
 DATABASE_URI = "mysql://traffy_user:traffy_user@192.168.100.150/traffy_server"
 DNSMASQ_LEASE_FILE = "/var/lib/misc/dnsmasq.leases"
+LAN_INTERFACES = ["ens8s0"]
 WAN_INTERFACE = "enp7s0"
 BRIDGE_INGRESS_INTERFACE = "ifb0"
 DAILY_TOPUP_VOLUME = 10737418240 # 5 GiB / in bytes
