@@ -273,6 +273,14 @@
                     {% endfor %}],
             spanGaps: false
         }, {
+            label: '{{ legend_downlink_excepted }}',
+            backgroundColor: "rgba(45,55,72,0.3)",
+            stack: "Stack 0",
+            data : [{% for item in values_downlink_excepted %}
+                      {{item}},
+                    {% endfor %}],
+            spanGaps: false
+        }, {
             label: '{{ legend_uplink }}',
             backgroundColor: "rgba(156,26,26,0.9)",
             stack: "Stack 1",
@@ -293,6 +301,14 @@
             backgroundColor: "rgba(156,26,26,0.5)",
             stack: "Stack 1",
             data : [{% for item in values_uplink_shaped %}
+                      {{item}},
+                    {% endfor %}],
+            spanGaps: false
+        }, {
+            label: '{{ legend_uplink_excepted }}',
+            backgroundColor: "rgba(156,26,26,0.3)",
+            stack: "Stack 1",
+            data : [{% for item in values_uplink_excepted %}
                       {{item}},
                     {% endfor %}],
             spanGaps: false

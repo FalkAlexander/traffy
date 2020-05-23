@@ -66,53 +66,71 @@
       Chart.defaults.global.responsive = true;
       Chart.defaults.global.maintainAspectRatio = false;
 
-      var chartData = {
+      var barData = {
         labels : [{% for item in labels %}
                    "{{item}}",
                   {% endfor %}],
         datasets : [{
             label: '{{ legend_downlink }}',
-            fill: true,
-            lineTension: 0.1,
-            backgroundColor: "rgba(165,179,204,0.6)",
-            borderColor: "rgba(45,55,72,1)",
-            borderCapStyle: 'butt',
-            borderDash: [],
-            borderDashOffset: 0.0,
-            borderJoinStyle: 'miter',
-            pointBorderColor: "rgba(156,26,26,1)",
-            pointBackgroundColor: "#fff",
-            pointBorderWidth: 2,
-            pointHoverRadius: 5,
-            pointHoverBackgroundColor: "rgba(0,0,0,1)",
-            pointHoverBorderColor: "rgba(220,220,220,1)",
-            pointHoverBorderWidth: 2,
-            pointRadius: 1,
-            pointHitRadius: 10,
+            backgroundColor: "rgba(45,55,72,0.9)",
+            stack: "Stack 0",
             data : [{% for item in values_downlink %}
                       {{item}},
                     {% endfor %}],
             spanGaps: false
         }, {
+            label: '{{ legend_downlink_unlimited_range }}',
+            backgroundColor: "rgba(45,55,72,0.7)",
+            stack: "Stack 0",
+            data : [{% for item in values_downlink_unlimited_range %}
+                      {{item}},
+                    {% endfor %}],
+            spanGaps: false
+        }, {
+            label: '{{ legend_downlink_shaped }}',
+            backgroundColor: "rgba(45,55,72,0.5)",
+            stack: "Stack 0",
+            data : [{% for item in values_downlink_shaped %}
+                      {{item}},
+                    {% endfor %}],
+            spanGaps: false
+        }, {
+            label: '{{ legend_downlink_excepted }}',
+            backgroundColor: "rgba(45,55,72,0.3)",
+            stack: "Stack 0",
+            data : [{% for item in values_downlink_excepted %}
+                      {{item}},
+                    {% endfor %}],
+            spanGaps: false
+        }, {
             label: '{{ legend_uplink }}',
-            fill: true,
-            lineTension: 0.1,
-            backgroundColor: "rgba(156,26,26,0.4)",
-            borderColor: "rgba(156,26,26,1)",
-            borderCapStyle: 'butt',
-            borderDash: [],
-            borderDashOffset: 0.0,
-            borderJoinStyle: 'miter',
-            pointBorderColor: "rgba(0, 0, 0, 1)",
-            pointBackgroundColor: "#fff",
-            pointBorderWidth: 2,
-            pointHoverRadius: 5,
-            pointHoverBackgroundColor: "rgba(0,0,0,1)",
-            pointHoverBorderColor: "rgba(220,220,220,1)",
-            pointHoverBorderWidth: 2,
-            pointRadius: 1,
-            pointHitRadius: 10,
+            backgroundColor: "rgba(156,26,26,0.9)",
+            stack: "Stack 1",
             data : [{% for item in values_uplink %}
+                      {{item}},
+                    {% endfor %}],
+            spanGaps: false
+        }, {
+            label: '{{ legend_uplink_unlimited_range }}',
+            backgroundColor: "rgba(156,26,26,0.7)",
+            stack: "Stack 1",
+            data : [{% for item in values_uplink_unlimited_range %}
+                      {{item}},
+                    {% endfor %}],
+            spanGaps: false
+        }, {
+            label: '{{ legend_uplink_shaped }}',
+            backgroundColor: "rgba(156,26,26,0.5)",
+            stack: "Stack 1",
+            data : [{% for item in values_uplink_shaped %}
+                      {{item}},
+                    {% endfor %}],
+            spanGaps: false
+        }, {
+            label: '{{ legend_uplink_excepted }}',
+            backgroundColor: "rgba(156,26,26,0.3)",
+            stack: "Stack 1",
+            data : [{% for item in values_uplink_excepted %}
                       {{item}},
                     {% endfor %}],
             spanGaps: false
@@ -122,8 +140,8 @@
       var ctx = document.getElementById("chart").getContext("2d");
 
       var myChart = new Chart(ctx, {
-        type: 'line',
-        data: chartData,
+        type: 'bar',
+        data: barData,
       });
     </script>
 

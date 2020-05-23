@@ -339,9 +339,11 @@ class AccountingThread(threading.Thread):
                         self.update_interval_used_traffic(session,
                                                         reg_key,
                                                         iptables_accounting_manager.get_box_ingress_bytes(reg_key.id),
-                                                        iptables_accounting_manager.get_box_egress_bytes(reg_key.id))
+                                                        iptables_accounting_manager.get_box_egress_bytes(reg_key.id),
+                                                        iptables_accounting_manager.get_exception_box_ingress_bytes(reg_key.id),
+                                                        iptables_accounting_manager.get_exception_box_egress_bytes(reg_key.id))
                     else:
-                        self.update_interval_used_traffic(session, reg_key, 0, 0, inactive=True)
+                        self.update_interval_used_traffic(session, reg_key, 0, 0, 0, 0, inactive=True)
 
                 session.close()
             except:
@@ -353,7 +355,7 @@ class AccountingThread(threading.Thread):
     # Calculate User Credit and Ingress / Egress
     #
 
-    def update_interval_used_traffic(self, session, reg_key_query, ingress_used, egress_used, inactive=False):
+    def update_interval_used_traffic(self, session, reg_key_query, ingress_used, egress_used, ingress_excepted_used, egress_excepted_used, inactive=False):
         # Every X Seconds Check
         date = datetime.today().date()
         traffic_query = session.query(Traffic).filter_by(reg_key=reg_key_query.id, timestamp=date).first()
@@ -379,12 +381,12 @@ class AccountingThread(threading.Thread):
                     return
 
                 if reg_key_query.id in self.accounting_srv.shaped_reg_keys:
-                    self.__update_traffic_shaped_values(session, traffic_query, ingress_used, egress_used)
+                    self.__update_traffic_shaped_values(session, traffic_query, ingress_used, egress_used, ingress_excepted_used, egress_excepted_used)
                 else:
                     if in_unlimited_time_range is True:
-                        self.__update_traffic_unlimited_range_values(session, traffic_query, ingress_used, egress_used)
+                        self.__update_traffic_unlimited_range_values(session, traffic_query, ingress_used, egress_used, ingress_excepted_used, egress_excepted_used)
                     else:
-                        self.__update_traffic_values(session, traffic_query, ingress_used, egress_used)
+                        self.__update_traffic_values(session, traffic_query, ingress_used, egress_used, ingress_excepted_used, egress_excepted_used)
                     self.accounting_srv.shaped_reg_keys.append(reg_key_query.id)
                     self.__enable_traffic_shaping_for_reg_key(session, reg_key_query)
 
@@ -396,12 +398,12 @@ class AccountingThread(threading.Thread):
 
                 if reg_key_query.id not in self.accounting_srv.shaped_reg_keys:
                     if in_unlimited_time_range is True:
-                        self.__update_traffic_unlimited_range_values(session, traffic_query, ingress_used, egress_used)
+                        self.__update_traffic_unlimited_range_values(session, traffic_query, ingress_used, egress_used, ingress_excepted_used, egress_excepted_used)
                     else:
-                        self.__update_traffic_values(session, traffic_query, ingress_used, egress_used)
+                        self.__update_traffic_values(session, traffic_query, ingress_used, egress_used, ingress_excepted_used, egress_excepted_used)
                 else:
                     self.__disable_traffic_shaping_for_reg_key(session, reg_key_query)
-                    self.__update_traffic_shaped_values(session, traffic_query, ingress_used, egress_used)
+                    self.__update_traffic_shaped_values(session, traffic_query, ingress_used, egress_used, ingress_excepted_used, egress_excepted_used)
                     self.accounting_srv.shaped_reg_keys.remove(reg_key_query.id)
 
             if not inactive:
@@ -445,7 +447,9 @@ class AccountingThread(threading.Thread):
                               ingress_shaped=0,
                               egress_shaped=0,
                               ingress_unlimited_range=ingress_used,
-                              egress_unlimited_range=egress_used)
+                              egress_unlimited_range=egress_used,
+                              ingress_excepted=ingress_excepted_used,
+                              egress_excepted=egress_excepted_used)
                 else:
                     row = Traffic(reg_key=reg_key_query.id,
                                 timestamp=date,
@@ -455,7 +459,9 @@ class AccountingThread(threading.Thread):
                                 ingress_shaped=0,
                                 egress_shaped=0,
                                 ingress_unlimited_range=0,
-                                egress_unlimited_range=0)
+                                egress_unlimited_range=0,
+                                ingress_excepted=ingress_excepted_used,
+                                egress_excepted=egress_excepted_used)
                 session.add(row)
                 session.commit()
             except:
@@ -480,7 +486,9 @@ class AccountingThread(threading.Thread):
                                       ingress_shaped=0,
                                       egress_shaped=0,
                                       ingress_unlimited_range=ingress_used,
-                                      egress_unlimited_range=egress_used)
+                                      egress_unlimited_range=egress_used,
+                                      ingress_excepted=ingress_excepted_used,
+                                      egress_excepted=egress_excepted_used)
                 else:
                     row = Traffic(reg_key=reg_key_query.id,
                                         timestamp=date,
@@ -490,7 +498,9 @@ class AccountingThread(threading.Thread):
                                         ingress_shaped=0,
                                         egress_shaped=0,
                                         ingress_unlimited_range=0,
-                                        egress_unlimited_range=0)
+                                        egress_unlimited_range=0,
+                                        ingress_excepted=ingress_excepted_used,
+                                        egress_excepted=egress_excepted_used)
 
                 session.add(row)
                 session.commit()
@@ -528,7 +538,9 @@ class AccountingThread(threading.Thread):
                                 ingress_shaped=0,
                                 egress_shaped=0,
                                 ingress_unlimited_range=ingress_used,
-                                egress_unlimited_range=egress_used)
+                                egress_unlimited_range=egress_used,
+                                ingress_excepted=ingress_excepted_used,
+                                egress_excepted=egress_excepted_used)
                 else:
                     row = Traffic(reg_key=reg_key_query.id,
                                 timestamp=date,
@@ -538,7 +550,9 @@ class AccountingThread(threading.Thread):
                                 ingress_shaped=0,
                                 egress_shaped=0,
                                 ingress_unlimited_range=0,
-                                egress_unlimited_range=0)
+                                egress_unlimited_range=0,
+                                ingress_excepted=ingress_excepted_used,
+                                egress_excepted=egress_excepted_used)
 
                 session.add(row)
                 session.commit()
@@ -550,26 +564,32 @@ class AccountingThread(threading.Thread):
 
             return
 
-    def __update_traffic_values(self, session, traffic_query, ingress_used, egress_used):
+    def __update_traffic_values(self, session, traffic_query, ingress_used, egress_used, ingress_excepted_used, egress_excepted_used):
         try:
             traffic_query.ingress = traffic_query.ingress + ingress_used
             traffic_query.egress = traffic_query.egress + egress_used
+            traffic_query.ingress_excepted = traffic_query.ingress_excepted + ingress_excepted_used
+            traffic_query.egress_excepted = traffic_query.egress + egress_excepted_used
             session.commit()
         except Exception as ex:
             session.rollback()
 
-    def __update_traffic_shaped_values(self, session, traffic_query, ingress_used, egress_used):
+    def __update_traffic_shaped_values(self, session, traffic_query, ingress_used, egress_used, ingress_excepted_used, egress_excepted_used):
         try:
             traffic_query.ingress_shaped = traffic_query.ingress_shaped + ingress_used
             traffic_query.egress_shaped = traffic_query.egress_shaped + egress_used
+            traffic_query.ingress_excepted = traffic_query.ingress_excepted + ingress_excepted_used
+            traffic_query.egress_excepted = traffic_query.egress + egress_excepted_used
             session.commit()
         except:
             session.rollback()
     
-    def __update_traffic_unlimited_range_values(self, session, traffic_query, ingress_used, egress_used):
+    def __update_traffic_unlimited_range_values(self, session, traffic_query, ingress_used, egress_used, ingress_excepted_used, egress_excepted_used):
         try:
             traffic_query.ingress_unlimited_range = traffic_query.ingress_unlimited_range + ingress_used
             traffic_query.egress_unlimited_range = traffic_query.egress_unlimited_range + egress_used
+            traffic_query.ingress_excepted = traffic_query.ingress_excepted + ingress_excepted_used
+            traffic_query.egress_excepted = traffic_query.egress + egress_excepted_used
             session.commit()
         except:
             session.rollback()

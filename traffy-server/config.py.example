@@ -17,7 +17,6 @@ SMTP_SERVER = "smtp.hszg.de"
 SMTP_PORT = "25"
 SHAPING_SPEED = "256kbit"
 SHAPING_EXCEPTIONS = [WAN_IP_ADDRESS,
-                    "10.90.0.1",                # Local
                     "192.168.100.201",          # Test
                     "141.46.0.0/16",            # HSZG
                     "134.109.0.0/16",           # TU Chemnitz / OPAL

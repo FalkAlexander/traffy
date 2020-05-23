@@ -39,17 +39,35 @@ def login():
 @admin.route("/admin/dashboard", methods=["GET", "POST"])
 @login_required
 def dashboard():
-    legend_downlink = _l("Downlink") + " (GiB)"
-    legend_uplink = _l("Uplink") + " (GiB)"
+    legend_downlink = _l("↓") + " (GiB)"
+    legend_downlink_unlimited_range = _l("↓ Timerule") + " (GiB)"
+    legend_downlink_shaped = _l("↓ Shaped") + " (GiB)"
+    legend_downlink_excepted = _l("↓ Exceptions") + " (GiB)"
+    legend_uplink = _l("↑") + " (GiB)"
+    legend_uplink_unlimited_range = _l("↑ Timerule") + " (GiB)"
+    legend_uplink_shaped = _l("↑ Shaped") + " (GiB)"
+    legend_uplink_excepted = _l("↑ Exceptions") + " (GiB)"
 
-    values_downlink, values_uplink, labels, active_users, registered_users, average_credit, shaped_users = server.get_supervisor_dashboard_stats()
+    values_downlink, values_downlink_unlimited_range, values_downlink_shaped, values_downlink_excepted, values_uplink, values_uplink_unlimited_range, values_uplink_shaped, values_uplink_excepted, labels, active_users, registered_users, average_credit, shaped_users = server.get_supervisor_dashboard_stats()
 
     return render_template("/admin/dashboard.html",
                            labels=labels,
                            values_downlink=values_downlink,
+                           values_downlink_unlimited_range=values_downlink_unlimited_range,
+                           values_downlink_shaped=values_downlink_shaped,
+                           values_downlink_excepted=values_downlink_excepted,
                            values_uplink=values_uplink,
+                           values_uplink_unlimited_range=values_uplink_unlimited_range,
+                           values_uplink_shaped=values_uplink_shaped,
+                           values_uplink_excepted=values_uplink_excepted,
                            legend_downlink=legend_downlink,
+                           legend_downlink_unlimited_range=legend_downlink_unlimited_range,
+                           legend_downlink_shaped=legend_downlink_shaped,
+                           legend_downlink_excepted=legend_downlink_excepted,
                            legend_uplink=legend_uplink,
+                           legend_uplink_unlimited_range=legend_uplink_unlimited_range,
+                           legend_uplink_shaped=legend_uplink_shaped,
+                           legend_uplink_excepted=legend_uplink_excepted,
                            active_users=active_users,
                            registered_users=registered_users,
                            average_credit=average_credit,
@@ -250,13 +268,15 @@ def reg_code(reg_key):
 
 
     # Statistics
-    legend_downlink = _l("Down") + " (GiB)"
-    legend_downlink_unlimited_range = _l("Down Timerule") + " (GiB)"
-    legend_downlink_shaped = _l("Down Shaped") + " (GiB)"
-    legend_uplink = _l("Up") + " (GiB)"
-    legend_uplink_unlimited_range = _l("Up Timerule") + " (GiB)"
-    legend_uplink_shaped = _l("Up Shaped") + " (GiB)"
-    stat_volume_left, stat_created_on, stat_shaped, stat_status, labels, values_downlink, values_downlink_unlimited_range, values_downlink_shaped, values_uplink, values_uplink_unlimited_range, values_uplink_shaped = server.get_reg_code_statistics(reg_key)
+    legend_downlink = _l("↓") + " (GiB)"
+    legend_downlink_unlimited_range = _l("↓ Timerule") + " (GiB)"
+    legend_downlink_shaped = _l("↓ Shaped") + " (GiB)"
+    legend_downlink_excepted = _l("↓ Exceptions") + " (GiB)"
+    legend_uplink = _l("↑") + " (GiB)"
+    legend_uplink_unlimited_range = _l("↑ Timerule") + " (GiB)"
+    legend_uplink_shaped = _l("↑ Shaped") + " (GiB)"
+    legend_uplink_excepted = _l("↑ Exceptions") + " (GiB)"
+    stat_volume_left, stat_created_on, stat_shaped, stat_status, labels, values_downlink, values_downlink_unlimited_range, values_downlink_shaped, values_downlink_excepted, values_uplink, values_uplink_unlimited_range, values_uplink_shaped, values_uplink_excepted = server.get_reg_code_statistics(reg_key)
 
     if stat_shaped:
         stat_shaped = _l("Yes")
@@ -288,15 +308,19 @@ def reg_code(reg_key):
                            values_downlink=values_downlink,
                            values_downlink_unlimited_range=values_downlink_unlimited_range,
                            values_downlink_shaped=values_downlink_shaped,
+                           values_downlink_excepted=values_downlink_excepted,
                            values_uplink=values_uplink,
                            values_uplink_unlimited_range=values_uplink_unlimited_range,
                            values_uplink_shaped=values_uplink_shaped,
+                           values_uplink_excepted=values_uplink_excepted,
                            legend_downlink=legend_downlink,
                            legend_downlink_unlimited_range=legend_downlink_unlimited_range,
                            legend_downlink_shaped=legend_downlink_shaped,
+                           legend_downlink_excepted=legend_downlink_excepted,
                            legend_uplink=legend_uplink,
                            legend_uplink_unlimited_range=legend_uplink_unlimited_range,
                            legend_uplink_shaped=legend_uplink_shaped,
+                           legend_uplink_excepted=legend_uplink_excepted,
                            device_list=device_list,
                            custom_volume_enabled=custom_volume_enabled,
                            value_custom_topup=value_custom_topup,
