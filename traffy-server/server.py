@@ -32,6 +32,7 @@ class Server():
         self.sm = SocketManager(self)
 
         signal.signal(signal.SIGINT, self.shutdown)
+        signal.signal(signal.SIGTERM, self.shutdown)
         self.startup()
         signal.pause()
 
