@@ -569,7 +569,7 @@ class AccountingThread(threading.Thread):
             traffic_query.ingress = traffic_query.ingress + ingress_used
             traffic_query.egress = traffic_query.egress + egress_used
             traffic_query.ingress_excepted = traffic_query.ingress_excepted + ingress_excepted_used
-            traffic_query.egress_excepted = traffic_query.egress + egress_excepted_used
+            traffic_query.egress_excepted = traffic_query.egress_excepted + egress_excepted_used
             session.commit()
         except Exception as ex:
             session.rollback()
@@ -579,7 +579,7 @@ class AccountingThread(threading.Thread):
             traffic_query.ingress_shaped = traffic_query.ingress_shaped + ingress_used
             traffic_query.egress_shaped = traffic_query.egress_shaped + egress_used
             traffic_query.ingress_excepted = traffic_query.ingress_excepted + ingress_excepted_used
-            traffic_query.egress_excepted = traffic_query.egress + egress_excepted_used
+            traffic_query.egress_excepted = traffic_query.egress_excepted + egress_excepted_used
             session.commit()
         except:
             session.rollback()
@@ -589,7 +589,7 @@ class AccountingThread(threading.Thread):
             traffic_query.ingress_unlimited_range = traffic_query.ingress_unlimited_range + ingress_used
             traffic_query.egress_unlimited_range = traffic_query.egress_unlimited_range + egress_used
             traffic_query.ingress_excepted = traffic_query.ingress_excepted + ingress_excepted_used
-            traffic_query.egress_excepted = traffic_query.egress + egress_excepted_used
+            traffic_query.egress_excepted = traffic_query.egress_excepted + egress_excepted_used
             session.commit()
         except:
             session.rollback()
