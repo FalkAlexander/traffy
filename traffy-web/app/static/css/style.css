@@ -744,6 +744,7 @@ nav a:hover {
    border-collapse: collapse;
    width: 100%;
    table-layout: fixed;
+   margin-bottom: 50px;
 }
 
 .table .table-row,
@@ -784,6 +785,10 @@ nav a:hover {
   text-overflow: ellipsis;
   overflow: hidden;
   white-space: nowrap;
+}
+
+.table .table-cell.small {
+  width: 7% !important;
 }
 
 .table .table-cell+.table-cell {

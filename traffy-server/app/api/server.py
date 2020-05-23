@@ -498,7 +498,7 @@ class ServerAPI:
             else:
                 identity = session.query(Identity).filter_by(id=query.identity).first()
 
-                if search_term in identity.first_name.lower() or search_term in identity.last_name.lower() or search_term in identity.mail.lower():
+                if search_term in identity.first_name.lower() or search_term in identity.last_name.lower() or search_term in identity.room.lower() or search_term in identity.mail.lower():
                     reg_key_query.append(query)
 
         reg_key_query.reverse()
@@ -508,7 +508,7 @@ class ServerAPI:
             credit = self.accounting_srv.get_credit(session, row, gib=True)[0]
             if credit < 0:
                 credit = 0
-            search_results.append(KeyRow(row.key, identity.last_name, identity.first_name, credit, row.active))
+            search_results.append(KeyRow(row.key, identity.last_name, identity.first_name, identity.room, credit, row.active))
 
         session.close()
         return search_results
@@ -522,7 +522,7 @@ class ServerAPI:
             credit = self.accounting_srv.get_credit(session, row, gib=True)[0]
             if credit < 0:
                 credit = 0
-            rows.append(KeyRow(row.key, identity.last_name, identity.first_name, credit, row.active))
+            rows.append(KeyRow(row.key, identity.last_name, identity.first_name, identity.room, credit, row.active))
         rows.reverse()
         session.close()
         return rows
@@ -807,13 +807,15 @@ class KeyRow():
     reg_key = ""
     last_name = ""
     first_name = ""
+    room = ""
     credit = ""
     active = True
 
-    def __init__(self, reg_key, last_name, first_name, credit, active):
+    def __init__(self, reg_key, last_name, first_name, room, credit, active):
         self.reg_key = reg_key
         self.last_name = last_name
         self.first_name = first_name
+        self.room = room
         self.credit = credit
         self.active = active
 

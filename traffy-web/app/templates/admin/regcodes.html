@@ -64,7 +64,8 @@
             <div class="table-cell">{{ _("Registration Key") }}</div>
             <div class="table-cell collapse">{{ _("Surname") }}</div>
             <div class="table-cell collapse">{{ _("First name") }}</div>
-            <div class="table-cell collapse">{{ _("Credit") }}</div>
+            <div class="table-cell collapse small">{{ _("Room") }}</div>
+            <div class="table-cell collapse small">{{ _("Credit") }}</div>
             <div class="table-cell-button"></div>
           </div>
           {% for row in rows %}
@@ -76,7 +77,8 @@
             <div class="table-cell">{{ row.reg_key }}</div>
             <div class="table-cell collapse">{{ row.last_name }}</div>
             <div class="table-cell collapse">{{ row.first_name }}</div>
-            <div class="table-cell collapse">{{ row.credit }} GiB</div>
+            <div class="table-cell collapse small">{{ row.room }}</div>
+            <div class="table-cell collapse small">{{ row.credit }} GiB</div>
             <div class="table-cell-button">
               <input name="stats_btn" type="submit" value="">
                 <form method="POST">
