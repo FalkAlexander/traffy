@@ -1,6 +1,7 @@
 DATABASE_URI = "mysql://traffy_user:traffy_user@192.168.100.150/traffy_web"
 LANGUAGES = ["en", "de"]
 DEV_MODE = False
+SECRET_KEY = "BnUlPYIj2ZzeTL1wv4IxzCsRtqcPJLpxvOv"
 
 COMMUNITY = "Görlitz"
 ADMINS = [["Falk Seidl", "admin.goerlitz@wh.studentenwerk-dresden.de", "2521"], ["Niklas Merkelt", "admin.goerlitz@wh.studentenwerk-dresden.de", "2419"]]

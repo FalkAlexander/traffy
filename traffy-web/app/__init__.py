@@ -34,7 +34,7 @@ client_version = "0.1"
 
 def create_app():
     app = Flask(__name__)
-    app.secret_key = "BnUlPYIj2ZzeTL1wv4IxzCsRtqcPJLpxvOv"
+    app.secret_key = config.SECRET_KEY
     app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
     app.config["SQLALCHEMY_DATABASE_URI"] = config.DATABASE_URI
 
