@@ -3,3 +3,4 @@ __pycache__/
 .vscode/*
 traffy-server/config.py
 traffy-web/config.py
+boot.sh
