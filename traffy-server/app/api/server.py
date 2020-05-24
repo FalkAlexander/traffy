@@ -169,6 +169,7 @@ class ServerAPI:
                 else:
                     address_pair.deletion_date = None
                     identity_query.room = room
+                    identity_query.new_room = None
 
             session.commit()
         except:
@@ -706,6 +707,23 @@ class ServerAPI:
 
         return stat_volume_left, stat_created_on, stat_shaped, stat_status, labels, values_downlink, values_downlink_unlimited_range, values_downlink_shaped, values_downlink_excepted, values_uplink, values_uplink_unlimited_range, values_uplink_shaped, values_uplink_excepted
 
+    def get_reg_code_identity_data(self, reg_key):
+        session = self.db.create_session()
+        reg_key_query = self.get_reg_key_query_by_key(session, reg_key)
+        identity = session.query(Identity).filter_by(id=reg_key_query.identity).first()
+        address_pair_query = session.query(AddressPair).filter_by(reg_key=reg_key_query.id).first()
+
+        if address_pair_query is not None:
+            deletion_date = address_pair_query.deletion_date
+            if deletion_date is None:
+                identity_data = IdentityRow(identity.last_name, identity.first_name, identity.mail, identity.room, identity.new_room, deletion_date)
+            else:
+                identity_data = IdentityRow(identity.last_name, identity.first_name, identity.mail, identity.room, identity.new_room, deletion_date.strftime("%d.%m.%Y %H:%M:%S"))
+        else:
+            identity_data = IdentityRow(identity.last_name, identity.first_name, identity.mail, identity.room, identity.new_room, "")
+        session.close()
+        return identity_data
+
     def get_reg_code_device_list(self, reg_key):
         session = self.db.create_session()
         reg_key_query = self.get_reg_key_query_by_key(session, reg_key)
@@ -844,6 +862,22 @@ class KeyRow():
         self.room = room
         self.credit = credit
         self.active = active
+
+class IdentityRow():
+    last_name = ""
+    first_name = ""
+    mail = ""
+    room = ""
+    new_room = ""
+    scheduled_move = ""
+
+    def __init__(self, last_name, first_name, mail, room, new_room, scheduled_move):
+        self.last_name = last_name
+        self.first_name = first_name
+        self.mail = mail
+        self.room = room
+        self.new_room = new_room
+        self.scheduled_move = scheduled_move
 
 class DeviceRow():
     ip_address = ""

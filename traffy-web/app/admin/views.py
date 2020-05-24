@@ -288,6 +288,9 @@ def reg_code(reg_key):
     else:
         stat_status = _l("Disabled")
 
+    # Identity
+    identity_data = server.get_reg_code_identity_data(reg_key)
+
     # Devices
     device_list = server.get_reg_code_device_list(reg_key)
 
@@ -321,6 +324,7 @@ def reg_code(reg_key):
                            legend_uplink_unlimited_range=legend_uplink_unlimited_range,
                            legend_uplink_shaped=legend_uplink_shaped,
                            legend_uplink_excepted=legend_uplink_excepted,
+                           identity_data=identity_data,
                            device_list=device_list,
                            custom_volume_enabled=custom_volume_enabled,
                            value_custom_topup=value_custom_topup,

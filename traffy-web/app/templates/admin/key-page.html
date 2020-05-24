@@ -71,6 +71,27 @@
           </div>
         </div>
 
+        <h1>{{ _("Identity") }}</h1>
+        <div class="supervisor-divider"></div>
+        <div class="table">
+          <div class="table-head">
+            <div class="table-cell big">{{ _("Surname") }}</div>
+            <div class="table-cell big">{{ _("First Name") }}</div>
+            <div class="table-cell big">{{ _("Mail Address") }}</div>
+            <div class="table-cell big">{{ _("Room") }}</div>
+          </div>
+          <div class="table-row">
+            <div class="table-cell big">{{ identity_data.last_name }}</div>
+            <div class="table-cell big">{{ identity_data.first_name }}</div>
+            <div class="table-cell big">{{ identity_data.mail }}</div>
+            {% if identity_data.new_room is none %}
+            <div class="table-cell big">{{ identity_data.room }}</div>
+            {% else %}
+            <div class="table-cell big">{{ identity_data.room }} ({{ identity_data.new_room }} {{ _("as of") }} {{ identity_data.scheduled_move }})</div>
+            {% endif %}
+          </div>
+        </div>
+
         {% if current_user.is_admin() or current_user.is_helpdesk() %}
         <h1>{{ _("Devices") }}</h1>
         <div class="supervisor-divider"></div>
