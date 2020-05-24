@@ -145,12 +145,21 @@
         options: {
             responsive: true,
             scales: {
-              yAxes: [{
+                yAxes: [{
                     scaleLabel: {
                         display: true,
                         labelString: 'GiB'
                     }
                 }]
+            },
+            tooltips: {
+                enabled: true,
+                mode: 'x',
+                callbacks: {
+                    label: function(tooltipItems, data) { 
+                      return data.datasets[tooltipItems.datasetIndex].label +': ' + tooltipItems.yLabel + ' GiB';
+                    }
+                }
             }
         }
       });

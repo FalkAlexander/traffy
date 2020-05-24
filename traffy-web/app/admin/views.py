@@ -39,11 +39,11 @@ def login():
 @admin.route("/admin/dashboard", methods=["GET", "POST"])
 @login_required
 def dashboard():
-    legend_downlink = "↓"
+    legend_downlink = "↓ " + _l("Accounted")
     legend_downlink_unlimited_range = "↓ " + _l("Timerule")
     legend_downlink_shaped = "↓ " + _l("Shaped")
     legend_downlink_excepted = "↓ " + _l("Exceptions")
-    legend_uplink = "↑"
+    legend_uplink = "↑ " + _l("Accounted")
     legend_uplink_unlimited_range = "↑ " + _l("Timerule")
     legend_uplink_shaped = "↑ " + _l("Shaped")
     legend_uplink_excepted = "↑ " + _l("Exceptions")
@@ -268,11 +268,11 @@ def reg_code(reg_key):
 
 
     # Statistics
-    legend_downlink = "↓"
+    legend_downlink = "↓ "  + _l("Accounted")
     legend_downlink_unlimited_range = "↓ " + _l("Timerule")
     legend_downlink_shaped = "↓ " + _l("Shaped")
     legend_downlink_excepted = "↓ " + _l("Exceptions")
-    legend_uplink = "↑"
+    legend_uplink = "↑ " + _l("Accounted")
     legend_uplink_unlimited_range = "↑ " + _l("Timerule")
     legend_uplink_shaped = "↑ " + _l("Shaped")
     legend_uplink_excepted = "↑ " + _l("Exceptions")

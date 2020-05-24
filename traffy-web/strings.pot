@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2020-05-24 12:46+0200\n"
+"POT-Creation-Date: 2020-05-24 14:15+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -19,6 +19,11 @@ msgstr ""
 
 #: app/admin/views.py:35
 msgid "Wrong credentials. This attempt got reported."
+msgstr ""
+
+#: app/admin/views.py:42 app/admin/views.py:46 app/admin/views.py:271
+#: app/admin/views.py:275
+msgid "Accounted"
 msgstr ""
 
 #: app/admin/views.py:43 app/admin/views.py:47 app/admin/views.py:272

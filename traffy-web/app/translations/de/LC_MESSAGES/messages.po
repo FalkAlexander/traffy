@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2020-05-24 12:46+0200\n"
-"PO-Revision-Date: 2020-05-24 12:47+0200\n"
+"POT-Creation-Date: 2020-05-24 14:15+0200\n"
+"PO-Revision-Date: 2020-05-24 14:16+0200\n"
 "Last-Translator: Falk Seidl <hi@falsei.de>\n"
 "Language: de\n"
 "Language-Team: German <hi@falsei.de>\n"
@@ -24,6 +24,11 @@ msgstr ""
 #: app/admin/views.py:35
 msgid "Wrong credentials. This attempt got reported."
 msgstr "Ungültige Zugangsdaten. Der Anmeldeversuch wurde gemeldet."
+
+#: app/admin/views.py:42 app/admin/views.py:46 app/admin/views.py:271
+#: app/admin/views.py:275
+msgid "Accounted"
+msgstr "Angerechnet"
 
 #: app/admin/views.py:43 app/admin/views.py:47 app/admin/views.py:272
 #: app/admin/views.py:276
