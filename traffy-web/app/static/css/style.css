@@ -781,14 +781,26 @@ nav a:hover {
   border: 1px solid #e3e3e3;
   vertical-align: middle;
   padding: 10px;
-  width: 35%;
+  width: 40%;
   text-overflow: ellipsis;
   overflow: hidden;
   white-space: nowrap;
 }
 
+.table .table-cell.tiny {
+  width: 60px !important;
+}
+
 .table .table-cell.small {
-  width: 7% !important;
+  width: 120px !important;
+}
+
+.table .table-cell.big {
+  width: 50% !important;
+}
+
+.table .table-cell.huge {
+  width: 350px !important;
 }
 
 .table .table-cell+.table-cell {
