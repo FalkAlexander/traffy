@@ -823,12 +823,12 @@ class ServerAPI:
             max_ip = subnet[3].split('.')
             ip = ip_address.split('.')
 
-            for i in range(4):
+            for i in range(2, 3):
                 if int(ip[i]) < int(min_ip[i]) or int(ip[i]) > int(max_ip[i]):
                     in_range = False
+                    break
                 else:
                     in_range = True
-                break
 
             if in_range is True:
                 break
