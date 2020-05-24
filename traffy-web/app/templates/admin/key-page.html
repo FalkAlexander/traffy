@@ -359,7 +359,7 @@
                       return data.datasets[tooltipItems.datasetIndex].label +': ' + tooltipItems.yLabel + ' GiB';
                     },
                     footer: (tooltipItems, data) => {
-                        let total = tooltipItems.reduce((a, e) => a + parseFloat(e.yLabel), 0);
+                        let total = tooltipItems.reduce((a, e) => a + parseFloat(e.yLabel), 0).toFixed(3);
                         return '{{ _("Total") }}: ' + total + ' GiB';
                     }
                 }
