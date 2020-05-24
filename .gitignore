@@ -1,4 +1,5 @@
 __pycache__/
 *.pyc
+.vscode/*
 traffy-server/config.py
 traffy-web/config.py
