@@ -39,14 +39,14 @@ def login():
 @admin.route("/admin/dashboard", methods=["GET", "POST"])
 @login_required
 def dashboard():
-    legend_downlink = "↓ (GiB)"
-    legend_downlink_unlimited_range = "↓ " + _l("Timerule") + " (GiB)"
-    legend_downlink_shaped = "↓ " + _l("Shaped") + " (GiB)"
-    legend_downlink_excepted = "↓ " + _l("Exceptions") + " (GiB)"
-    legend_uplink = "↑ (GiB)"
-    legend_uplink_unlimited_range = "↑ " + _l("Timerule") + " (GiB)"
-    legend_uplink_shaped = "↑ " + _l("Shaped") + " (GiB)"
-    legend_uplink_excepted = "↑ " + _l("Exceptions") + " (GiB)"
+    legend_downlink = "↓"
+    legend_downlink_unlimited_range = "↓ " + _l("Timerule")
+    legend_downlink_shaped = "↓ " + _l("Shaped")
+    legend_downlink_excepted = "↓ " + _l("Exceptions")
+    legend_uplink = "↑"
+    legend_uplink_unlimited_range = "↑ " + _l("Timerule")
+    legend_uplink_shaped = "↑ " + _l("Shaped")
+    legend_uplink_excepted = "↑ " + _l("Exceptions")
 
     values_downlink, values_downlink_unlimited_range, values_downlink_shaped, values_downlink_excepted, values_uplink, values_uplink_unlimited_range, values_uplink_shaped, values_uplink_excepted, labels, active_users, registered_users, average_credit, shaped_users = server.get_supervisor_dashboard_stats()
 
@@ -268,14 +268,14 @@ def reg_code(reg_key):
 
 
     # Statistics
-    legend_downlink = "↓ (GiB)"
-    legend_downlink_unlimited_range = "↓ " + _l("Timerule") + " (GiB)"
-    legend_downlink_shaped = "↓ " + _l("Shaped") + " (GiB)"
-    legend_downlink_excepted = "↓ " + _l("Exceptions") + " (GiB)"
-    legend_uplink = "↑ (GiB)"
-    legend_uplink_unlimited_range = "↑ " + _l("Timerule") + " (GiB)"
-    legend_uplink_shaped = "↑ " + _l("Shaped") + " (GiB)"
-    legend_uplink_excepted = "↑ " + _l("Exceptions") + " (GiB)"
+    legend_downlink = "↓"
+    legend_downlink_unlimited_range = "↓ " + _l("Timerule")
+    legend_downlink_shaped = "↓ " + _l("Shaped")
+    legend_downlink_excepted = "↓ " + _l("Exceptions")
+    legend_uplink = "↑"
+    legend_uplink_unlimited_range = "↑ " + _l("Timerule")
+    legend_uplink_shaped = "↑ " + _l("Shaped")
+    legend_uplink_excepted = "↑ " + _l("Exceptions")
     stat_volume_left, stat_created_on, stat_shaped, stat_status, labels, values_downlink, values_downlink_unlimited_range, values_downlink_shaped, values_downlink_excepted, values_uplink, values_uplink_unlimited_range, values_uplink_shaped, values_uplink_excepted = server.get_reg_code_statistics(reg_key)
 
     if stat_shaped:

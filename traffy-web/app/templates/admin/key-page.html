@@ -341,6 +341,17 @@
       var myChart = new Chart(ctx, {
         type: 'bar',
         data: barData,
+        options: {
+            responsive: true,
+            scales: {
+              yAxes: [{
+                    scaleLabel: {
+                        display: true,
+                        labelString: 'GiB'
+                    }
+                }]
+            }
+        }
       });
     </script>
 
