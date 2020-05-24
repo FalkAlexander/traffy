@@ -171,37 +171,6 @@ class ServerAPI:
         session.close()
         return identity.room
 
-    def set_reg_key_room_number(self, reg_key, room, date):
-        error = False
-        session = self.db.create_session()
-        try:
-            reg_key_query = session.query(RegistrationKey).filter_by(key=reg_key).first()
-            identity_query = session.query(Identity).filter_by(id=reg_key_query.identity).first()
-            deletion_date = None
-            if date != "":
-                deletion_date = datetime.strptime(date, "%Y-%m-%d")
-            
-            for address_pair in session.query(AddressPair).filter_by(reg_key=reg_key_query.id).all():
-                if deletion_date is not None:
-                    address_pair.deletion_date = deletion_date
-                    identity_query.new_room = room
-                else:
-                    address_pair.deletion_date = None
-                    identity_query.room = room
-                    identity_query.new_room = None
-
-            session.commit()
-        except:
-            error = True
-            session.rollback()
-        finally:
-            session.close()
-
-        if error:
-            return False
-        else:
-            return True
-
     def __set_reg_key_eula_accepted(self, reg_key_query, accepted):
         reg_key_query.eula_accepted = True
 
@@ -573,6 +542,43 @@ class ServerAPI:
         self.accounting_srv.restart()
 
         return reg_key
+    
+    def edit_reg_key_identity(self, reg_key, first_name, surname, mail, room, move_date):
+        try:
+            session = self.db.create_session()
+
+            reg_key_query = session.query(RegistrationKey).filter_by(key=reg_key).first()
+            identity_query = session.query(Identity).filter_by(id=reg_key_query.identity).first()
+
+            identity_query.first_name = first_name
+            identity_query.last_name = surname
+            identity_query.mail = mail
+
+            deletion_date = None
+            if move_date != "":
+                deletion_date = datetime.strptime(move_date, "%Y-%m-%d")
+            
+            for address_pair in session.query(AddressPair).filter_by(reg_key=reg_key_query.id).all():
+                if deletion_date is not None:
+                    address_pair.deletion_date = deletion_date
+                else:
+                    address_pair.deletion_date = None
+
+            if deletion_date is not None:
+                identity_query.new_room = room
+            else:
+                identity_query.room = room
+                identity_query.new_room = None
+
+            session.commit()
+            success = True
+        except:
+            session.rollback()
+            success = False
+        finally:
+            session.close()
+
+        return success
 
     def set_reg_key_custom_credit(self, reg_key, value):
         session = self.db.create_session()
@@ -735,11 +741,12 @@ class ServerAPI:
         if address_pair_query is not None:
             deletion_date = address_pair_query.deletion_date
             if deletion_date is None:
-                identity_data = IdentityRow(identity.last_name, identity.first_name, identity.mail, identity.room, identity.new_room, deletion_date)
+                identity_data = IdentityRow(identity.id, identity.last_name, identity.first_name, identity.mail, identity.room, identity.new_room, deletion_date)
             else:
-                identity_data = IdentityRow(identity.last_name, identity.first_name, identity.mail, identity.room, identity.new_room, deletion_date.strftime("%d.%m.%Y %H:%M:%S"))
+                identity_data = IdentityRow(identity.id, identity.last_name, identity.first_name, identity.mail, identity.room, identity.new_room, deletion_date.strftime("%d.%m.%Y %H:%M:%S"))
         else:
-            identity_data = IdentityRow(identity.last_name, identity.first_name, identity.mail, identity.room, identity.new_room, "")
+            identity_data = IdentityRow(identity.id, identity.last_name, identity.first_name, identity.mail, identity.room, identity.new_room, "")
+
         session.close()
         return identity_data
 
@@ -883,6 +890,7 @@ class KeyRow():
         self.active = active
 
 class IdentityRow():
+    id = ""
     last_name = ""
     first_name = ""
     mail = ""
@@ -890,7 +898,8 @@ class IdentityRow():
     new_room = ""
     scheduled_move = ""
 
-    def __init__(self, last_name, first_name, mail, room, new_room, scheduled_move):
+    def __init__(self, id, last_name, first_name, mail, room, new_room, scheduled_move):
+        self.id = id
         self.last_name = last_name
         self.first_name = first_name
         self.mail = mail

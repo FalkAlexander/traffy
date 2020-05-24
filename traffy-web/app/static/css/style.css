@@ -128,7 +128,8 @@ body:after{
 }
 
 .dialog-box input[type=text],
-.dialog-box input[type=password] {
+.dialog-box input[type=password],
+.dialog-box input[type=date] {
   all: unset;
   background-color: #fff;
   border: solid 1px #e2e8f0;
@@ -145,7 +146,8 @@ body:after{
 }
 
 .dialog-box input[type=text]:focus,
-.dialog-box input[type=password]:focus {
+.dialog-box input[type=password]:focus,
+.dialog-box input[type=date]:focus {
   border: solid 1px #667690;
   transition: width 2s;
 }
@@ -964,7 +966,8 @@ nav a:hover {
   transition: width 2s;
 }
 
-.settings-box input[type=submit] {
+.settings-box input[type=submit],
+.dialog-box.identity-edit input[type=submit] {
   all: unset;
   justify-content: flex-start;
   font-family: Cantarell-Light;
@@ -976,14 +979,21 @@ nav a:hover {
   background-color: #ececec;
   padding: 0 10px 0 10px;
   margin-top: 20px;
-}
-
-.settings-box input[type=submit]:hover {
-  background-color: #d5dbe4;
-}
-
-.settings-box input[type=submit] {
   cursor: pointer;
+}
+
+.dialog-box.identity-edit input[type=submit] {
+  width: 50%;
+  margin: 8px;
+}
+
+.dialog-box.identity-edit input[type=text]:disabled {
+  color: #b5b5b5;
+}
+
+.settings-box input[type=submit]:hover,
+.dialog-box.identity-edit input[type=submit]:hover {
+  background-color: #d5dbe4;
 }
 
 .checkbox-container {

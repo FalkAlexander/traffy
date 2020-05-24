@@ -138,6 +138,59 @@ def add_regcode():
 
     return render_template("/admin/add-regcode.html")
 
+@admin.route("/admin/regcodes/<reg_key>/identity/edit", methods=["GET", "POST"])
+@login_required
+def edit_identity(reg_key):
+    identity_data = server.get_reg_code_identity_data(reg_key)
+
+    if request.method == "POST":
+        if "cancel_btn" in request.form:
+            return redirect("/admin/regcodes/" + reg_key)
+        
+        if "cancel_move_btn" in request.form:
+            identity_data["move_date"] = ""
+            identity_data["new_room"] = None
+            return render_template("/admin/edit-identity.html",
+                                    identity_data=identity_data)
+
+        if "save_btn" in request.form:
+            first_name = request.form["first_name"]
+            surname = request.form["surname"]
+            mail = request.form["mail"]
+            room = request.form["room"]
+            try:
+                move_date = request.form["move_date"]
+            except:
+                move_date = ""
+            
+            if move_date != "":
+                if datetime.today().date() >= datetime.strptime(move_date, "%Y-%m-%d").date():
+                        flash(_l("Move date must be in the future."))
+                        return render_template("/admin/edit-identity.html",
+                                                identity_data=identity_data)
+
+            if first_name == "" or surname == "" or mail == "" or room == "":
+                flash(_l("Please fill out all input forms."))
+                return render_template("/admin/edit-identity.html",
+                                        identity_data=identity_data)
+            elif identity_data.get("room") == room and move_date != "":
+                flash(_l("You can not schedule a move if the room will stay the same."))
+                return render_template("/admin/edit-identity.html",
+                                        identity_data=identity_data)
+            else:
+                identity_data["first_name"] = first_name
+                identity_data["last_name"] = surname
+                identity_data["mail"] = mail
+                identity_data["room"] = room
+                identity_data["deletion_date"] = move_date
+                success = server.edit_reg_key_identity(reg_key, first_name, surname, mail, room, move_date)
+                if not success:
+                    flash(_l("Identity could not get changed."))
+                return redirect("/admin/regcodes/" + reg_key)
+
+    return render_template("/admin/edit-identity.html",
+                            identity_data=identity_data)
+
 @admin.route("/admin/regcodes/<reg_key>/delete/<ip_address>", methods=["GET", "POST"])
 @login_required
 def delete_device(reg_key, ip_address):
@@ -229,15 +282,6 @@ def reg_code(reg_key):
             if not success:
                 flash(_l("An error occured."))
 
-            return redirect("/admin/regcodes/" + reg_key)
-        
-        # Change User Room
-        if "change_room_number" in request.form:
-            success = server.set_reg_key_room_number(reg_key, request.form["change_room_number"], request.form["change_room_number_date"])
-
-            if not success:
-                flash(_l("An error occured."))
-            
             return redirect("/admin/regcodes/" + reg_key)
 
         # Enable Accounting
