@@ -29,7 +29,9 @@ def index():
     except ConnectionRefusedError:
         return render_template("errors/backend_lost.html")
 
-    if user.get("registered") is False:
+    if user.get("external") is True:
+        return redirect("/about", code=307)
+    elif user.get("registered") is False:
         return redirect("/register", code=307)
     elif user.get("registered") is True:
         return redirect("/dashboard", code=307)
@@ -47,7 +49,9 @@ def register():
     except ConnectionRefusedError:
         return render_template("errors/backend_lost.html")
 
-    if user.get("registered") is True:
+    if user.get("external") is True:
+        return redirect("/about", code=307)
+    elif user.get("registered") is True:
         return redirect("/dashboard", code=307)
     elif user.get("deactivated") is True:
         return render_template("errors/deactivated.html")
@@ -81,7 +85,9 @@ def conditions():
     except ConnectionRefusedError:
         return render_template("errors/backend_lost.html")
 
-    if user.get("registered") is True:
+    if user.get("external") is True:
+        return redirect("/about", code=307)
+    elif user.get("registered") is True:
         return redirect("/dashboard", code=307)
     elif user.get("deactivated") is True:
         return render_template("errors/deactivated.html")
@@ -110,7 +116,9 @@ def dashboard():
     except ConnectionRefusedError:
         return render_template("errors/backend_lost.html")
 
-    if user.get("registered") is False:
+    if user.get("external") is True:
+        return redirect("/about", code=307)
+    elif user.get("registered") is False:
         return redirect("/register", code=307)
     elif user.get("deactivated") is True:
         return render_template("errors/deactivated.html")
@@ -144,7 +152,9 @@ def reedem():
     except ConnectionRefusedError:
         return render_template("errors/backend_lost.html")
 
-    if user.get("registered") is False:
+    if user.get("external") is True:
+        return redirect("/about", code=307)
+    elif user.get("registered") is False:
         return redirect("/register", code=307)
     elif user.get("deactivated") is True:
         return render_template("errors/deactivated.html")
@@ -171,7 +181,9 @@ def deregister():
     except ConnectionRefusedError:
         return render_template("errors/backend_lost.html")
 
-    if user.get("registered") is False:
+    if user.get("external") is True:
+        return redirect("/about", code=307)
+    elif user.get("registered") is False:
         return redirect("/register", code=307)
     elif user.get("deactivated") is True:
         return render_template("errors/deactivated.html")

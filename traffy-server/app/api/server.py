@@ -347,30 +347,34 @@ class ServerAPI:
         ip_address_query = self.get_ip_address_query_by_ip(session, ip_address)
         mac_address_query = self.get_mac_address_query_by_mac(session, mac_address)
 
+        if self.__is_ip_in_range(ip_address) is False:
+            session.close()
+            return UserStatus(registered=False, deactivated=False, ip_stolen=True, external=True)
+
         if ip_address_query is None and mac_address_query is None:
             session.close()
-            return UserStatus(registered=False, deactivated=False, ip_stolen=False)
+            return UserStatus(registered=False, deactivated=False, ip_stolen=False, external=False)
 
         if ip_address_query is None and mac_address_query is not None:
             session.close()
-            return UserStatus(registered=False, deactivated=False, ip_stolen=True)
+            return UserStatus(registered=False, deactivated=False, ip_stolen=True, external=False)
 
         if ip_address_query is not None and mac_address_query is None:
             session.close()
-            return UserStatus(registered=False, deactivated=False, ip_stolen=True)
+            return UserStatus(registered=False, deactivated=False, ip_stolen=True, external=False)
 
         address_pair_query = self.get_address_pair_query_by_mac_ip(session, mac_address_query, ip_address_query)
         if address_pair_query is None:
             session.close()
-            return UserStatus(registered=False, deactivated=False, ip_stolen=False)
+            return UserStatus(registered=False, deactivated=False, ip_stolen=False, external=False)
         else:
             reg_key_query = self.get_reg_key_query_by_id(session, address_pair_query.reg_key)
             if reg_key_query.active is False:
                 session.close()
-                return UserStatus(registered=False, deactivated=True, ip_stolen=False)
+                return UserStatus(registered=False, deactivated=True, ip_stolen=False, external=False)
             else:
                 session.close()
-                return UserStatus(registered=True, deactivated=False, ip_stolen=False)
+                return UserStatus(registered=True, deactivated=False, ip_stolen=False, external=False)
 
     #
     # Dashboard
@@ -792,16 +796,38 @@ class ServerAPI:
 
     def __to_bytes(self, gib):
         return int(gib * 1073741824)
+    
+    def __is_ip_in_range(self, ip_address):
+        in_range = False
+
+        for subnet in config.IP_RANGES:
+            min_ip = subnet[1].split('.')
+            max_ip = subnet[3].split('.')
+            ip = ip_address.split('.')
+
+            for i in range(4):
+                if int(ip[i]) < int(min_ip[i]) or int(ip[i]) > int(max_ip[i]):
+                    in_range = False
+                else:
+                    in_range = True
+                break
+
+            if in_range is True:
+                break
+        
+        return in_range
 
 class UserStatus():
     registered = False
     deactivated = False
     ip_stolen = False
+    external = False
 
-    def __init__(self, registered, deactivated, ip_stolen):
+    def __init__(self, registered, deactivated, ip_stolen, external):
         self.registered = registered
         self.deactivated = deactivated
         self.ip_stolen = ip_stolen
+        self.external = external
 
 class KeyRow():
     reg_key = ""
