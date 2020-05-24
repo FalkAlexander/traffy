@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2020-05-24 14:15+0200\n"
-"PO-Revision-Date: 2020-05-24 14:16+0200\n"
+"POT-Creation-Date: 2020-05-24 14:29+0200\n"
+"PO-Revision-Date: 2020-05-24 14:29+0200\n"
 "Last-Translator: Falk Seidl <hi@falsei.de>\n"
 "Language: de\n"
 "Language-Team: German <hi@falsei.de>\n"
@@ -390,6 +390,10 @@ msgstr "Durchschnittliches Datenvolumen"
 #: app/templates/admin/dashboard.html:59
 msgid "Shaped Users"
 msgstr "Gedrosselte Nutzer"
+
+#: app/templates/admin/dashboard.html:164
+msgid "Total"
+msgstr "Insgesamt"
 
 #: app/templates/admin/infrastructure.html:6
 msgid "Supervisor Infrastructure"
