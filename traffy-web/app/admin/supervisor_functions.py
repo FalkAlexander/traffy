@@ -114,12 +114,12 @@ def __password_check(password):
     lower = 0
     digit = 0
     special = 0
-    for i in range(len(str)): 
-        if str[i].isupper(): 
+    for i in range(len(password)): 
+        if password[i].isupper(): 
             upper += 1
-        elif str[i].islower(): 
+        elif password[i].islower(): 
             lower += 1
-        elif str[i].isdigit(): 
+        elif password[i].isdigit(): 
             digit += 1
         else: 
             special += 1
