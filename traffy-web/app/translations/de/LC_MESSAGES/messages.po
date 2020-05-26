@@ -9,17 +9,16 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2020-05-26 18:28+0200\n"
-"PO-Revision-Date: 2020-05-26 18:29+0200\n"
+"POT-Creation-Date: 2020-05-26 19:00+0200\n"
+"PO-Revision-Date: 2020-05-26 18:55+0200\n"
 "Last-Translator: Falk Seidl <hi@falsei.de>\n"
 "Language: de\n"
 "Language-Team: German <hi@falsei.de>\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.8.0\n"
-"X-Generator: Gtranslator 3.36.0\n"
 
 #: app/admin/views.py:54
 msgid "Wrong credentials. This attempt got reported."
@@ -139,7 +138,7 @@ msgstr "Anmelden um Zugriff auf die Ressource zu erhalten."
 
 #: app/templates/admin/account-page.html:6
 msgid "Supervisor Account Page"
-msgstr "Supervisor Accountseite"
+msgstr "Supervisor Kontokonfiguration"
 
 #: app/templates/admin/account-page.html:10
 #: app/templates/admin/accounts.html:10 app/templates/admin/add-account.html:10
@@ -203,7 +202,7 @@ msgstr "Abmelden"
 
 #: app/templates/admin/account-page.html:39
 msgid "Account:"
-msgstr "Account:"
+msgstr "Konto:"
 
 #: app/templates/admin/account-page.html:45
 msgid "Notifications"
@@ -229,23 +228,23 @@ msgstr "Beschreibung:"
 
 #: app/templates/admin/account-page.html:46
 msgid "Changes the mail notifications behaviour."
-msgstr "Ändert das Verhalten der Mailbenachrichtigungen"
+msgstr "Das Mail-Nachricht Verhalten konfigurieren."
 
 #: app/templates/admin/account-page.html:49
 msgid "Shaping events"
-msgstr "Drosselungsereignisse"
+msgstr "Drosselereignis"
 
 #: app/templates/admin/account-page.html:54
 msgid "Failed login attempts"
-msgstr "Fehlgeschlagene Loginversuche"
+msgstr "Gescheiterte Anmeldeversuche"
 
 #: app/templates/admin/account-page.html:59
 msgid "Critical log events"
-msgstr "Kritische Log-Ereignisse"
+msgstr "Kritische Logereignisse"
 
 #: app/templates/admin/account-page.html:63
 msgid "Update Behaviour"
-msgstr "Verhalten ändern"
+msgstr "Verhalten aktualisieren"
 
 #: app/templates/admin/account-page.html:70
 #: app/templates/admin/add-account.html:53 app/templates/admin/login.html:23
@@ -254,11 +253,20 @@ msgstr "Passwort"
 
 #: app/templates/admin/account-page.html:71
 msgid "Changes the supervisor account password."
-msgstr "Ändert das Passwort des Supervisor-Accounts"
+msgstr "Das Supervisor-Konto Passwort ändern."
 
 #: app/templates/admin/account-page.html:72
 msgid "Requirements:"
-msgstr "Voraussetzungen:"
+msgstr "Anforderungen:"
+
+#: app/templates/admin/account-page.html:72
+#: app/templates/admin/add-account.html:54
+msgid ""
+"Minimum 10 characters, at least 1 number, 1 capital letter, 1 lower case "
+"letter, 1 special character."
+msgstr ""
+"Mindestens 10 Zeichen Länge, davon mind. 1 Zahl, 1 großer Buchstabe, 1 "
+"kleiner Buchstabe, 1 Sonderzeichen."
 
 #: app/templates/admin/account-page.html:75
 msgid "Change Password"
@@ -271,7 +279,7 @@ msgstr "Emailadresse"
 
 #: app/templates/admin/account-page.html:83
 msgid "Changes the mail address."
-msgstr "Ändert die Emailadresse"
+msgstr "Mail-Adresse ändern."
 
 #: app/templates/admin/account-page.html:84
 #: app/templates/admin/infrastructure.html:43
@@ -292,25 +300,25 @@ msgstr "Vertrauenswürdige Mailserver:"
 
 #: app/templates/admin/account-page.html:85
 msgid "Current Value:"
-msgstr "Aktueller Wert:"
+msgstr "Derzeitiger Wert:"
 
 #: app/templates/admin/account-page.html:88
 msgid "Change Mail Address"
-msgstr "Mailadresse ändern"
+msgstr "Mail-Adresse ändern"
 
 #: app/templates/admin/account-page.html:95
 msgid "Delete Account"
-msgstr "Account löschen"
+msgstr "Konto löschen"
 
 #: app/templates/admin/account-page.html:96
 msgid "Use this if a supervisor is not in an administrative position anymore."
 msgstr ""
-"Benutzen Sie diese Option, wenn der Supervisor keine administrative Position "
-"mehr innehat."
+"Nutzen Sie diese Funktion, wenn ein Supervisor nicht mehr in einer "
+"administrativen Funktion ist."
 
 #: app/templates/admin/account-page.html:98
 msgid "Delete Supervisor Account"
-msgstr "Supervisor-Account löschen"
+msgstr "Supervisor-Konto löschen."
 
 #: app/templates/admin/accounts.html:6 app/templates/admin/accounts.html:36
 msgid "Supervisor Accounts"
@@ -339,7 +347,7 @@ msgstr "Nachname"
 msgid "First name"
 msgstr "Vorname"
 
-#: app/templates/admin/accounts.html:54
+#: app/templates/admin/accounts.html:54 app/templates/admin/add-account.html:56
 msgid "Permission Level"
 msgstr "Berechtigungsstufe"
 
@@ -356,18 +364,6 @@ msgstr "Supervisor-Account hinzufügen"
 #: app/templates/admin/edit-identity.html:49
 msgid "Mail"
 msgstr "E-Mail"
-
-#: app/templates/admin/add-account.html:54
-msgid ""
-"Minimum 20 characters, at least 5 numbers, 5 capital letters, 5 lower case "
-"letters, 5 special characters."
-msgstr ""
-"Mindestens 20 Zeichen, davon mindestens 5 Zahlen, 5 Großbuchstaben, 5 "
-"Kleinbuchstaben und 5 Sonderzeichen"
-
-#: app/templates/admin/add-account.html:56
-msgid "Role"
-msgstr "Rolle"
 
 #: app/templates/admin/add-account.html:68
 #: app/templates/admin/add-regcode.html:59
@@ -443,11 +439,10 @@ msgid "to room"
 msgstr "zum Raum"
 
 #: app/templates/admin/edit-identity.html:62
-msgid ""
-"If you want to cancel this move or edit the room, click the button below."
+msgid "If you want to cancel this move or edit the room, click the button below."
 msgstr ""
-"Wenn Sie diesen Umzugstermin abbrechen oder den Raum editieren möchten, dann "
-"nutzen Sie den Button hierunter."
+"Wenn Sie diesen Umzugstermin abbrechen oder den Raum editieren möchten, "
+"dann nutzen Sie den Button hierunter."
 
 #: app/templates/admin/edit-identity.html:63
 msgid "Cancel Move"
@@ -508,8 +503,8 @@ msgstr ""
 
 #: app/templates/admin/infrastructure.html:68
 msgid ""
-"Disable traffic accounting for all users in the database. Does not apply for "
-"newly created users."
+"Disable traffic accounting for all users in the database. Does not apply "
+"for newly created users."
 msgstr ""
 
 #: app/templates/admin/infrastructure.html:77
@@ -707,9 +702,9 @@ msgstr "Registrierungscode deaktivieren"
 
 #: app/templates/admin/key-page.html:228
 msgid ""
-"Use this if an user temporarily moved out of his apartment or violated the "
-"terms of use. All devices which have registered with this code will not be "
-"able to go online until activated again."
+"Use this if an user temporarily moved out of his apartment or violated "
+"the terms of use. All devices which have registered with this code will "
+"not be able to go online until activated again."
 msgstr ""
 "Benutzen Sie diese Option, wenn ein Nutzer zeitweise aus seiner Wohnung "
 "ausgezogen ist oder gegen die Nutzungsrichtlinien verstoßen hat. Alle "
@@ -734,13 +729,13 @@ msgstr "Registrierungscode löschen"
 
 #: app/templates/admin/key-page.html:247
 msgid ""
-"Use this if an user moved out of his apartment permanently. All user data "
-"will get deleted and all devices registered with this code will go offline "
-"immediately."
+"Use this if an user moved out of his apartment permanently. All user data"
+" will get deleted and all devices registered with this code will go "
+"offline immediately."
 msgstr ""
-"Benutzen Sie diese Option, wenn ein Nutzer permanent ausgezogen ist. Alle "
-"Nutzerdaten werden gelöscht und alle mit diesem Code registrierten Geräte "
-"werden sofort vom Netz getrennt."
+"Benutzen Sie diese Option, wenn ein Nutzer permanent ausgezogen ist. Alle"
+" Nutzerdaten werden gelöscht und alle mit diesem Code registrierten "
+"Geräte werden sofort vom Netz getrennt."
 
 #: app/templates/admin/key-page.html:248
 msgid "Important:"
@@ -800,7 +795,8 @@ msgstr "Ungültige Anfrage"
 #: app/templates/errors/403.html:15 app/templates/errors/404.html:15
 #: app/templates/errors/405.html:15
 msgid ""
-"The request could not be processed because you have insufficient permissions."
+"The request could not be processed because you have insufficient "
+"permissions."
 msgstr ""
 "Die Anfrage konnte nicht bearbeitet werden, da Sie nicht die nötigen "
 "Berechtigungen besitzen."
@@ -832,16 +828,17 @@ msgstr "Zugriff deaktiviert"
 
 #: app/templates/errors/deactivated.html:15
 msgid ""
-"Your registration key has been deactivated. Possible reasons could be that "
-"your tenancy agreement with Studentenwerk Dresden has expired or that you "
-"have violated against the Rahmennetzordnung. If you think that this is a "
-"mistake, then please inform the network administrator. Code: 995"
-msgstr ""
-"Dein Registrierungscode wurde deaktiviert. Mögliche Gründe dafür sind, dass "
-"dein Mietvertrag mit dem Studentenwerk Dresden ausgelaufen ist oder das du "
-"gegen die Rahmennetzordnung verstoßen hast. Wenn du glaubst, dass dies ein "
-"Missverständnis ist, dann informiere bitte den Netzwerkadministrator. Code: "
+"Your registration key has been deactivated. Possible reasons could be "
+"that your tenancy agreement with Studentenwerk Dresden has expired or "
+"that you have violated against the Rahmennetzordnung. If you think that "
+"this is a mistake, then please inform the network administrator. Code: "
 "995"
+msgstr ""
+"Dein Registrierungscode wurde deaktiviert. Mögliche Gründe dafür sind, "
+"dass dein Mietvertrag mit dem Studentenwerk Dresden ausgelaufen ist oder "
+"das du gegen die Rahmennetzordnung verstoßen hast. Wenn du glaubst, dass "
+"dies ein Missverständnis ist, dann informiere bitte den "
+"Netzwerkadministrator. Code: 995"
 
 #: app/templates/errors/ip_stolen.html:7 app/templates/errors/ip_stolen.html:14
 msgid "Access Manipulation"
@@ -850,8 +847,9 @@ msgstr "Zugriffsmanipulation"
 #: app/templates/errors/ip_stolen.html:15
 msgid ""
 "A misconfigured device has attempted to gain access to the network using "
-"forged credentials that match yours. For security reasons, your access has "
-"been temporarily blocked. Please contact the network administrator. Code: 950"
+"forged credentials that match yours. For security reasons, your access "
+"has been temporarily blocked. Please contact the network administrator. "
+"Code: 950"
 msgstr ""
 "Ein fehlerhaft konfiguriertes Endgerät hat versucht, mit gefälschten "
 "Zugangsdaten - welchen deinen entsprechen, Zugriff auf das Netzwerk zu "
@@ -924,11 +922,12 @@ msgstr "Geräteabmeldung"
 
 #: app/templates/user/deregister.html:21
 msgid ""
-"Deregistering this device allows you to plug in another device at this port. "
-"After deregistration you will be redirected to the registration prompt."
+"Deregistering this device allows you to plug in another device at this "
+"port. After deregistration you will be redirected to the registration "
+"prompt."
 msgstr ""
-"Die Abmeldung dieses Geräts dient dazu, dass Sie ein anderes Gerät an diesem "
-"Netzanschluss anmelden können. Nach der Abmeldung werden Sie zur "
+"Die Abmeldung dieses Geräts dient dazu, dass Sie ein anderes Gerät an "
+"diesem Netzanschluss anmelden können. Nach der Abmeldung werden Sie zur "
 "Registrierungsmaske weitergeleitet."
 
 #: app/templates/user/deregister.html:23
@@ -994,14 +993,19 @@ msgstr "Ungültiger Aktionscode"
 #~ msgstr "Supervisor Nutzerseite"
 
 #~ msgid ""
-#~ "Use this if an user moved out of his apartment or violated the terms of "
-#~ "use. All devices which have registered with this code will not be able to "
-#~ "go online anymore."
+#~ "Use this if an user moved out "
+#~ "of his apartment or violated the "
+#~ "terms of use. All devices which "
+#~ "have registered with this code will "
+#~ "not be able to go online anymore."
 #~ msgstr ""
-#~ "Benutzen Sie diese Funktion, wenn ein Nutzer keinen gültigen Mietvertrag "
-#~ "mehr besitzt, oder gegen die Rahmennetzordnung verstoßen hat. Alle Geräte "
-#~ "die mit diesem Registrierungscode registriert wurden, werden sich nicht "
-#~ "mehr mit dem Internet verbinden können."
+#~ "Benutzen Sie diese Funktion, wenn ein"
+#~ " Nutzer keinen gültigen Mietvertrag mehr"
+#~ " besitzt, oder gegen die Rahmennetzordnung"
+#~ " verstoßen hat. Alle Geräte die mit"
+#~ " diesem Registrierungscode registriert wurden,"
+#~ " werden sich nicht mehr mit dem "
+#~ "Internet verbinden können."
 
 #~ msgid "Error during registration."
 #~ msgstr "Fehler während der Anmeldung."
@@ -1038,8 +1042,8 @@ msgstr "Ungültiger Aktionscode"
 
 #~ msgid "Use this if an user moved into another room."
 #~ msgstr ""
-#~ "Nutzen Sie diese Funktion um einen Nutzer in einen anderen Raum "
-#~ "umzuziehen."
+#~ "Nutzen Sie diese Funktion um einen "
+#~ "Nutzer in einen anderen Raum umzuziehen."
 
 #~ msgid "Current Room:"
 #~ msgstr "Derzeitiger Raum:"
@@ -1049,3 +1053,22 @@ msgstr "Ungültiger Aktionscode"
 
 #~ msgid "Scheduled Date (optional):"
 #~ msgstr "Geplantes Umzugsdatum (optional):"
+
+#~ msgid ""
+#~ "Minimum 20 characters, at least 5 "
+#~ "numbers, 5 capital letters, 5 lower "
+#~ "case letters, 5 special characters."
+#~ msgstr ""
+#~ "Mindestens 20 Zeichen, davon mindestens "
+#~ "5 Zahlen, 5 Großbuchstaben, 5 "
+#~ "Kleinbuchstaben und 5 Sonderzeichen"
+
+#~ msgid "Role"
+#~ msgstr "Rolle"
+
+#~ msgid ""
+#~ "Minimum 10 characters, at least 1 "
+#~ "number, 1 capital letter, 1 lower "
+#~ "case letter1, 1 special character."
+#~ msgstr ""
+

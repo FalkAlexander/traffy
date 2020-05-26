@@ -107,35 +107,27 @@ def create_account(username, first_name, last_name, mail, password, role):
 #
 
 def __password_check(password):
-    if len(password) < 20:
+    if len(password) < 10:
         return False
 
-    if sum(1 for char in password if char.isupper()) < 5:
+    upper = 0
+    lower = 0
+    digit = 0
+    special = 0
+    for i in range(len(str)): 
+        if str[i].isupper(): 
+            upper += 1
+        elif str[i].islower(): 
+            lower += 1
+        elif str[i].isdigit(): 
+            digit += 1
+        else: 
+            special += 1
+
+    if upper < 1 or lower < 1 or digit < 0 or special < 0:
         return False
-
-    if sum(1 for char in password if char.islower()) < 5:
-        return False
-
-    if sum(1 for char in password if char.isdigit()) < 5:
-        return False
-
-    req = 0
-    for char in password:
-        if char.isupper():
-            req += 1
-        elif char.islower():
-            req += 1
-        elif char.isdigit():
-            req += 1
-        elif char.isalpha():
-            continue
-        else:
-            req += 1
-
-    if req < 15:
-        return False
-
-    return True
+    else:
+        return True
 
 def __mail_check(mail):
     if not re.match(r"^[a-zA-Z0-9_.+-]+@(?:(?:[a-zA-Z0-9-]+\.)?[a-zA-Z]+\.)?(hszg|studentenwerk-dresden)\.de$", mail):
