@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2020-05-24 23:55+0200\n"
+"POT-Creation-Date: 2020-05-26 18:28+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -21,115 +21,115 @@ msgstr ""
 msgid "Wrong credentials. This attempt got reported."
 msgstr ""
 
-#: app/admin/views.py:61 app/admin/views.py:65 app/admin/views.py:335
-#: app/admin/views.py:339
+#: app/admin/views.py:61 app/admin/views.py:65 app/admin/views.py:334
+#: app/admin/views.py:338
 msgid "Accounted"
 msgstr ""
 
-#: app/admin/views.py:62 app/admin/views.py:66 app/admin/views.py:336
-#: app/admin/views.py:340
+#: app/admin/views.py:62 app/admin/views.py:66 app/admin/views.py:335
+#: app/admin/views.py:339
 msgid "Timerule"
 msgstr ""
 
-#: app/admin/views.py:63 app/admin/views.py:67 app/admin/views.py:337
-#: app/admin/views.py:341 app/templates/admin/key-page.html:61
+#: app/admin/views.py:63 app/admin/views.py:67 app/admin/views.py:336
+#: app/admin/views.py:340 app/templates/admin/key-page.html:61
 msgid "Shaped"
 msgstr ""
 
-#: app/admin/views.py:64 app/admin/views.py:68 app/admin/views.py:338
-#: app/admin/views.py:342
+#: app/admin/views.py:64 app/admin/views.py:68 app/admin/views.py:337
+#: app/admin/views.py:341
 msgid "Exceptions"
 msgstr ""
 
-#: app/admin/views.py:133 app/admin/views.py:179 app/admin/views.py:509
+#: app/admin/views.py:133 app/admin/views.py:173 app/admin/views.py:508
 msgid "Please fill out all input forms."
 msgstr ""
 
-#: app/admin/views.py:174
+#: app/admin/views.py:168
 msgid "Move date must be in the future."
 msgstr ""
 
-#: app/admin/views.py:183
+#: app/admin/views.py:177
 msgid "You can not schedule a move if the room will stay the same."
 msgstr ""
 
-#: app/admin/views.py:189
+#: app/admin/views.py:188
 msgid "Identity could not get changed."
 msgstr ""
 
-#: app/admin/views.py:202
+#: app/admin/views.py:201
 msgid "Device unregistered"
 msgstr ""
 
-#: app/admin/views.py:209 app/user/views.py:87 app/user/views.py:118
+#: app/admin/views.py:208 app/user/views.py:87 app/user/views.py:118
 msgid "Invalid registration key."
 msgstr ""
 
-#: app/admin/views.py:248 app/admin/views.py:257 app/admin/views.py:275
+#: app/admin/views.py:247 app/admin/views.py:256 app/admin/views.py:274
 msgid "Input entered is invalid."
 msgstr ""
 
-#: app/admin/views.py:266 app/admin/views.py:284 app/admin/views.py:293
-#: app/admin/views.py:302 app/admin/views.py:311 app/admin/views.py:320
-#: app/admin/views.py:329 app/admin/views.py:438
+#: app/admin/views.py:265 app/admin/views.py:283 app/admin/views.py:292
+#: app/admin/views.py:301 app/admin/views.py:310 app/admin/views.py:319
+#: app/admin/views.py:328 app/admin/views.py:437
 msgid "An error occured."
 msgstr ""
 
-#: app/admin/views.py:346
+#: app/admin/views.py:345
 msgid "Yes"
 msgstr ""
 
-#: app/admin/views.py:348
+#: app/admin/views.py:347
 msgid "No"
 msgstr ""
 
-#: app/admin/views.py:351 app/templates/admin/key-page.html:164
+#: app/admin/views.py:350 app/templates/admin/key-page.html:164
 #: app/templates/admin/key-page.html:188
 msgid "Enabled"
 msgstr ""
 
-#: app/admin/views.py:353 app/templates/admin/key-page.html:167
+#: app/admin/views.py:352 app/templates/admin/key-page.html:167
 #: app/templates/admin/key-page.html:191
 msgid "Disabled"
 msgstr ""
 
-#: app/admin/views.py:426
+#: app/admin/views.py:425
 msgid "Invalid supervisor account."
 msgstr ""
 
-#: app/admin/views.py:447
+#: app/admin/views.py:446
 msgid "Password requirements not met."
 msgstr ""
 
-#: app/admin/views.py:449
+#: app/admin/views.py:448
 msgid "Password changed."
 msgstr ""
 
-#: app/admin/views.py:458
+#: app/admin/views.py:457
 msgid "Mail address entered is invalid."
 msgstr ""
 
-#: app/admin/views.py:460
+#: app/admin/views.py:459
 msgid "Mail address changed."
 msgstr ""
 
-#: app/admin/views.py:467
+#: app/admin/views.py:466
 msgid "No other supervisor account left, cannot delete this one."
 msgstr ""
 
-#: app/admin/views.py:472
+#: app/admin/views.py:471
 msgid "Error deleting account."
 msgstr ""
 
-#: app/admin/views.py:475
+#: app/admin/views.py:474
 msgid "Account deleted."
 msgstr ""
 
-#: app/admin/views.py:514
+#: app/admin/views.py:513
 msgid "Account could not get created."
 msgstr ""
 
-#: app/admin/views.py:561
+#: app/admin/views.py:560
 msgid "Login to access that resource."
 msgstr ""
 
@@ -333,8 +333,8 @@ msgstr ""
 msgid "First name"
 msgstr ""
 
-#: app/templates/admin/accounts.html:54 app/templates/admin/add-account.html:56
-msgid "Role"
+#: app/templates/admin/accounts.html:54
+msgid "Permission Level"
 msgstr ""
 
 #: app/templates/admin/add-account.html:6
@@ -355,6 +355,10 @@ msgstr ""
 msgid ""
 "Minimum 20 characters, at least 5 numbers, 5 capital letters, 5 lower "
 "case letters, 5 special characters."
+msgstr ""
+
+#: app/templates/admin/add-account.html:56
+msgid "Role"
 msgstr ""
 
 #: app/templates/admin/add-account.html:68
@@ -727,7 +731,7 @@ msgid "This action can not be made undone!"
 msgstr ""
 
 #: app/templates/admin/key-page.html:250
-msgid "Scheduled Date (optional):"
+msgid "Move-Out Date / Date of deletion (optional):"
 msgstr ""
 
 #: app/templates/admin/login.html:6 app/templates/admin/login.html:20

@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2020-05-24 23:55+0200\n"
-"PO-Revision-Date: 2020-05-25 00:01+0200\n"
+"POT-Creation-Date: 2020-05-26 18:28+0200\n"
+"PO-Revision-Date: 2020-05-26 18:29+0200\n"
 "Last-Translator: Falk Seidl <hi@falsei.de>\n"
 "Language: de\n"
 "Language-Team: German <hi@falsei.de>\n"
@@ -25,115 +25,115 @@ msgstr ""
 msgid "Wrong credentials. This attempt got reported."
 msgstr "Ungültige Zugangsdaten. Der Anmeldeversuch wurde gemeldet."
 
-#: app/admin/views.py:61 app/admin/views.py:65 app/admin/views.py:335
-#: app/admin/views.py:339
+#: app/admin/views.py:61 app/admin/views.py:65 app/admin/views.py:334
+#: app/admin/views.py:338
 msgid "Accounted"
 msgstr "Angerechnet"
 
-#: app/admin/views.py:62 app/admin/views.py:66 app/admin/views.py:336
-#: app/admin/views.py:340
+#: app/admin/views.py:62 app/admin/views.py:66 app/admin/views.py:335
+#: app/admin/views.py:339
 msgid "Timerule"
 msgstr "Zeitregel"
 
-#: app/admin/views.py:63 app/admin/views.py:67 app/admin/views.py:337
-#: app/admin/views.py:341 app/templates/admin/key-page.html:61
+#: app/admin/views.py:63 app/admin/views.py:67 app/admin/views.py:336
+#: app/admin/views.py:340 app/templates/admin/key-page.html:61
 msgid "Shaped"
 msgstr "Gedrosselt"
 
-#: app/admin/views.py:64 app/admin/views.py:68 app/admin/views.py:338
-#: app/admin/views.py:342
+#: app/admin/views.py:64 app/admin/views.py:68 app/admin/views.py:337
+#: app/admin/views.py:341
 msgid "Exceptions"
 msgstr "Ausnahmen"
 
-#: app/admin/views.py:133 app/admin/views.py:179 app/admin/views.py:509
+#: app/admin/views.py:133 app/admin/views.py:173 app/admin/views.py:508
 msgid "Please fill out all input forms."
 msgstr "Bitte alle Eingabefelder ausfüllen."
 
-#: app/admin/views.py:174
+#: app/admin/views.py:168
 msgid "Move date must be in the future."
 msgstr "Das Umzugsdatum muss in der Zukunft liegen."
 
-#: app/admin/views.py:183
+#: app/admin/views.py:177
 msgid "You can not schedule a move if the room will stay the same."
 msgstr "Ein Umzug ist nicht möglich, wenn sich der Raum nicht ändert."
 
-#: app/admin/views.py:189
+#: app/admin/views.py:188
 msgid "Identity could not get changed."
 msgstr "Die Identität konnte nicht verändert werden."
 
-#: app/admin/views.py:202
+#: app/admin/views.py:201
 msgid "Device unregistered"
 msgstr "Gerät de-registriert."
 
-#: app/admin/views.py:209 app/user/views.py:87 app/user/views.py:118
+#: app/admin/views.py:208 app/user/views.py:87 app/user/views.py:118
 msgid "Invalid registration key."
 msgstr "Ungültiger Registrierungsschlüssel."
 
-#: app/admin/views.py:248 app/admin/views.py:257 app/admin/views.py:275
+#: app/admin/views.py:247 app/admin/views.py:256 app/admin/views.py:274
 msgid "Input entered is invalid."
 msgstr "Die getätigten Eingaben sind fehlerbehaftet."
 
-#: app/admin/views.py:266 app/admin/views.py:284 app/admin/views.py:293
-#: app/admin/views.py:302 app/admin/views.py:311 app/admin/views.py:320
-#: app/admin/views.py:329 app/admin/views.py:438
+#: app/admin/views.py:265 app/admin/views.py:283 app/admin/views.py:292
+#: app/admin/views.py:301 app/admin/views.py:310 app/admin/views.py:319
+#: app/admin/views.py:328 app/admin/views.py:437
 msgid "An error occured."
 msgstr "Es ist ein Fehler aufgetreten."
 
-#: app/admin/views.py:346
+#: app/admin/views.py:345
 msgid "Yes"
 msgstr "Ja"
 
-#: app/admin/views.py:348
+#: app/admin/views.py:347
 msgid "No"
 msgstr "Nein"
 
-#: app/admin/views.py:351 app/templates/admin/key-page.html:164
+#: app/admin/views.py:350 app/templates/admin/key-page.html:164
 #: app/templates/admin/key-page.html:188
 msgid "Enabled"
 msgstr "Aktiviert"
 
-#: app/admin/views.py:353 app/templates/admin/key-page.html:167
+#: app/admin/views.py:352 app/templates/admin/key-page.html:167
 #: app/templates/admin/key-page.html:191
 msgid "Disabled"
 msgstr "Deaktiviert"
 
-#: app/admin/views.py:426
+#: app/admin/views.py:425
 msgid "Invalid supervisor account."
 msgstr "Ungültiges Supervisor Konto."
 
-#: app/admin/views.py:447
+#: app/admin/views.py:446
 msgid "Password requirements not met."
 msgstr "Passwortanforderungen wurden nicht erreicht."
 
-#: app/admin/views.py:449
+#: app/admin/views.py:448
 msgid "Password changed."
 msgstr "Passwort geändert."
 
-#: app/admin/views.py:458
+#: app/admin/views.py:457
 msgid "Mail address entered is invalid."
 msgstr "Die eingegebene Mail Adresse ist ungültig."
 
-#: app/admin/views.py:460
+#: app/admin/views.py:459
 msgid "Mail address changed."
 msgstr "Die Mail Adresse wurde geändert."
 
-#: app/admin/views.py:467
+#: app/admin/views.py:466
 msgid "No other supervisor account left, cannot delete this one."
 msgstr "Dies ist das einzige Supervisor Konto, es kann nicht gelöscht werden."
 
-#: app/admin/views.py:472
+#: app/admin/views.py:471
 msgid "Error deleting account."
 msgstr "Fehler beim Löschen des Kontos."
 
-#: app/admin/views.py:475
+#: app/admin/views.py:474
 msgid "Account deleted."
 msgstr "Konto gelöscht."
 
-#: app/admin/views.py:514
+#: app/admin/views.py:513
 msgid "Account could not get created."
 msgstr "Das Konto konnte nicht erstellt werden."
 
-#: app/admin/views.py:561
+#: app/admin/views.py:560
 msgid "Login to access that resource."
 msgstr "Anmelden um Zugriff auf die Ressource zu erhalten."
 
@@ -339,9 +339,9 @@ msgstr "Nachname"
 msgid "First name"
 msgstr "Vorname"
 
-#: app/templates/admin/accounts.html:54 app/templates/admin/add-account.html:56
-msgid "Role"
-msgstr "Rolle"
+#: app/templates/admin/accounts.html:54
+msgid "Permission Level"
+msgstr "Berechtigungsstufe"
 
 #: app/templates/admin/add-account.html:6
 msgid "Supervisor Add Account"
@@ -364,6 +364,10 @@ msgid ""
 msgstr ""
 "Mindestens 20 Zeichen, davon mindestens 5 Zahlen, 5 Großbuchstaben, 5 "
 "Kleinbuchstaben und 5 Sonderzeichen"
+
+#: app/templates/admin/add-account.html:56
+msgid "Role"
+msgstr "Rolle"
 
 #: app/templates/admin/add-account.html:68
 #: app/templates/admin/add-regcode.html:59
@@ -747,8 +751,8 @@ msgid "This action can not be made undone!"
 msgstr "Diese Aktion kann nicht rückgängig gemacht werden!"
 
 #: app/templates/admin/key-page.html:250
-msgid "Scheduled Date (optional):"
-msgstr "Geplantes Umzugsdatum (optional):"
+msgid "Move-Out Date / Date of deletion (optional):"
+msgstr "Auszugsdatum / Löschdatum (optional):"
 
 #: app/templates/admin/login.html:6 app/templates/admin/login.html:20
 msgid "Supervisor Login"
@@ -1042,3 +1046,6 @@ msgstr "Ungültiger Aktionscode"
 
 #~ msgid "Change Room"
 #~ msgstr "Raum ändern"
+
+#~ msgid "Scheduled Date (optional):"
+#~ msgstr "Geplantes Umzugsdatum (optional):"
