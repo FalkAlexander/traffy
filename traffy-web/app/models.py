@@ -91,9 +91,9 @@ class SupervisorAccount(db.Model, UserMixin):
     def get_role(self):
         if self.is_admin():
             return "Admin"
-        elif is_helpdesk():
+        elif self.is_helpdesk():
             return "Helpdesk"
-        elif is_clerk():
+        elif self.is_clerk():
             return "Sachbearbeiter*in"
 
     def __repr__(self):
