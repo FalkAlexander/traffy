@@ -326,9 +326,27 @@ def reg_code(reg_key):
 
             if not success:
                 flash(_l("An error occured."))
+            else:
+                if request.form["delete_code_date"] == "":
+                    flash(_l("Registration key successfully deleted."), "success")
+                else:
+                    flash(_l("Registration key deletion scheduled successfully."), "success")
 
-            return redirect("/admin/regcodes")
+            if request.form["delete_code_date"] == "":
+                return redirect("/admin/regcodes")
+            else:
+                return redirect("/admin/regcodes/" + reg_key)
+        
+        # Cancel Pending Registration Code Deletion
+        if "cancel_delete_code" in request.form:
+            success = server.cancel_delete_registration_key(reg_key)
 
+            if not success:
+                flash(_l("An error occured."))
+            else:
+                flash(_l("Canceled pending registration key deletion."), "success")
+
+            return redirect("/admin/regcodes/" + reg_key)
 
     # Statistics
     legend_downlink = "↓ "  + _l("Accounted")
@@ -358,7 +376,7 @@ def reg_code(reg_key):
     device_list = server.get_reg_code_device_list(reg_key)
 
     # User Settings Variables
-    custom_volume_enabled, value_custom_topup, custom_max_enabled, value_max_volume, accounting_enabled, key_active = server.get_reg_code_settings_values(reg_key)
+    custom_volume_enabled, value_custom_topup, custom_max_enabled, value_max_volume, accounting_enabled, key_active, deletion_date = server.get_reg_code_settings_values(reg_key)
 
     # Room
     room = server.get_reg_code_room(reg_key)
@@ -395,7 +413,8 @@ def reg_code(reg_key):
                            value_max_volume=value_max_volume,
                            accounting_enabled=accounting_enabled,
                            key_active=key_active,
-                           room=room)
+                           room=room,
+                           deletion_date=deletion_date)
 
 @admin.route("/admin/accounts", methods=["GET", "POST"])
 @login_required

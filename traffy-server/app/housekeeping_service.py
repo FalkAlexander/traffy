@@ -95,11 +95,10 @@ class HousekeepingThread(threading.Thread):
             if row.deletion_date <= datetime.now():
                 ip_address = session.query(IpAddress).filter_by(id=row.ip_address).first()
                 self.server_api.deregister_device(ip_address.address_v4)
-                print("Deregistered device " + ip_address.address_v4)
 
     def __remove_orphaned_reg_keys(self, session):
         deletion_keys = session.query(RegistrationKey).filter(RegistrationKey.deletion_date != None).all()
         for row in deletion_keys:
             if row.deletion_date <= datetime.now():
                 self.server_api.delete_registration_key(row.key, "")
-                print("Deleted regkey " + row.key)
+

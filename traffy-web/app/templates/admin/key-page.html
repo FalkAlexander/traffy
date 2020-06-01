@@ -247,8 +247,13 @@
             <p><strong>{{ _("Description:") }}</strong> {{ _("Use this if an user moved out of his apartment permanently. All user data will get deleted and all devices registered with this code will go offline immediately.") }}</p>
             <p><strong>{{ _("Important:") }}</strong> {{ _("This action can not be made undone!") }}</p>
             <form method="POST">
+              {% if deletion_date is none %}
               <p><strong>{{ _("Move-Out Date / Date of deletion (optional):") }}</strong> <input type="date" name="delete_code_date" value=""/></p>
               <input name="delete_code" type="submit" value="{{ _('Delete Registration Code') }}"/>
+              {% else %}
+              <p><strong>{{ _("Move-Out / Date of deletion planned for ") }}</strong> {{ deletion_date }}</p>
+              <input name="cancel_delete_code" type="submit" value="{{ _('Cancel Pending Deletion') }}"/>
+              {% endif %}
             </form>
           </div>
         </div>

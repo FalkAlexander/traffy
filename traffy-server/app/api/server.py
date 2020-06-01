@@ -287,6 +287,7 @@ class ServerAPI:
     #
 
     def delete_registration_key(self, reg_key, date):
+        success = NotImplemented
         session = self.db.create_session()
 
         reg_key_query = self.get_reg_key_query_by_key(session, reg_key)
@@ -317,12 +318,33 @@ class ServerAPI:
 
                 self.delete_query(session, identity_query)
                 self.database_commit(session)
-            return True
+            success = True
         except:
             session.rollback()
             raise DeregistrationError(300)
+            success = False
         finally:
             session.close()
+        
+        return success
+    
+    def cancel_delete_registration_key(self, reg_key):
+        success = NotImplemented
+        session = self.db.create_session()
+
+        reg_key_query = self.get_reg_key_query_by_key(session, reg_key)
+
+        try:
+            reg_key_query.deletion_date = None
+            self.database_commit(session)
+            success = True
+        except:
+            session.rollback()
+            success = False
+        finally:
+            session.close()
+        
+        return success
 
     #
     # User Status
@@ -789,8 +811,13 @@ class ServerAPI:
         # Deactivate Registration Key
         key_active = reg_key_query.active
 
+        # Deletion Date
+        deletion_date = reg_key_query.deletion_date
+        if deletion_date is not None:
+            deletion_date = deletion_date.strftime("%d.%m.%Y %H:%M:%S")
+
         session.close()
-        return custom_volume_enabled, value_custom_topup, custom_max_enabled, value_max_volume, accounting_enabled, key_active
+        return custom_volume_enabled, value_custom_topup, custom_max_enabled, value_max_volume, accounting_enabled, key_active, deletion_date
 
     def get_instruction_pdf_values(self):
         max_saved_volume = self.__to_gib(self.accounting_srv.get_max_saved_volume(), decimals=0)
