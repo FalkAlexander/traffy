@@ -56,6 +56,11 @@ h3 {
   text-align: justify;
 }
 
+.justify.policy p,
+.justify.policy li {
+  font-size: 14px;
+}
+
 .divider {
   margin: 15px 0 15px 0;
   border: 1px dashed #828282;
