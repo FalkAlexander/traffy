@@ -363,10 +363,11 @@ class AccountingThread(threading.Thread):
                                                         iptables_accounting_manager.get_exception_box_egress_bytes(reg_key.id))
                     else:
                         self.update_interval_used_traffic(session, reg_key, 0, 0, 0, 0, inactive=True)
-
-                session.close()
             except:
+                session.rollback()
                 logging.debug("Exception thrown in Accounting Service")
+            finally:
+                session.close()
 
             time.sleep(self.interval)
 

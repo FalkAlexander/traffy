@@ -25,6 +25,7 @@ from app.util import iptables_rules_manager, iptables_accounting_manager, shapin
 from app.util.mail_helper import MailHelper
 from datetime import datetime
 from app.accounting_manager import AccountingService
+from app.housekeeping_service import HousekeepingService
 import os
 import logging
 import threading
@@ -40,6 +41,7 @@ class Server():
     accounting_srv = NotImplemented
     sm = NotImplemented
     dev_mode_test = NotImplemented
+    housekeeping_srv = NotImplemented
 
     def __init__(self):
         self.boot_timestamp = datetime.now()
@@ -48,6 +50,7 @@ class Server():
 
         self.mail_helper = MailHelper()
         self.accounting_srv = AccountingService(self.db, self.mail_helper)
+        self.housekeeping_srv = HousekeepingService(self.db)
         self.sm = SocketManager(self)
 
         signal.signal(signal.SIGINT, self.shutdown)
@@ -190,6 +193,10 @@ class Server():
         session.close()
 
     def shutdown(self, signal, frame):
+        # Stop Housekeeping
+        self.housekeeping_srv.stop()
+
+        # Disable Socket
         self.sm.stop()
 
         # Stop Accounting
@@ -233,7 +240,12 @@ class Server():
         logging.info("Started accounting services")
 
         self.dev_mode_test = DevModeTest(self.db)
+
+        # Enable Socket
         self.sm.start()
+
+        # Start Housekeeping
+        self.housekeeping_srv.start(20, self.sm.server_api)
 
         logging.info("Network now fully managed")
         logging.info("Traffy server ready after " + str((datetime.now() - self.boot_timestamp).total_seconds()) + "s")

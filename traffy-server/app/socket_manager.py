@@ -27,8 +27,7 @@ class SocketManager():
     run = True
     server = NotImplemented
     rpc = NotImplemented
-    user_api = NotImplemented
-    admin_api = NotImplemented
+    server_api = NotImplemented
 
     def __init__(self, server):
         self.server = server
