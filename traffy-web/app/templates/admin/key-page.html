@@ -244,8 +244,8 @@
         <div class="settings-box dangerous">
           <div class="settings-box-content">
             <h2>{{ _("Delete Registration Code") }}</h2>
-            <p><strong>{{ _("Description:") }}</strong> {{ _("Use this if an user moved out of his apartment permanently. All user data will get deleted and all devices registered with this code will go offline immediately.") }}</p>
-            <p><strong>{{ _("Important:") }}</strong> {{ _("This action can not be made undone!") }}</p>
+            <p><strong>{{ _("Description:") }}</strong> {{ _("Use this if an user moved out of his apartment permanently. All user data will get deleted and all devices registered with this code will go offline on deletion date.") }}</p>
+            <p><strong>{{ _("Important:") }}</strong> {{ _("If no move-out date / date of deletion is specified, then the deletion will happen immediately! Be careful!") }}</p>
             <form method="POST">
               {% if deletion_date is none %}
               <p><strong>{{ _("Move-Out Date / Date of deletion (optional):") }}</strong> <input type="date" name="delete_code_date" value=""/></p>

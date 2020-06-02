@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2020-05-26 19:00+0200\n"
+"POT-Creation-Date: 2020-06-02 18:48+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -21,27 +21,27 @@ msgstr ""
 msgid "Wrong credentials. This attempt got reported."
 msgstr ""
 
-#: app/admin/views.py:61 app/admin/views.py:65 app/admin/views.py:334
-#: app/admin/views.py:338
+#: app/admin/views.py:61 app/admin/views.py:65 app/admin/views.py:352
+#: app/admin/views.py:356
 msgid "Accounted"
 msgstr ""
 
-#: app/admin/views.py:62 app/admin/views.py:66 app/admin/views.py:335
-#: app/admin/views.py:339
+#: app/admin/views.py:62 app/admin/views.py:66 app/admin/views.py:353
+#: app/admin/views.py:357
 msgid "Timerule"
 msgstr ""
 
-#: app/admin/views.py:63 app/admin/views.py:67 app/admin/views.py:336
-#: app/admin/views.py:340 app/templates/admin/key-page.html:61
+#: app/admin/views.py:63 app/admin/views.py:67 app/admin/views.py:354
+#: app/admin/views.py:358 app/templates/admin/key-page.html:61
 msgid "Shaped"
 msgstr ""
 
-#: app/admin/views.py:64 app/admin/views.py:68 app/admin/views.py:337
-#: app/admin/views.py:341
+#: app/admin/views.py:64 app/admin/views.py:68 app/admin/views.py:355
+#: app/admin/views.py:359
 msgid "Exceptions"
 msgstr ""
 
-#: app/admin/views.py:133 app/admin/views.py:173 app/admin/views.py:508
+#: app/admin/views.py:133 app/admin/views.py:173 app/admin/views.py:527
 msgid "Please fill out all input forms."
 msgstr ""
 
@@ -71,65 +71,77 @@ msgstr ""
 
 #: app/admin/views.py:265 app/admin/views.py:283 app/admin/views.py:292
 #: app/admin/views.py:301 app/admin/views.py:310 app/admin/views.py:319
-#: app/admin/views.py:328 app/admin/views.py:437
+#: app/admin/views.py:328 app/admin/views.py:345 app/admin/views.py:456
 msgid "An error occured."
 msgstr ""
 
-#: app/admin/views.py:345
-msgid "Yes"
+#: app/admin/views.py:331
+msgid "Registration key successfully deleted."
+msgstr ""
+
+#: app/admin/views.py:333
+msgid "Registration key deletion scheduled successfully."
 msgstr ""
 
 #: app/admin/views.py:347
+msgid "Canceled pending registration key deletion."
+msgstr ""
+
+#: app/admin/views.py:363
+msgid "Yes"
+msgstr ""
+
+#: app/admin/views.py:365
 msgid "No"
 msgstr ""
 
-#: app/admin/views.py:350 app/templates/admin/key-page.html:164
+#: app/admin/views.py:368 app/templates/admin/key-page.html:164
 #: app/templates/admin/key-page.html:188
 msgid "Enabled"
 msgstr ""
 
-#: app/admin/views.py:352 app/templates/admin/key-page.html:167
+#: app/admin/views.py:370 app/templates/admin/key-page.html:167
 #: app/templates/admin/key-page.html:191
 msgid "Disabled"
 msgstr ""
 
-#: app/admin/views.py:425
+#: app/admin/views.py:444
 msgid "Invalid supervisor account."
 msgstr ""
 
-#: app/admin/views.py:446
+#: app/admin/views.py:465
 msgid "Password requirements not met."
 msgstr ""
 
-#: app/admin/views.py:448
+#: app/admin/views.py:467
 msgid "Password changed."
 msgstr ""
 
-#: app/admin/views.py:457
+#: app/admin/views.py:476
 msgid "Mail address entered is invalid."
 msgstr ""
 
-#: app/admin/views.py:459
+#: app/admin/views.py:478
 msgid "Mail address changed."
 msgstr ""
 
-#: app/admin/views.py:466
+#: app/admin/views.py:485
 msgid "No other supervisor account left, cannot delete this one."
 msgstr ""
 
-#: app/admin/views.py:471
+#: app/admin/views.py:490
 msgid "Error deleting account."
 msgstr ""
 
-#: app/admin/views.py:474
+#: app/admin/views.py:493
 msgid "Account deleted."
 msgstr ""
 
-#: app/admin/views.py:513
+#: app/admin/views.py:532
 msgid "Account could not get created."
 msgstr ""
 
-#: app/admin/views.py:560
+#: app/admin/views.py:579
 msgid "Login to access that resource."
 msgstr ""
 
@@ -407,7 +419,7 @@ msgstr ""
 msgid "Shaped Users"
 msgstr ""
 
-#: app/templates/admin/dashboard.html:164 app/templates/admin/key-page.html:358
+#: app/templates/admin/dashboard.html:164 app/templates/admin/key-page.html:363
 msgid "Total"
 msgstr ""
 
@@ -708,7 +720,7 @@ msgstr ""
 msgid "Activate Registration Code"
 msgstr ""
 
-#: app/templates/admin/key-page.html:246 app/templates/admin/key-page.html:251
+#: app/templates/admin/key-page.html:246 app/templates/admin/key-page.html:252
 msgid "Delete Registration Code"
 msgstr ""
 
@@ -716,7 +728,7 @@ msgstr ""
 msgid ""
 "Use this if an user moved out of his apartment permanently. All user data"
 " will get deleted and all devices registered with this code will go "
-"offline immediately."
+"offline on deletion date."
 msgstr ""
 
 #: app/templates/admin/key-page.html:248
@@ -724,11 +736,21 @@ msgid "Important:"
 msgstr ""
 
 #: app/templates/admin/key-page.html:248
-msgid "This action can not be made undone!"
+msgid ""
+"If no move-out date / date of deletion is specified, then the deletion "
+"will happen immediately! Be careful!"
 msgstr ""
 
-#: app/templates/admin/key-page.html:250
+#: app/templates/admin/key-page.html:251
 msgid "Move-Out Date / Date of deletion (optional):"
+msgstr ""
+
+#: app/templates/admin/key-page.html:254
+msgid "Move-Out / Date of deletion planned for "
+msgstr ""
+
+#: app/templates/admin/key-page.html:255
+msgid "Cancel Pending Deletion"
 msgstr ""
 
 #: app/templates/admin/login.html:6 app/templates/admin/login.html:20
