@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2020-06-02 18:48+0200\n"
-"PO-Revision-Date: 2020-06-02 18:54+0200\n"
+"POT-Creation-Date: 2020-06-02 22:36+0200\n"
+"PO-Revision-Date: 2020-06-02 22:38+0200\n"
 "Last-Translator: Falk Seidl <hi@falsei.de>\n"
 "Language: de\n"
 "Language-Team: German <hi@falsei.de>\n"
@@ -955,6 +955,15 @@ msgstr ""
 "Registrierungsmaske weitergeleitet."
 
 #: app/templates/user/deregister.html:23
+msgid ""
+"It can take up to 10 minutes for a newly plugged in device to gain access to "
+"the network. PLEASE REFRAIN FROM WRITING IMMEDIATE SUPPORT TICKETS!"
+msgstr ""
+"Es können bis zu 10 Minuten vergehen bis ein neu eingestecktes Gerät Zugriff "
+"auf das Netzwerk erhält. BITTE SEHEN SIE DAVON AB WÄHRENDDESSEN EIN SUPPORT "
+"TICKET ZU ERÖFFNEN!"
+
+#: app/templates/user/deregister.html:26
 msgid "Deregister"
 msgstr "Abmelden"
 

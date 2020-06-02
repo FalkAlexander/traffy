@@ -19,6 +19,9 @@
           <div class="padding-box">
             <h1>{{ _("Deregistration") }}</h1>
             <p>{{ _("Deregistering this device allows you to plug in another device at this port. After deregistration you will be redirected to the registration prompt.") }}</p>
+            <div class="notification-box">
+              <p>{{ _("It can take up to 10 minutes for a newly plugged in device to gain access to the network. PLEASE REFRAIN FROM WRITING IMMEDIATE SUPPORT TICKETS!") }}</p>
+            </div>
           </div>
           <input name="deregister_btn" type="submit" value="{{ _('Deregister') }}"/>
         </form>

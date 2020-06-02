@@ -276,6 +276,16 @@ body:after{
   background: #235400 !important;
 }
 
+.padding-box .notification-box {
+  height: auto;
+}
+
+.padding-box .notification-box p {
+  color: #fff;
+  font-size: 15px;
+  margin: 6px 0 6px 0;
+}
+
 .progress-box {
   margin: 20px;
   position: relative;

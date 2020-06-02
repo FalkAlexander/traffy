@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2020-06-02 18:48+0200\n"
+"POT-Creation-Date: 2020-06-02 22:36+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -921,6 +921,12 @@ msgid ""
 msgstr ""
 
 #: app/templates/user/deregister.html:23
+msgid ""
+"It can take up to 10 minutes for a newly plugged in device to gain access"
+" to the network. PLEASE REFRAIN FROM WRITING IMMEDIATE SUPPORT TICKETS!"
+msgstr ""
+
+#: app/templates/user/deregister.html:26
 msgid "Deregister"
 msgstr ""
 
