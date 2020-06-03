@@ -148,7 +148,7 @@ def dashboard():
 
     ip_address = session.get("ip_address")
 
-    volume_left, credit = server.get_reg_key_credit_by_ip(ip_address)
+    volume_left, max_volume = server.get_reg_key_credit_by_ip(ip_address)
     in_unlimited_time_range = server.get_in_unlimited_time_range()
 
     user_agent = request.headers.get("User-Agent")
@@ -160,7 +160,7 @@ def dashboard():
     if "deregister_dashboard_btn" in request.form:
         return redirect("/deregister", code=307)
 
-    return render_template("user/dashboard.html", volume_left=volume_left, credit=credit, in_unlimited_time_range=in_unlimited_time_range)
+    return render_template("user/dashboard.html", volume_left=volume_left, max_volume=max_volume, in_unlimited_time_range=in_unlimited_time_range)
 
 @user.route("/reedem", methods=["POST"])
 def reedem():

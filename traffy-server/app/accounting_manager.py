@@ -271,16 +271,19 @@ class AccountingService():
         initial_volume = self.get_initial_volume()
         max_saved_volume = self.get_max_saved_volume()
 
+        if volume_left > max_saved_volume:
+            max_saved_volume = credit
+
         if traffic_query is None:
             if gib is True:
-                return self.__to_gib(initial_volume, decimals), self.__to_gib(initial_volume, decimals)
+                return self.__to_gib(initial_volume, decimals), self.__to_gib(max_saved_volume, decimals)
             else:
-                return initial_volume, initial_volume
+                return initial_volume, max_saved_volume
         else:
             if gib is True:
-                return self.__to_gib(volume_left, decimals), self.__to_gib(credit, decimals)
+                return self.__to_gib(volume_left, decimals), self.__to_gib(max_saved_volume, decimals)
             else:
-                return volume_left, credit
+                return volume_left, max_saved_volume
 
     def get_daily_topup_volume(self, gib=False):
         if gib is True:

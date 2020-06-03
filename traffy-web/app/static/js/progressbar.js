@@ -13,7 +13,7 @@ var bar = new ProgressBar.Circle(".progress-box", {
     circle.path.setAttribute("stroke", state.color);
     circle.path.setAttribute("stroke-width", state.width);
 
-    var num = circle.value() * credit;
+    var num = circle.value() * maxVolume;
     var value = num.toFixed(3)
     if (value === 0) {
       circle.setText("");
@@ -27,6 +27,6 @@ var bar = new ProgressBar.Circle(".progress-box", {
 bar.text.style.fontFamily = "Cantarell-Regular";
 bar.text.style.fontSize = "22px";
 
-oneValue = 1 / credit
+oneValue = 1 / maxVolume
 
 bar.animate(volumeLeft * oneValue);

@@ -151,6 +151,9 @@ class ServerAPI:
 
     def get_maximum_allowed_devices(self):
         return config.MAX_MAC_ADDRESSES_PER_REG_KEY
+    
+    def get_max_saved_volume(self):
+        return self.accounting_srv.get_max_saved_volume()
 
     def get_in_unlimited_time_range(self):
         in_unlimited_time_range = False
@@ -397,13 +400,13 @@ class ServerAPI:
         ip_address_query = self.get_ip_address_query_by_ip(session, ip_address)
         address_pair_query = self.get_address_pair_query_by_ip(session, ip_address_query)
         reg_key_query = self.get_reg_key_query_by_id(session, address_pair_query.reg_key)
-        volume_left, credit = self.accounting_srv.get_credit(session, reg_key_query, gib=True)
+        volume_left, max_volume = self.accounting_srv.get_credit(session, reg_key_query, gib=True)
 
         session.close()
 
         if volume_left < 0:
             volume_left = 0
-        return volume_left, credit
+        return volume_left, max_volume
 
     def set_device_user_agent(self, ip_address, user_agent):
         session = self.db.create_session()
