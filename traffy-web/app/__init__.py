@@ -22,6 +22,7 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_babel import Babel
 from flask_login import LoginManager
 from app.socket_manager import SocketManager
+from datetime import datetime
 import os
 import config
 
@@ -46,6 +47,12 @@ def create_app():
     @app.context_processor
     def inject():
         return dict(admins=config.ADMINS, facility_management=config.FACILITY_MANAGEMENT)
+    
+    @app.template_filter("strftime")
+    def __jinja2_filter_datetime(date, fmt=None):
+        format="%d.%m.%Y %H:%M:%S"
+        date = datetime.fromtimestamp(date)
+        return date.strftime(format) 
 
     # User Interface
     from .user import user as user_blueprint

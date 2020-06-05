@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2020-06-02 22:36+0200\n"
+"POT-Creation-Date: 2020-06-05 20:09+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -61,7 +61,7 @@ msgstr ""
 msgid "Device unregistered"
 msgstr ""
 
-#: app/admin/views.py:208 app/user/views.py:87 app/user/views.py:118
+#: app/admin/views.py:208 app/user/views.py:91 app/user/views.py:123
 msgid "Invalid registration key."
 msgstr ""
 
@@ -786,7 +786,6 @@ msgid "Registration Key"
 msgstr ""
 
 #: app/templates/admin/includes/footer.html:2
-#: app/templates/includes/footer.html:2
 msgid "Görlitz Student Dormitory"
 msgstr ""
 
@@ -849,6 +848,10 @@ msgid ""
 "Code: 950"
 msgstr ""
 
+#: app/templates/includes/footer.html:2 app/templates/user/about.html:18
+msgid "Version Info"
+msgstr ""
+
 #: app/templates/includes/sidebar.html:5
 msgid "Contact and Information"
 msgstr ""
@@ -873,12 +876,81 @@ msgstr ""
 msgid "About"
 msgstr ""
 
-#: app/templates/user/about.html:25
+#: app/templates/user/about.html:16 app/templates/user/dashboard.html:6
+#: app/templates/user/dashboard.html:24
+msgid "Dashboard"
+msgstr ""
+
+#: app/templates/user/about.html:29
+msgid ""
+"You were automatically redirected to this page because you seem to be "
+"located outside of the dormitory network."
+msgstr ""
+
+#: app/templates/user/about.html:32
+msgid "General"
+msgstr ""
+
+#: app/templates/user/about.html:34
 msgid "Developer"
 msgstr ""
 
-#: app/templates/user/about.html:26
+#: app/templates/user/about.html:35
 msgid "Source Code"
+msgstr ""
+
+#: app/templates/user/about.html:37
+msgid "Current Version"
+msgstr ""
+
+#: app/templates/user/about.html:39
+msgid "Checkout Branch"
+msgstr ""
+
+#: app/templates/user/about.html:41
+msgid "Development History"
+msgstr ""
+
+#: app/templates/user/about.html:46
+msgid "Commit Date"
+msgstr ""
+
+#: app/templates/user/about.html:47
+msgid "Hash"
+msgstr ""
+
+#: app/templates/user/about.html:48
+msgid "Description"
+msgstr ""
+
+#: app/templates/user/about.html:49
+msgid "Author"
+msgstr ""
+
+#: app/templates/user/about.html:61
+msgid "Legal Information"
+msgstr ""
+
+#: app/templates/user/about.html:67
+msgid ""
+"This program is free software: you can redistribute it and/or modify</p>\n"
+"          <p>it under the terms of the GNU General Public License as "
+"published by</p>\n"
+"          <p>the Free Software Foundation, either version 3 of the "
+"License, or</p>\n"
+"          <p>(at your option) any later version.</p></br>\n"
+"        \n"
+"          <p>This program is distributed in the hope that it will be "
+"useful,</p>\n"
+"          <p>but WITHOUT ANY WARRANTY; without even the implied warranty "
+"of</p>\n"
+"          <p>MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See "
+"the</p>\n"
+"          <p>GNU General Public License for more details.</p></br>\n"
+"        \n"
+"          <p>You should have received a copy of the GNU General Public "
+"License</p>\n"
+"          <p>along with this program.  If not, see"
 msgstr ""
 
 #: app/templates/user/conditions.html:6 app/templates/user/conditions.html:19
@@ -891,10 +963,6 @@ msgstr ""
 
 #: app/templates/user/conditions.html:28
 msgid "Accept"
-msgstr ""
-
-#: app/templates/user/dashboard.html:6 app/templates/user/dashboard.html:24
-msgid "Dashboard"
 msgstr ""
 
 #: app/templates/user/dashboard.html:29
@@ -962,11 +1030,11 @@ msgstr ""
 msgid "Register"
 msgstr ""
 
-#: app/user/views.py:92
+#: app/user/views.py:96
 msgid "Maximum number of devices already registered."
 msgstr ""
 
-#: app/user/views.py:187
+#: app/user/views.py:194
 msgid "Invalid voucher"
 msgstr ""
 

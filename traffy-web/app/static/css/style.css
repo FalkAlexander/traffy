@@ -610,7 +610,7 @@ nav a:hover {
   .nav-container {
     color: white;
     display: grid;
-    grid-template-columns: 1fr auto minmax(600px, 3fr) 1fr;
+    grid-template-columns: 17.6% auto minmax(600px, 65%) 17.6%;
     z-index: 1 !important;
   }
 
@@ -805,6 +805,10 @@ nav a:hover {
 
 .table .table-cell.small {
   width: 120px !important;
+}
+
+.table .table-cell.medium {
+  width: 200px !important;
 }
 
 .table .table-cell.big {
@@ -1087,3 +1091,40 @@ nav a:hover {
   background-repeat: no-repeat;
 }
 
+.monospace {
+  display: inline-block;
+  font-family: Consolas, "Courier New", monospace;
+  color: #9c1a1a;
+  background-color: #ffd2d2;
+  border-radius: 3px;
+  padding: 3px 5px 3px 5px;
+}
+
+.monospace a {
+  color: #9c1a1a;
+  text-decoration: none;
+}
+
+.legal {
+  padding: 5px 0 20px 0;
+}
+
+.legal p {
+  font-family: Cantarell-Regular;
+  font-size: 20px;
+  text-align: left;
+  margin: 0;
+}
+
+.popup-box {
+  background: #6d767e;
+  color: #fff;
+  font-family: Cantarell-Regular;
+  font-size: 15px;
+  text-align: center;
+  width: 100%;
+  margin: 10px 0 0 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}

@@ -6,25 +6,76 @@
     <title>{{ _("About") }}</title>
     <script src="{{ url_for('static', filename='js/libs/progressbar.min.js') }}"></script>
   </head>
-  <body class="background-about">
-    {% for message in get_flashed_messages() %}
-    <div class="float-box">
-      <div class="notification-box">
-        <p>{{ message }}</p>
-      </div>
+  <body>
+    <div class="nav-container">
+      <h1 class="nav-logo">Traffy</h1>
+      <input type="checkbox" id="nav-menu" class="nav-menu" />
+      <nav>
+        <ul>
+          {% if external == false %}
+          <li><a href="{{ url_for('user.dashboard') }}">{{ _("Dashboard") }}</a></li>
+          {% endif %}
+          <li class="active"><a href="#">{{ _("Version Info") }}</a></li>
+        </ul>
+      </nav>
+      <label for="nav-menu" class="nav-menu-label">
+        <span></span>
+      </label>
     </div>
-    {% endfor %}
-    <div class="center-box">
-      <div class="dialog-box dialog-box-small">
-        <div class="padding-box">
-          <h1>Traffy</h1>
-          <h2>Web Client Version: {{ client_version }}</h2>
-          <h2>Server Version: {{ server_version }}</h2>
-          <h2>API Version: {{ api_version }}</h2>
-          <div class="center-box">
-            <p>{{ _("Developer") }}: Falk Seidl</p>
-            <p>{{ _("Source Code") }}: <a href="https://github.com/FalkAlexander/traffy">GitHub</a></p>
+    <div class="page-box">
+      <div class="content-box">
+        {% if external == true %}
+        <div class="popup-box">
+          <p>{{ _("You were automatically redirected to this page because you seem to be located outside of the dormitory network.") }}</p>
+        </div>
+        {% endif %}
+        <h1>{{ _("General") }}</h1>
+        <div class="supervisor-divider"></div>
+        <h2>{{ _("Developer") }}: <div class="monospace"><a href="mailto:Falk_Alexander.Seidl@stud.hszg.de">Falk Seidl</a></div></h2>
+        <h2>{{ _("Source Code") }}: <a href="https://github.com/FalkAlexander/traffy"><div class="monospace">GitHub</div></a></h2>
+
+        <h1>{{ _("Current Version") }}</h1>
+        <div class="supervisor-divider"></div>
+        <h2>{{ _("Checkout Branch") }}: <div class="monospace">{{ branch_name }}</div></h2>
+
+        <h1>{{ _("Development History") }}</h1>
+        <div class="supervisor-divider"></div>
+
+        <div class="table">
+          <div class="table-head">
+            <div class="table-cell medium collapse">{{ _("Commit Date") }}</div>
+            <div class="table-cell small collapse">{{ _("Hash") }}</div>
+            <div class="table-cell big">{{ _("Description") }}</div>
+            <div class="table-cell medium collapse">{{ _("Author") }}</div>
           </div>
+          {% for commit in commits %}
+          <div class="table-row">
+            <div class="table-cell medium collapse">{{ commit.committed_date|strftime }}</div>
+            <div class="table-cell small collapse">{{ commit.hexsha[:8] }}</div>
+            <div class="table-cell big">{{ commit.message }}</div>
+            <div class="table-cell medium collapse">{{ commit.committer.name }}</div>
+          </div>
+          {% endfor %}
+        </div>
+
+        <h1>{{ _("Legal Information") }}</h1>
+        <div class="supervisor-divider"></div>
+
+        <div class="legal">
+          <p>Copyright (C) 2020  Falk Seidl</p></br>
+
+          <p>{{ _("This program is free software: you can redistribute it and/or modify</p>
+          <p>it under the terms of the GNU General Public License as published by</p>
+          <p>the Free Software Foundation, either version 3 of the License, or</p>
+          <p>(at your option) any later version.</p></br>
+        
+          <p>This program is distributed in the hope that it will be useful,</p>
+          <p>but WITHOUT ANY WARRANTY; without even the implied warranty of</p>
+          <p>MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the</p>
+          <p>GNU General Public License for more details.</p></br>
+        
+          <p>You should have received a copy of the GNU General Public License</p>
+          <p>along with this program.  If not, see") }} <a href="https://www.gnu.org/licenses/">https://www.gnu.org/licenses/</a>.</p>
         </div>
       </div>
     </div>

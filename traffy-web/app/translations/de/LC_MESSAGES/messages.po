@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2020-06-02 22:36+0200\n"
-"PO-Revision-Date: 2020-06-02 22:38+0200\n"
+"POT-Creation-Date: 2020-06-05 20:09+0200\n"
+"PO-Revision-Date: 2020-06-05 20:10+0200\n"
 "Last-Translator: Falk Seidl <hi@falsei.de>\n"
 "Language: de\n"
 "Language-Team: German <hi@falsei.de>\n"
@@ -65,7 +65,7 @@ msgstr "Die Identität konnte nicht verändert werden."
 msgid "Device unregistered"
 msgstr "Gerät de-registriert."
 
-#: app/admin/views.py:208 app/user/views.py:87 app/user/views.py:118
+#: app/admin/views.py:208 app/user/views.py:91 app/user/views.py:123
 msgid "Invalid registration key."
 msgstr "Ungültiger Registrierungsschlüssel."
 
@@ -810,7 +810,6 @@ msgid "Registration Key"
 msgstr "Registrierungscode"
 
 #: app/templates/admin/includes/footer.html:2
-#: app/templates/includes/footer.html:2
 msgid "Görlitz Student Dormitory"
 msgstr "Studentenwohnheim Görlitz"
 
@@ -881,6 +880,10 @@ msgstr ""
 "erhalten. Aus Sicherheitsgründen wirde dein Zugang daher vorübergehend "
 "gesperrt. Bitte informiere den Netzwerkadministrator. Code: 950"
 
+#: app/templates/includes/footer.html:2 app/templates/user/about.html:18
+msgid "Version Info"
+msgstr "Versionsinformation"
+
 #: app/templates/includes/sidebar.html:5
 msgid "Contact and Information"
 msgstr "Kontakt und Informationen"
@@ -905,13 +908,101 @@ msgstr "Hausmeister"
 msgid "About"
 msgstr "Über"
 
-#: app/templates/user/about.html:25
+#: app/templates/user/about.html:16 app/templates/user/dashboard.html:6
+#: app/templates/user/dashboard.html:24
+msgid "Dashboard"
+msgstr "Übersicht"
+
+#: app/templates/user/about.html:29
+msgid ""
+"You were automatically redirected to this page because you seem to be "
+"located outside of the dormitory network."
+msgstr ""
+"Sie wurden automatisch auf diese Seite umgeleitet da sie anscheinend nicht "
+"aus dem Wohnheimnetz heraus zugreifen."
+
+#: app/templates/user/about.html:32
+msgid "General"
+msgstr "Allgemein"
+
+#: app/templates/user/about.html:34
 msgid "Developer"
 msgstr "Entwickler"
 
-#: app/templates/user/about.html:26
+#: app/templates/user/about.html:35
 msgid "Source Code"
 msgstr "Quellcode"
+
+#: app/templates/user/about.html:37
+msgid "Current Version"
+msgstr "Aktuelle Version"
+
+#: app/templates/user/about.html:39
+msgid "Checkout Branch"
+msgstr "Checkout Branch"
+
+#: app/templates/user/about.html:41
+msgid "Development History"
+msgstr "Entwicklungshistorie"
+
+#: app/templates/user/about.html:46
+msgid "Commit Date"
+msgstr "Commit Datum"
+
+#: app/templates/user/about.html:47
+msgid "Hash"
+msgstr "Hash"
+
+#: app/templates/user/about.html:48
+msgid "Description"
+msgstr "Beschreibung"
+
+#: app/templates/user/about.html:49
+msgid "Author"
+msgstr "Autor"
+
+#: app/templates/user/about.html:61
+msgid "Legal Information"
+msgstr "Lizenzrechtliche Informationen"
+
+#: app/templates/user/about.html:67
+msgid ""
+"This program is free software: you can redistribute it and/or modify</p>\n"
+"          <p>it under the terms of the GNU General Public License as "
+"published by</p>\n"
+"          <p>the Free Software Foundation, either version 3 of the License, "
+"or</p>\n"
+"          <p>(at your option) any later version.</p></br>\n"
+"        \n"
+"          <p>This program is distributed in the hope that it will be useful,"
+"</p>\n"
+"          <p>but WITHOUT ANY WARRANTY; without even the implied warranty of</"
+"p>\n"
+"          <p>MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the</"
+"p>\n"
+"          <p>GNU General Public License for more details.</p></br>\n"
+"        \n"
+"          <p>You should have received a copy of the GNU General Public "
+"License</p>\n"
+"          <p>along with this program.  If not, see"
+msgstr ""
+"Dieses Programm ist freie Software. Sie können es unter den Bedingungen der "
+"GNU General Public</p>\n"
+"          <p>License, wie von der Free Software Foundation veröffentlicht, "
+"weitergeben und/oder modifizieren,</p>\n"
+"          <p>entweder gemäß Version 3 der Lizenz oder (nach Ihrer Option) "
+"jeder späteren Version.</p></br>\n"
+"\n"
+"          <p>Die Veröffentlichung dieses Programms erfolgt in der Hoffnung, "
+"daß es Ihnen von Nutzen sein wird,</p>\n"
+"          <p>aber OHNE IRGENDEINE GARANTIE, sogar ohne die implizite "
+"Garantie der MARKTREIFE oder der</p>\n"
+"          <p>VERWENDBARKEIT FÜR EINEN BESTIMMTEN ZWECK. Details finden Sie "
+"in der GNU General Public License.</p></br>\n"
+"\n"
+"          <p>Sie sollten ein Exemplar der GNU General Public License "
+"zusammen mit diesem Programm erhalten haben.</p>\n"
+"          <p>Falls nicht, siehe"
 
 #: app/templates/user/conditions.html:6 app/templates/user/conditions.html:19
 msgid "Terms and Conditions"
@@ -924,10 +1015,6 @@ msgstr "Die Nutzung des Netzwerks verpflichtet zur Akzeptanz"
 #: app/templates/user/conditions.html:28
 msgid "Accept"
 msgstr "Akzeptieren"
-
-#: app/templates/user/dashboard.html:6 app/templates/user/dashboard.html:24
-msgid "Dashboard"
-msgstr "Übersicht"
 
 #: app/templates/user/dashboard.html:29
 msgid "Currently No Traffic Accounting"
@@ -999,11 +1086,11 @@ msgstr "Ein Registrierungsschlüssel wird für den Netzwerkzugriff benötigt"
 msgid "Register"
 msgstr "Anmelden"
 
-#: app/user/views.py:92
+#: app/user/views.py:96
 msgid "Maximum number of devices already registered."
 msgstr "Maximale Anzahl an Geräten ist bereits registriert."
 
-#: app/user/views.py:187
+#: app/user/views.py:194
 msgid "Invalid voucher"
 msgstr "Ungültiger Aktionscode"
 
@@ -1103,3 +1190,6 @@ msgstr "Ungültiger Aktionscode"
 
 #~ msgid "This action can not be made undone!"
 #~ msgstr "Diese Aktion kann nicht rückgängig gemacht werden!"
+
+#~ msgid "Traffy"
+#~ msgstr "Traffy"

@@ -17,11 +17,13 @@
  along with this program; if not, see <http://www.gnu.org/licenses/>.
 """
 
+from git import Repo
 from flask import Flask, render_template, request, flash, session, redirect
 from flask_babel import lazy_gettext as _l
 from . import user
 from .. import server, babel, client_version
 import config
+import os
 
 
 
@@ -49,7 +51,8 @@ def index():
         return render_template("errors/backend_lost.html")
 
     if user.get("external") is True:
-        return redirect("/about", code=307)
+        branch_name, commits = __get_developer_infos()
+        return render_template("user/about.html", branch_name=branch_name, commits=commits, external=True)
     elif user.get("registered") is False:
         return redirect("/register", code=307)
     elif user.get("registered") is True:
@@ -69,7 +72,8 @@ def register():
         return render_template("errors/backend_lost.html")
 
     if user.get("external") is True:
-        return redirect("/about", code=307)
+        branch_name, commits = __get_developer_infos()
+        return render_template("user/about.html", branch_name=branch_name, commits=commits, external=True)
     elif user.get("registered") is True:
         return redirect("/dashboard", code=307)
     elif user.get("deactivated") is True:
@@ -105,7 +109,8 @@ def conditions():
         return render_template("errors/backend_lost.html")
 
     if user.get("external") is True:
-        return redirect("/about", code=307)
+        branch_name, commits = __get_developer_infos()
+        return render_template("user/about.html", branch_name=branch_name, commits=commits, external=True)
     elif user.get("registered") is True:
         return redirect("/dashboard", code=307)
     elif user.get("deactivated") is True:
@@ -136,7 +141,8 @@ def dashboard():
         return render_template("errors/backend_lost.html")
 
     if user.get("external") is True:
-        return redirect("/about", code=307)
+        branch_name, commits = __get_developer_infos()
+        return render_template("user/about.html", branch_name=branch_name, commits=commits, external=True)
     elif user.get("registered") is False:
         return redirect("/register", code=307)
     elif user.get("deactivated") is True:
@@ -172,7 +178,8 @@ def reedem():
         return render_template("errors/backend_lost.html")
 
     if user.get("external") is True:
-        return redirect("/about", code=307)
+        branch_name, commits = __get_developer_infos()
+        return render_template("user/about.html", branch_name=branch_name, commits=commits, external=True)
     elif user.get("registered") is False:
         return redirect("/register", code=307)
     elif user.get("deactivated") is True:
@@ -201,7 +208,8 @@ def deregister():
         return render_template("errors/backend_lost.html")
 
     if user.get("external") is True:
-        return redirect("/about", code=307)
+        branch_name, commits = __get_developer_infos()
+        return render_template("user/about.html", branch_name=branch_name, commits=commits, external=True)
     elif user.get("registered") is False:
         return redirect("/register", code=307)
     elif user.get("deactivated") is True:
@@ -219,13 +227,9 @@ def deregister():
 
 @user.route("/about", methods=["GET", "POST"])
 def about():
-    try:
-        server_version = server.get_server_version()
-        api_version = server.get_api_version()
-    except ConnectionRefusedError:
-        return render_template("errors/backend_lost.html")
+    branch_name, commits = __get_developer_infos()
 
-    return render_template("user/about.html", client_version=client_version, server_version=server_version, api_version=api_version)
+    return render_template("user/about.html", branch_name=branch_name, commits=commits, external=False)
 
 #
 # Private
@@ -239,3 +243,11 @@ def __reg_key_check(reg_key):
         return False
     return True
 
+def __get_developer_infos():
+    repo = Repo(config.GIT_REPO_PATH)
+    branch = repo.active_branch
+    branch_name = branch.name
+
+    commits = repo.iter_commits('--all', max_count=15)
+
+    return branch_name, commits
