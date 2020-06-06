@@ -82,7 +82,6 @@ body:after{
   background-color: #ffffff;
   border-radius: 5px;
   box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
-  z-index: 1000;
 }
 
 .dialog-box-small {
@@ -1180,9 +1179,84 @@ a .switch {
   margin-left: 10px;
 }
 
-.switch-label {
-  display: inline-block;
-  text-align: center;
-  position: relative;
-  top: 2px;
+.navbar-divide {
+  border-left: 1px solid #647594;
+  height: 25px;
+}
+
+.notification-menu {
+  background: url("../icons/notification.svg") no-repeat;
+  background-position: center;
+  width: 30px;
+  height: 24px;
+  filter: invert(100%);
+  padding: 0 5px 0 5px;
+}
+
+li:hover .notification-menu-content {
+  display: block;
+}
+
+.notification-menu-content {
+  display: none;
+  position: absolute;
+  background: #646972;
+  width: 400px;
+  top: 55px;
+  right: 0;
+  margin-right: 17.6%;
+  max-height: 500px;
+  overflow: auto;
+}
+
+.notification-row {
+  background: #7b8088;
+  padding: 8px;
+  border-bottom: 2px solid #647594;
+}
+
+.notification-row h1 {
+  font-family: Cantarell-Regular;
+  font-weight: bold;
+  font-size: 17px;
+  text-align: left;
+  color: #fff;
+  margin: 0;
+  padding: 0;
+}
+
+.notification-row p {
+  font-family: Cantarell-Regular;
+  font-size: 16px;
+  text-align: justify;
+  color: #fff;
+  margin: 0;
+  padding: 0;
+}
+
+.notification-row input[type=submit] {
+  all: unset;
+  width: 15px;
+  height: 15px;
+  right: 8px;
+  position: absolute;
+  color: #2d3748;
+  background: url("../icons/close.svg") no-repeat;
+  background-size: 15px 15px;
+  background-position: center;
+  filter: invert(100%);
+  cursor: pointer;
+}
+
+.notification-row-placeholder {
+  background: #7b8088;
+  padding: 10px;
+  border-bottom: 2px solid #647594;
+}
+
+.notification-row-placeholder h1 {
+  font-family: Cantarell-Regular;
+  font-weight: bold;
+  font-size: 17px;
+  color: #fff;
 }
