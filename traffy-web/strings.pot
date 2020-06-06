@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2020-06-05 20:09+0200\n"
+"POT-Creation-Date: 2020-06-06 12:49+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -22,22 +22,24 @@ msgid "Wrong credentials. This attempt got reported."
 msgstr ""
 
 #: app/admin/views.py:61 app/admin/views.py:65 app/admin/views.py:352
-#: app/admin/views.py:356
+#: app/admin/views.py:356 app/user/views.py:164 app/user/views.py:168
 msgid "Accounted"
 msgstr ""
 
 #: app/admin/views.py:62 app/admin/views.py:66 app/admin/views.py:353
-#: app/admin/views.py:357
+#: app/admin/views.py:357 app/user/views.py:165 app/user/views.py:169
 msgid "Timerule"
 msgstr ""
 
 #: app/admin/views.py:63 app/admin/views.py:67 app/admin/views.py:354
 #: app/admin/views.py:358 app/templates/admin/key-page.html:61
+#: app/templates/user/dashboard_advanced.html:59 app/user/views.py:166
+#: app/user/views.py:170
 msgid "Shaped"
 msgstr ""
 
 #: app/admin/views.py:64 app/admin/views.py:68 app/admin/views.py:355
-#: app/admin/views.py:359
+#: app/admin/views.py:359 app/user/views.py:167 app/user/views.py:171
 msgid "Exceptions"
 msgstr ""
 
@@ -87,11 +89,11 @@ msgstr ""
 msgid "Canceled pending registration key deletion."
 msgstr ""
 
-#: app/admin/views.py:363
+#: app/admin/views.py:363 app/templates/user/dashboard_advanced.html:61
 msgid "Yes"
 msgstr ""
 
-#: app/admin/views.py:365
+#: app/admin/views.py:365 app/templates/user/dashboard_advanced.html:63
 msgid "No"
 msgstr ""
 
@@ -281,6 +283,7 @@ msgstr ""
 
 #: app/templates/admin/account-page.html:82
 #: app/templates/admin/key-page.html:80
+#: app/templates/user/dashboard_advanced.html:93
 msgid "Mail Address"
 msgstr ""
 
@@ -342,6 +345,7 @@ msgstr ""
 #: app/templates/admin/add-regcode.html:47
 #: app/templates/admin/edit-identity.html:47
 #: app/templates/admin/key-page.html:78 app/templates/admin/regcodes.html:65
+#: app/templates/user/dashboard_advanced.html:91
 msgid "Surname"
 msgstr ""
 
@@ -392,6 +396,7 @@ msgstr ""
 #: app/templates/admin/add-regcode.html:51
 #: app/templates/admin/edit-identity.html:51
 #: app/templates/admin/key-page.html:81 app/templates/admin/regcodes.html:67
+#: app/templates/user/dashboard_advanced.html:94
 msgid "Room"
 msgstr ""
 
@@ -420,6 +425,7 @@ msgid "Shaped Users"
 msgstr ""
 
 #: app/templates/admin/dashboard.html:164 app/templates/admin/key-page.html:363
+#: app/templates/user/dashboard_advanced.html:208
 msgid "Total"
 msgstr ""
 
@@ -580,6 +586,7 @@ msgid "Registration Code:"
 msgstr ""
 
 #: app/templates/admin/key-page.html:57 app/templates/admin/regcodes.html:68
+#: app/templates/user/dashboard_advanced.html:51
 msgid "Credit"
 msgstr ""
 
@@ -596,30 +603,37 @@ msgid "Identity"
 msgstr ""
 
 #: app/templates/admin/key-page.html:79
+#: app/templates/user/dashboard_advanced.html:92
 msgid "First Name"
 msgstr ""
 
 #: app/templates/admin/key-page.html:91
+#: app/templates/user/dashboard_advanced.html:103
 msgid "as of"
 msgstr ""
 
 #: app/templates/admin/key-page.html:104
+#: app/templates/user/dashboard_advanced.html:68
 msgid "Devices"
 msgstr ""
 
 #: app/templates/admin/key-page.html:109
+#: app/templates/user/dashboard_advanced.html:72
 msgid "IP Address"
 msgstr ""
 
 #: app/templates/admin/key-page.html:110
+#: app/templates/user/dashboard_advanced.html:73
 msgid "Mac Address"
 msgstr ""
 
 #: app/templates/admin/key-page.html:111
+#: app/templates/user/dashboard_advanced.html:74
 msgid "Type"
 msgstr ""
 
 #: app/templates/admin/key-page.html:112
+#: app/templates/user/dashboard_advanced.html:75
 msgid "Registered Since"
 msgstr ""
 
@@ -877,7 +891,8 @@ msgid "About"
 msgstr ""
 
 #: app/templates/user/about.html:16 app/templates/user/dashboard.html:6
-#: app/templates/user/dashboard.html:24
+#: app/templates/user/dashboard.html:48
+#: app/templates/user/dashboard_advanced.html:6
 msgid "Dashboard"
 msgstr ""
 
@@ -965,16 +980,36 @@ msgstr ""
 msgid "Accept"
 msgstr ""
 
-#: app/templates/user/dashboard.html:29
+#: app/templates/user/dashboard.html:22
+msgid "Basic View"
+msgstr ""
+
+#: app/templates/user/dashboard.html:53
 msgid "Currently No Traffic Accounting"
 msgstr ""
 
-#: app/templates/user/dashboard.html:31
+#: app/templates/user/dashboard.html:55
 msgid "Remaining Traffic Volume"
 msgstr ""
 
-#: app/templates/user/dashboard.html:38
+#: app/templates/user/dashboard.html:62
 msgid "Deregister This Device"
+msgstr ""
+
+#: app/templates/user/dashboard_advanced.html:18
+msgid "Advanced View"
+msgstr ""
+
+#: app/templates/user/dashboard_advanced.html:43
+msgid "Traffic Consumption Flashback"
+msgstr ""
+
+#: app/templates/user/dashboard_advanced.html:55
+msgid "Maximum Volume"
+msgstr ""
+
+#: app/templates/user/dashboard_advanced.html:87
+msgid "Connection Owner"
 msgstr ""
 
 #: app/templates/user/deregister.html:6 app/templates/user/deregister.html:20
@@ -1034,7 +1069,7 @@ msgstr ""
 msgid "Maximum number of devices already registered."
 msgstr ""
 
-#: app/user/views.py:194
+#: app/user/views.py:235
 msgid "Invalid voucher"
 msgstr ""
 
