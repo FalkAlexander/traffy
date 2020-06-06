@@ -11,6 +11,30 @@
     </script>
   </head>
   <body class="background-dashboard">
+    <div class="nav-container">
+      <h1 class="nav-logo">Traffy</h1>
+      <input type="checkbox" id="nav-menu" class="nav-menu" />
+      <nav>
+        <ul>
+          <li>
+            <a>
+                <span class="label">
+                  {{ _("Basic View") }}
+                </span>
+                <label class="switch">
+                  <form method="POST">
+                    <input type="submit" name="switch_ui_advanced" />
+                  </form>
+                  <span class="slider"></span>
+                </label>
+            </a>
+          </li>
+        </ul>
+      </nav>
+      <label for="nav-menu" class="nav-menu-label">
+        <span></span>
+      </label>
+    </div>
     {% for message in get_flashed_messages() %}
     <div class="float-box">
       <div class="notification-box">

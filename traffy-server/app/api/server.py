@@ -424,6 +424,66 @@ class ServerAPI:
         self.database_commit(session)
         session.close()
 
+    def get_advanced_dashboard_stats(self, ip_address):
+        session = self.db.create_session()
+
+        ip_address_query = self.get_ip_address_query_by_ip(session, ip_address)
+        address_pair_query = self.get_address_pair_query_by_ip(session, ip_address_query)
+        reg_key_query = self.get_reg_key_query_by_id(session, address_pair_query.reg_key)
+
+        today = datetime.today().date()
+        passed_days = today - timedelta(days=6)
+
+        values_downlink = []
+        values_downlink_unlimited_range = []
+        values_downlink_shaped = []
+        values_downlink_excepted = []
+        values_uplink = []
+        values_uplink_unlimited_range = []
+        values_uplink_shaped = []
+        values_uplink_excepted = []
+        labels = []
+
+        try:
+            for date in rrule.rrule(rrule.DAILY, dtstart=passed_days, until=today):
+                traffic_query = session.query(func.sum(Traffic.ingress), func.sum(Traffic.ingress_unlimited_range), func.sum(Traffic.ingress_shaped), func.sum(Traffic.ingress_excepted), func.sum(Traffic.egress), func.sum(Traffic.egress_unlimited_range), func.sum(Traffic.egress_shaped), func.sum(Traffic.egress_excepted)).filter_by(timestamp=date, reg_key=reg_key_query.id).all()
+                ingress, ingress_unlimited_range, ingress_shaped, ingress_excepted, egress, egress_unlimited_range, egress_shaped, egress_excepted = traffic_query[0]
+
+                if ingress is not None:
+                    ingress = round(float(ingress), 3)
+                if ingress_unlimited_range is not None:
+                    ingress_unlimited_range = round(float(ingress_unlimited_range), 3)
+                if ingress_shaped is not None:
+                    ingress_shaped = round(float(ingress_shaped), 3)
+                if ingress_excepted is not None:
+                    ingress_excepted = round(float(ingress_excepted), 3)
+                if egress is not None:
+                    egress = round(float(egress), 3)
+                if egress_unlimited_range is not None:
+                    egress_unlimited_range = round(float(egress_unlimited_range), 3)
+                if egress_shaped is not None:
+                    egress_shaped = round(float(egress_shaped), 3)
+                if egress_excepted is not None:
+                    egress_excepted = round(float(egress_excepted), 3)
+
+
+                values_downlink.append(self.__to_gib(ingress))
+                values_downlink_unlimited_range.append(self.__to_gib(ingress_unlimited_range))
+                values_downlink_shaped.append(self.__to_gib(ingress_shaped))
+                values_downlink_excepted.append(self.__to_gib(ingress_excepted))
+                values_uplink.append(self.__to_gib(egress))
+                values_uplink_unlimited_range.append(self.__to_gib(egress_unlimited_range))
+                values_uplink_shaped.append(self.__to_gib(egress_shaped))
+                values_uplink_excepted.append(self.__to_gib(egress_excepted))
+                labels.append(date.strftime("%d.%m."))
+        except:
+            session.rollback()
+        finally:
+            session.close()
+
+        return values_downlink, values_downlink_unlimited_range, values_downlink_shaped, values_downlink_excepted, values_uplink, values_uplink_unlimited_range, values_uplink_shaped, values_uplink_excepted, labels
+
+
     #
     # Supervisor Login
     #
@@ -496,8 +556,7 @@ class ServerAPI:
                 average_credit = round(average_credit / count, 3)
             else:
                 average_credit = 0
-        except Exception as ex:
-            print(ex)
+        except:
             session.rollback()
         finally:
             session.close()
@@ -774,6 +833,20 @@ class ServerAPI:
 
         session.close()
         return identity_data
+    
+    def get_reg_code_identity_data_by_ip(self, ip_address):
+        session = self.db.create_session()
+
+        try:
+            ip_address_query = self.get_ip_address_query_by_ip(session, ip_address)
+            address_pair_query = self.get_address_pair_query_by_ip(session, ip_address_query)
+            reg_key_query = self.get_reg_key_query_by_id(session, address_pair_query.reg_key)
+        except:
+            session.rollback()
+        finally:
+            session.close()
+
+        return self.get_reg_code_identity_data(reg_key_query.key)
 
     def get_reg_code_device_list(self, reg_key):
         session = self.db.create_session()
@@ -789,6 +862,20 @@ class ServerAPI:
         device_list.reverse()
         session.close()
         return device_list
+    
+    def get_reg_code_device_list_by_ip(self, ip_address):
+        session = self.db.create_session()
+
+        try:
+            ip_address_query = self.get_ip_address_query_by_ip(session, ip_address)
+            address_pair_query = self.get_address_pair_query_by_ip(session, ip_address_query)
+            reg_key_query = self.get_reg_key_query_by_id(session, address_pair_query.reg_key)
+        except:
+            session.rollback()
+        finally:
+            session.close()
+
+        return self.get_reg_code_device_list(reg_key_query.key)
 
     def get_reg_code_settings_values(self, reg_key):
         session = self.db.create_session()
@@ -844,7 +931,6 @@ class ServerAPI:
 
         session.close()
         return first_name, last_name, room
-
     #
     # Tests
     #

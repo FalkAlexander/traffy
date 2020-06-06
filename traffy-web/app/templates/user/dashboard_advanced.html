@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}"/>
+    <title>{{ _("Dashboard") }}</title>
+    <script src="{{ url_for('static', filename='js/libs/chart.min.js') }}"></script>
+  </head>
+  <body class="background">
+    <div class="nav-container">
+      <h1 class="nav-logo">Traffy</h1>
+      <input type="checkbox" id="nav-menu" class="nav-menu" />
+      <nav>
+        <ul>
+          <li>
+            <a>
+                <span class="label">
+                  {{ _("Advanced View") }}
+                </span>
+                <label class="switch">
+                  <form method="POST">
+                    <input type="submit" name="switch_ui_basic" />
+                  </form>
+                  <span class="slider active"></span>
+                </label>
+            </a>
+          </li>
+        </ul>
+      </nav>
+      <label for="nav-menu" class="nav-menu-label">
+        <span></span>
+      </label>
+    </div>
+    {% for message in get_flashed_messages() %}
+    <div class="float-box">
+      <div class="notification-box">
+        <p>{{ message }}</p>
+      </div>
+    </div>
+    {% endfor %}
+    <div class="page-box">
+      <div class="content-box">
+        <h1>{{ _("Traffic Consumption Flashback") }}</h1>
+        <div class="supervisor-divider"></div>
+        <div class="chart-container">
+          <canvas id="chart"></canvas>
+        </div>
+
+        <div class="statistic-flowbox">
+          <div>
+            <h2>{{ _("Credit") }}</h2>
+            <p>{{ volume_left }} GiB</p>
+          </div>
+          <div>
+            <h2>{{ _("Maximum Volume") }}</h2>
+            <p>{{ max_volume }} GiB</p>
+          </div>
+          <div>
+            <h2>{{ _("Shaped") }}</h2>
+            {% if volume_left <= 0 %}
+            <p>{{ _("Yes") }}</p>
+            {% else %}
+            <p>{{ _("No") }}</p>
+            {% endif %}
+          </div>
+        </div>
+
+        <h1>{{ _("Devices") }}</h1>
+        <div class="supervisor-divider"></div>
+        <div class="table">
+          <div class="table-head">
+            <div class="table-cell big">{{ _("IP Address") }}</div>
+            <div class="table-cell big">{{ _("Mac Address") }}</div>
+            <div class="table-cell big">{{ _("Type") }}</div>
+            <div class="table-cell big">{{ _("Registered Since") }}</div>
+          </div>
+          {% for row in device_list %}
+          <div class="table-row">
+            <div class="table-cell big">{{ row.ip_address }}</div>
+            <div class="table-cell big">{{ row.mac_address }}</div>
+            <div class="table-cell big">{{ row.type }}</div>
+            <div class="table-cell big">{{ row.registered_since }}</div>
+          </div>
+          {% endfor %}
+        </div>
+
+        <h1>{{ _("Connection Owner") }}</h1>
+        <div class="supervisor-divider"></div>
+        <div class="table">
+          <div class="table-head">
+            <div class="table-cell big">{{ _("Surname") }}</div>
+            <div class="table-cell big">{{ _("First Name") }}</div>
+            <div class="table-cell big">{{ _("Mail Address") }}</div>
+            <div class="table-cell big">{{ _("Room") }}</div>
+          </div>
+          <div class="table-row">
+            <div class="table-cell big">{{ identity_data.last_name }}</div>
+            <div class="table-cell big">{{ identity_data.first_name }}</div>
+            <div class="table-cell big">{{ identity_data.mail }}</div>
+            {% if identity_data.new_room is none %}
+            <div class="table-cell big">{{ identity_data.room }}</div>
+            {% else %}
+            <div class="table-cell big">{{ identity_data.room }} ({{ identity_data.new_room }} {{ _("as of") }} {{ identity_data.scheduled_move }})</div>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+    </div>
+    <script>
+      Chart.defaults.global.responsive = true;
+      Chart.defaults.global.maintainAspectRatio = false;
+
+      var barData = {
+        labels : [{% for item in labels %}
+                   "{{item}}",
+                  {% endfor %}],
+        datasets : [{
+            label: '{{ legend_downlink }}',
+            backgroundColor: "rgba(45,55,72,0.9)",
+            stack: "Stack 0",
+            data : [{% for item in values_downlink %}
+                      {{item}},
+                    {% endfor %}],
+            spanGaps: false
+        }, {
+            label: '{{ legend_downlink_unlimited_range }}',
+            backgroundColor: "rgba(45,55,72,0.7)",
+            stack: "Stack 0",
+            data : [{% for item in values_downlink_unlimited_range %}
+                      {{item}},
+                    {% endfor %}],
+            spanGaps: false
+        }, {
+            label: '{{ legend_downlink_shaped }}',
+            backgroundColor: "rgba(45,55,72,0.5)",
+            stack: "Stack 0",
+            data : [{% for item in values_downlink_shaped %}
+                      {{item}},
+                    {% endfor %}],
+            spanGaps: false
+        }, {
+            label: '{{ legend_downlink_excepted }}',
+            backgroundColor: "rgba(45,55,72,0.3)",
+            stack: "Stack 0",
+            data : [{% for item in values_downlink_excepted %}
+                      {{item}},
+                    {% endfor %}],
+            spanGaps: false
+        }, {
+            label: '{{ legend_uplink }}',
+            backgroundColor: "rgba(156,26,26,0.9)",
+            stack: "Stack 1",
+            data : [{% for item in values_uplink %}
+                      {{item}},
+                    {% endfor %}],
+            spanGaps: false
+        }, {
+            label: '{{ legend_uplink_unlimited_range }}',
+            backgroundColor: "rgba(156,26,26,0.7)",
+            stack: "Stack 1",
+            data : [{% for item in values_uplink_unlimited_range %}
+                      {{item}},
+                    {% endfor %}],
+            spanGaps: false
+        }, {
+            label: '{{ legend_uplink_shaped }}',
+            backgroundColor: "rgba(156,26,26,0.5)",
+            stack: "Stack 1",
+            data : [{% for item in values_uplink_shaped %}
+                      {{item}},
+                    {% endfor %}],
+            spanGaps: false
+        }, {
+            label: '{{ legend_uplink_excepted }}',
+            backgroundColor: "rgba(156,26,26,0.3)",
+            stack: "Stack 1",
+            data : [{% for item in values_uplink_excepted %}
+                      {{item}},
+                    {% endfor %}],
+            spanGaps: false
+        }]
+      }
+
+      var ctx = document.getElementById("chart").getContext("2d");
+
+      var myChart = new Chart(ctx, {
+        type: 'bar',
+        data: barData,
+        options: {
+            responsive: true,
+            scales: {
+                yAxes: [{
+                    scaleLabel: {
+                        display: true,
+                        labelString: 'GiB'
+                    }
+                }]
+            },
+            tooltips: {
+                enabled: true,
+                mode: 'x',
+                callbacks: {
+                    label: function(tooltipItems, data) { 
+                        return data.datasets[tooltipItems.datasetIndex].label +': ' + tooltipItems.yLabel + ' GiB';
+                    },
+                    footer: (tooltipItems, data) => {
+                        let total = tooltipItems.reduce((a, e) => a + parseFloat(e.yLabel), 0).toFixed(3);
+                        return '{{ _("Total") }}: ' + total + ' GiB';
+                    }
+                }
+            }
+        }
+      });
+    </script>
+    {% include 'includes/sidebar.html' %}
+    {% include 'includes/footer.html' %}
+  </body>
+</html>
+
+

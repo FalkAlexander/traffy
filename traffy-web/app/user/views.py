@@ -160,6 +160,47 @@ def dashboard():
     user_agent = request.headers.get("User-Agent")
     #server.set_device_user_agent(ip_address, user_agent)
 
+    if "switch_ui_advanced" in request.form:
+        legend_downlink = "↓ " + _l("Accounted")
+        legend_downlink_unlimited_range = "↓ " + _l("Timerule")
+        legend_downlink_shaped = "↓ " + _l("Shaped")
+        legend_downlink_excepted = "↓ " + _l("Exceptions")
+        legend_uplink = "↑ " + _l("Accounted")
+        legend_uplink_unlimited_range = "↑ " + _l("Timerule")
+        legend_uplink_shaped = "↑ " + _l("Shaped")
+        legend_uplink_excepted = "↑ " + _l("Exceptions")
+
+        values_downlink, values_downlink_unlimited_range, values_downlink_shaped, values_downlink_excepted, values_uplink, values_uplink_unlimited_range, values_uplink_shaped, values_uplink_excepted, labels = server.get_advanced_dashboard_stats(ip_address)
+
+        device_list = server.get_reg_code_device_list_by_ip(ip_address)
+        identity_data = server.get_reg_code_identity_data_by_ip(ip_address)
+
+        return render_template("user/dashboard_advanced.html", volume_left=volume_left,
+                                                                max_volume=max_volume,
+                                                                in_unlimited_time_range=in_unlimited_time_range,
+                                                                values_downlink=values_downlink,
+                                                                values_downlink_unlimited_range=values_downlink_unlimited_range,
+                                                                values_downlink_shaped=values_downlink_shaped,
+                                                                values_downlink_excepted=values_downlink_excepted,
+                                                                values_uplink=values_uplink,
+                                                                values_uplink_unlimited_range=values_uplink_unlimited_range,
+                                                                values_uplink_shaped=values_uplink_shaped,
+                                                                values_uplink_excepted=values_uplink_excepted,
+                                                                labels=labels,
+                                                                legend_downlink=legend_downlink,
+                                                                legend_downlink_unlimited_range=legend_downlink_unlimited_range,
+                                                                legend_downlink_shaped=legend_downlink_shaped,
+                                                                legend_downlink_excepted=legend_downlink_excepted,
+                                                                legend_uplink=legend_uplink,
+                                                                legend_uplink_unlimited_range=legend_uplink_unlimited_range,
+                                                                legend_uplink_shaped=legend_uplink_shaped,
+                                                                legend_uplink_excepted=legend_uplink_excepted,
+                                                                device_list=device_list,
+                                                                identity_data=identity_data)
+
+    if "switch_ui_basic" in request.form:
+        return render_template("user/dashboard.html", volume_left=volume_left, max_volume=max_volume, in_unlimited_time_range=in_unlimited_time_range)
+
     if "reedem_dashboard_btn" in request.form:
         return redirect("/reedem", code=307)
 
