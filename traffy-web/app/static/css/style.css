@@ -1179,3 +1179,9 @@ nav a:hover {
 a .switch {
   margin-left: 10px;
 }
+
+.switch-label {
+  display: inline-block;
+  height: 24px;
+  line-height: 24px;
+}
