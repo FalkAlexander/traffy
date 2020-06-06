@@ -1182,6 +1182,7 @@ a .switch {
 
 .switch-label {
   display: inline-block;
-  height: 24px;
-  line-height: 24px;
+  text-align: center;
+  position: relative;
+  top: 2px;
 }
