@@ -1,7 +1,7 @@
 ![](https://i.imgur.com/IVYH25L.png)
 
 # Traffy - Dormitory Network Management
-Traffy is a all-in-one management suite for the regulation of dormitory networks with a focus on ease of usibility for its users. It is specialized in dealing with huge amounts of users/tenants. It was initially developed for the student dormitory in Görlitz.
+Traffy is an all-in-one management suite for the regulation of dormitory networks with the focus on ease of usibility for its users. It is specialized in dealing with huge amounts of users/tenants. It was initially developed for the student dormitory in Görlitz.
 
 ## Feature Overview
 * 👨‍👩‍👧‍👦️ Tenant database with master data management
