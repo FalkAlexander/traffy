@@ -44,7 +44,6 @@ body.supervisor-login {
 }
 
 body:after{
-  content: "beta";
   position: fixed;
   width: 80px;
   height: 25px;
@@ -602,6 +601,10 @@ nav a:hover {
 }
 
 @media screen and (min-width: 800px) {
+  body:after{
+    content: "beta";
+  }
+
   .nav-menu-label {
     display: none;
   }
@@ -626,6 +629,7 @@ nav a:hover {
     display: flex;
     justify-content: flex-end;
     align-items: center;
+    margin-right: 0;
   }
 
   nav ul {
@@ -1298,4 +1302,16 @@ textarea {
   font-family: Cantarell-Regular;
   font-size: 15px;
   text-align: left;
+}
+
+@media screen and (max-width: 800px) {
+  li.notification {
+    display: none;
+  }
+}
+
+@media screen and (max-width: 1000px) {
+  .notification-menu-content {
+    margin-right: 1%;
+  }
 }
