@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2020-06-06 12:49+0200\n"
+"POT-Creation-Date: 2020-06-07 16:05+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -22,28 +22,29 @@ msgid "Wrong credentials. This attempt got reported."
 msgstr ""
 
 #: app/admin/views.py:61 app/admin/views.py:65 app/admin/views.py:352
-#: app/admin/views.py:356 app/user/views.py:164 app/user/views.py:168
+#: app/admin/views.py:356 app/user/views.py:166 app/user/views.py:170
 msgid "Accounted"
 msgstr ""
 
 #: app/admin/views.py:62 app/admin/views.py:66 app/admin/views.py:353
-#: app/admin/views.py:357 app/user/views.py:165 app/user/views.py:169
+#: app/admin/views.py:357 app/user/views.py:167 app/user/views.py:171
 msgid "Timerule"
 msgstr ""
 
 #: app/admin/views.py:63 app/admin/views.py:67 app/admin/views.py:354
 #: app/admin/views.py:358 app/templates/admin/key-page.html:61
-#: app/templates/user/dashboard_advanced.html:59 app/user/views.py:166
-#: app/user/views.py:170
+#: app/templates/user/dashboard_advanced.html:81 app/user/views.py:168
+#: app/user/views.py:172
 msgid "Shaped"
 msgstr ""
 
 #: app/admin/views.py:64 app/admin/views.py:68 app/admin/views.py:355
-#: app/admin/views.py:359 app/user/views.py:167 app/user/views.py:171
+#: app/admin/views.py:359 app/user/views.py:169 app/user/views.py:173
 msgid "Exceptions"
 msgstr ""
 
 #: app/admin/views.py:133 app/admin/views.py:173 app/admin/views.py:527
+#: app/admin/views.py:596 app/admin/views.py:625
 msgid "Please fill out all input forms."
 msgstr ""
 
@@ -89,11 +90,11 @@ msgstr ""
 msgid "Canceled pending registration key deletion."
 msgstr ""
 
-#: app/admin/views.py:363 app/templates/user/dashboard_advanced.html:61
+#: app/admin/views.py:363 app/templates/user/dashboard_advanced.html:83
 msgid "Yes"
 msgstr ""
 
-#: app/admin/views.py:365 app/templates/user/dashboard_advanced.html:63
+#: app/admin/views.py:365 app/templates/user/dashboard_advanced.html:85
 msgid "No"
 msgstr ""
 
@@ -143,7 +144,31 @@ msgstr ""
 msgid "Account could not get created."
 msgstr ""
 
-#: app/admin/views.py:579
+#: app/admin/views.py:592 app/admin/views.py:621
+msgid "The notification cant be invalid before its valid time."
+msgstr ""
+
+#: app/admin/views.py:601
+msgid "Notification could not get created."
+msgstr ""
+
+#: app/admin/views.py:630
+msgid "Notification could not get edited."
+msgstr ""
+
+#: app/admin/views.py:636
+msgid "Notification does not exist."
+msgstr ""
+
+#: app/admin/views.py:648
+msgid "Notification deleted"
+msgstr ""
+
+#: app/admin/views.py:650
+msgid "An error occured while deleting the notification"
+msgstr ""
+
+#: app/admin/views.py:669
 msgid "Login to access that resource."
 msgstr ""
 
@@ -153,70 +178,90 @@ msgstr ""
 
 #: app/templates/admin/account-page.html:10
 #: app/templates/admin/accounts.html:10 app/templates/admin/add-account.html:10
-#: app/templates/admin/add-regcode.html:11 app/templates/admin/dashboard.html:6
-#: app/templates/admin/dashboard.html:11
+#: app/templates/admin/add-regcode.html:11
+#: app/templates/admin/create-notification.html:10
+#: app/templates/admin/dashboard.html:6 app/templates/admin/dashboard.html:11
 #: app/templates/admin/edit-identity.html:11
+#: app/templates/admin/edit-notification.html:10
 #: app/templates/admin/infrastructure.html:10
-#: app/templates/admin/key-page.html:11 app/templates/admin/regcodes.html:11
+#: app/templates/admin/key-page.html:11
+#: app/templates/admin/notifications.html:10
+#: app/templates/admin/regcodes.html:11
 msgid "Supervisor Dashboard"
 msgstr ""
 
 #: app/templates/admin/account-page.html:14
 #: app/templates/admin/accounts.html:14 app/templates/admin/add-account.html:14
 #: app/templates/admin/add-regcode.html:15
+#: app/templates/admin/create-notification.html:14
 #: app/templates/admin/dashboard.html:15
 #: app/templates/admin/edit-identity.html:15
+#: app/templates/admin/edit-notification.html:14
 #: app/templates/admin/infrastructure.html:14
-#: app/templates/admin/key-page.html:15 app/templates/admin/regcodes.html:15
+#: app/templates/admin/key-page.html:15
+#: app/templates/admin/notifications.html:14
+#: app/templates/admin/regcodes.html:15
 msgid "Overview"
 msgstr ""
 
 #: app/templates/admin/account-page.html:15
 #: app/templates/admin/accounts.html:15 app/templates/admin/add-account.html:15
 #: app/templates/admin/add-regcode.html:16
+#: app/templates/admin/create-notification.html:15
 #: app/templates/admin/dashboard.html:16
 #: app/templates/admin/edit-identity.html:16
+#: app/templates/admin/edit-notification.html:15
 #: app/templates/admin/infrastructure.html:15
-#: app/templates/admin/key-page.html:16 app/templates/admin/regcodes.html:16
+#: app/templates/admin/key-page.html:16
+#: app/templates/admin/notifications.html:15
+#: app/templates/admin/regcodes.html:16
 msgid "Registration Codes"
 msgstr ""
 
 #: app/templates/admin/account-page.html:16
+#: app/templates/admin/account-page.html:45
 #: app/templates/admin/accounts.html:16 app/templates/admin/add-account.html:16
 #: app/templates/admin/add-regcode.html:17
+#: app/templates/admin/create-notification.html:16
 #: app/templates/admin/dashboard.html:17
 #: app/templates/admin/edit-identity.html:17
-#: app/templates/admin/infrastructure.html:16
-#: app/templates/admin/key-page.html:17 app/templates/admin/regcodes.html:17
-msgid "Infrastructure"
+#: app/templates/admin/edit-notification.html:16
+#: app/templates/admin/key-page.html:17
+#: app/templates/admin/notifications.html:16
+#: app/templates/admin/regcodes.html:17
+msgid "Notifications"
 msgstr ""
 
 #: app/templates/admin/account-page.html:18
 #: app/templates/admin/accounts.html:18 app/templates/admin/add-account.html:18
 #: app/templates/admin/add-regcode.html:19
+#: app/templates/admin/create-notification.html:18
 #: app/templates/admin/dashboard.html:19
 #: app/templates/admin/edit-identity.html:19
+#: app/templates/admin/edit-notification.html:18
 #: app/templates/admin/infrastructure.html:18
-#: app/templates/admin/key-page.html:19 app/templates/admin/regcodes.html:19
+#: app/templates/admin/key-page.html:19
+#: app/templates/admin/notifications.html:18
+#: app/templates/admin/regcodes.html:19
 msgid "Accounts"
 msgstr ""
 
 #: app/templates/admin/account-page.html:20
 #: app/templates/admin/accounts.html:20 app/templates/admin/add-account.html:20
 #: app/templates/admin/add-regcode.html:21
+#: app/templates/admin/create-notification.html:20
 #: app/templates/admin/dashboard.html:21
 #: app/templates/admin/edit-identity.html:21
+#: app/templates/admin/edit-notification.html:20
 #: app/templates/admin/infrastructure.html:20
-#: app/templates/admin/key-page.html:21 app/templates/admin/regcodes.html:21
+#: app/templates/admin/key-page.html:21
+#: app/templates/admin/notifications.html:20
+#: app/templates/admin/regcodes.html:21
 msgid "Logout"
 msgstr ""
 
 #: app/templates/admin/account-page.html:39
 msgid "Account:"
-msgstr ""
-
-#: app/templates/admin/account-page.html:45
-msgid "Notifications"
 msgstr ""
 
 #: app/templates/admin/account-page.html:46
@@ -283,7 +328,7 @@ msgstr ""
 
 #: app/templates/admin/account-page.html:82
 #: app/templates/admin/key-page.html:80
-#: app/templates/user/dashboard_advanced.html:93
+#: app/templates/user/dashboard_advanced.html:115
 msgid "Mail Address"
 msgstr ""
 
@@ -345,7 +390,7 @@ msgstr ""
 #: app/templates/admin/add-regcode.html:47
 #: app/templates/admin/edit-identity.html:47
 #: app/templates/admin/key-page.html:78 app/templates/admin/regcodes.html:65
-#: app/templates/user/dashboard_advanced.html:91
+#: app/templates/user/dashboard_advanced.html:113
 msgid "Surname"
 msgstr ""
 
@@ -381,7 +426,9 @@ msgstr ""
 
 #: app/templates/admin/add-account.html:69
 #: app/templates/admin/add-regcode.html:60
+#: app/templates/admin/create-notification.html:58
 #: app/templates/admin/edit-identity.html:72
+#: app/templates/admin/edit-notification.html:58
 msgid "Cancel"
 msgstr ""
 
@@ -396,8 +443,44 @@ msgstr ""
 #: app/templates/admin/add-regcode.html:51
 #: app/templates/admin/edit-identity.html:51
 #: app/templates/admin/key-page.html:81 app/templates/admin/regcodes.html:67
-#: app/templates/user/dashboard_advanced.html:94
+#: app/templates/user/dashboard_advanced.html:116
 msgid "Room"
+msgstr ""
+
+#: app/templates/admin/create-notification.html:6
+#: app/templates/admin/edit-notification.html:6
+#: app/templates/admin/notifications.html:6
+msgid "Supervisor Notifications"
+msgstr ""
+
+#: app/templates/admin/create-notification.html:36
+#: app/templates/admin/notifications.html:44
+msgid "Create Notification"
+msgstr ""
+
+#: app/templates/admin/create-notification.html:43
+#: app/templates/admin/edit-notification.html:43
+#: app/templates/admin/notifications.html:51
+msgid "Title"
+msgstr ""
+
+#: app/templates/admin/create-notification.html:45
+#: app/templates/admin/edit-notification.html:45
+msgid "Text"
+msgstr ""
+
+#: app/templates/admin/create-notification.html:47
+#: app/templates/admin/edit-notification.html:47
+msgid "Valid From"
+msgstr ""
+
+#: app/templates/admin/create-notification.html:49
+#: app/templates/admin/edit-notification.html:49
+msgid "Valid Until"
+msgstr ""
+
+#: app/templates/admin/create-notification.html:57
+msgid "Create"
 msgstr ""
 
 #: app/templates/admin/dashboard.html:37
@@ -425,7 +508,7 @@ msgid "Shaped Users"
 msgstr ""
 
 #: app/templates/admin/dashboard.html:164 app/templates/admin/key-page.html:363
-#: app/templates/user/dashboard_advanced.html:208
+#: app/templates/user/dashboard_advanced.html:230
 msgid "Total"
 msgstr ""
 
@@ -458,11 +541,20 @@ msgid "Cancel Move"
 msgstr ""
 
 #: app/templates/admin/edit-identity.html:71
+#: app/templates/admin/edit-notification.html:57
 msgid "Save"
+msgstr ""
+
+#: app/templates/admin/edit-notification.html:36
+msgid "Edit Notification"
 msgstr ""
 
 #: app/templates/admin/infrastructure.html:6
 msgid "Supervisor Infrastructure"
+msgstr ""
+
+#: app/templates/admin/infrastructure.html:16
+msgid "Infrastructure"
 msgstr ""
 
 #: app/templates/admin/infrastructure.html:36
@@ -586,7 +678,7 @@ msgid "Registration Code:"
 msgstr ""
 
 #: app/templates/admin/key-page.html:57 app/templates/admin/regcodes.html:68
-#: app/templates/user/dashboard_advanced.html:51
+#: app/templates/user/dashboard_advanced.html:73
 msgid "Credit"
 msgstr ""
 
@@ -603,37 +695,37 @@ msgid "Identity"
 msgstr ""
 
 #: app/templates/admin/key-page.html:79
-#: app/templates/user/dashboard_advanced.html:92
+#: app/templates/user/dashboard_advanced.html:114
 msgid "First Name"
 msgstr ""
 
 #: app/templates/admin/key-page.html:91
-#: app/templates/user/dashboard_advanced.html:103
+#: app/templates/user/dashboard_advanced.html:125
 msgid "as of"
 msgstr ""
 
 #: app/templates/admin/key-page.html:104
-#: app/templates/user/dashboard_advanced.html:68
+#: app/templates/user/dashboard_advanced.html:90
 msgid "Devices"
 msgstr ""
 
 #: app/templates/admin/key-page.html:109
-#: app/templates/user/dashboard_advanced.html:72
+#: app/templates/user/dashboard_advanced.html:94
 msgid "IP Address"
 msgstr ""
 
 #: app/templates/admin/key-page.html:110
-#: app/templates/user/dashboard_advanced.html:73
+#: app/templates/user/dashboard_advanced.html:95
 msgid "Mac Address"
 msgstr ""
 
 #: app/templates/admin/key-page.html:111
-#: app/templates/user/dashboard_advanced.html:74
+#: app/templates/user/dashboard_advanced.html:96
 msgid "Type"
 msgstr ""
 
 #: app/templates/admin/key-page.html:112
-#: app/templates/user/dashboard_advanced.html:75
+#: app/templates/user/dashboard_advanced.html:97
 msgid "Registered Since"
 msgstr ""
 
@@ -775,6 +867,22 @@ msgstr ""
 msgid "Login"
 msgstr ""
 
+#: app/templates/admin/notifications.html:36
+msgid "User Notifications"
+msgstr ""
+
+#: app/templates/admin/notifications.html:52
+msgid "Body"
+msgstr ""
+
+#: app/templates/admin/notifications.html:53
+msgid "Display From"
+msgstr ""
+
+#: app/templates/admin/notifications.html:54
+msgid "Display Until"
+msgstr ""
+
 #: app/templates/admin/regcodes.html:6
 msgid "Supervisor Registration Codes"
 msgstr ""
@@ -891,7 +999,7 @@ msgid "About"
 msgstr ""
 
 #: app/templates/user/about.html:16 app/templates/user/dashboard.html:6
-#: app/templates/user/dashboard.html:48
+#: app/templates/user/dashboard.html:70
 #: app/templates/user/dashboard_advanced.html:6
 msgid "Dashboard"
 msgstr ""
@@ -984,15 +1092,20 @@ msgstr ""
 msgid "Basic View"
 msgstr ""
 
-#: app/templates/user/dashboard.html:53
+#: app/templates/user/dashboard.html:49
+#: app/templates/user/dashboard_advanced.html:45
+msgid "No Notifications"
+msgstr ""
+
+#: app/templates/user/dashboard.html:75
 msgid "Currently No Traffic Accounting"
 msgstr ""
 
-#: app/templates/user/dashboard.html:55
+#: app/templates/user/dashboard.html:77
 msgid "Remaining Traffic Volume"
 msgstr ""
 
-#: app/templates/user/dashboard.html:62
+#: app/templates/user/dashboard.html:84
 msgid "Deregister This Device"
 msgstr ""
 
@@ -1000,15 +1113,15 @@ msgstr ""
 msgid "Advanced View"
 msgstr ""
 
-#: app/templates/user/dashboard_advanced.html:43
+#: app/templates/user/dashboard_advanced.html:65
 msgid "Traffic Consumption Flashback"
 msgstr ""
 
-#: app/templates/user/dashboard_advanced.html:55
+#: app/templates/user/dashboard_advanced.html:77
 msgid "Maximum Volume"
 msgstr ""
 
-#: app/templates/user/dashboard_advanced.html:87
+#: app/templates/user/dashboard_advanced.html:109
 msgid "Connection Owner"
 msgstr ""
 
@@ -1069,7 +1182,7 @@ msgstr ""
 msgid "Maximum number of devices already registered."
 msgstr ""
 
-#: app/user/views.py:235
+#: app/user/views.py:238
 msgid "Invalid voucher"
 msgstr ""
 

@@ -35,16 +35,20 @@
           <li>
             <div class="notification-menu"></div>
             <div class="notification-menu-content">
-              <!--<div class="notification-row">
+              {% for notification in notifications %}
+              <div class="notification-row">
                 <form method="POST">
                   <input name="mark_msg_read" type="submit" value=""/>
                 </form>
-                <h1>Herzlich Willkommen!</h1>
-                <p>Traffy ist die neue Software zur Verwaltung des Wohnheimnetzes im Studierendenwohnheim Görlitz.</p>
-              </div>-->
+                <h1>{{ notification.title }}</h1>
+                <p>{{ notification.body }}</p>
+              </div>
+              {% endfor %}
+              {% if notifications|length == 0 %}
               <div class="notification-row-placeholder">
                 <h1>{{ _("No Notifications") }}</h1>
               </div>
+              {% endif %}
             </div>
           </li>
         </ul>

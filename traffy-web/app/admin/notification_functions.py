@@ -21,6 +21,7 @@ from .. import db
 from ..models import Notification
 from datetime import datetime
 
+
 def create_notification(title, body, valid_from, valid_until):
     success = False
 

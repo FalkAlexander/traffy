@@ -20,7 +20,7 @@
 from git import Repo
 from flask import Flask, render_template, request, flash, session, redirect
 from flask_babel import lazy_gettext as _l
-from . import user
+from . import user, notification_functions
 from .. import server, babel, client_version
 import config
 import os
@@ -160,6 +160,8 @@ def dashboard():
     user_agent = request.headers.get("User-Agent")
     #server.set_device_user_agent(ip_address, user_agent)
 
+    notifications = notification_functions.get_display_notifications()
+
     if "switch_ui_advanced" in request.form:
         legend_downlink = "↓ " + _l("Accounted")
         legend_downlink_unlimited_range = "↓ " + _l("Timerule")
@@ -196,10 +198,11 @@ def dashboard():
                                                                 legend_uplink_shaped=legend_uplink_shaped,
                                                                 legend_uplink_excepted=legend_uplink_excepted,
                                                                 device_list=device_list,
-                                                                identity_data=identity_data)
+                                                                identity_data=identity_data,
+                                                                notifications=notifications)
 
     if "switch_ui_basic" in request.form:
-        return render_template("user/dashboard.html", volume_left=volume_left, max_volume=max_volume, in_unlimited_time_range=in_unlimited_time_range)
+        return render_template("user/dashboard.html", volume_left=volume_left, max_volume=max_volume, in_unlimited_time_range=in_unlimited_time_range, notifications=notifications)
 
     if "reedem_dashboard_btn" in request.form:
         return redirect("/reedem", code=307)
@@ -207,7 +210,7 @@ def dashboard():
     if "deregister_dashboard_btn" in request.form:
         return redirect("/deregister", code=307)
 
-    return render_template("user/dashboard.html", volume_left=volume_left, max_volume=max_volume, in_unlimited_time_range=in_unlimited_time_range)
+    return render_template("user/dashboard.html", volume_left=volume_left, max_volume=max_volume, in_unlimited_time_range=in_unlimited_time_range, notifications=notifications)
 
 @user.route("/reedem", methods=["POST"])
 def reedem():
