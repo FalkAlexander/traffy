@@ -1193,6 +1193,30 @@ a .switch {
   padding: 0 5px 0 5px;
 }
 
+.notification-menu.unread {
+  background: url("../icons/notification-unread.svg") no-repeat;
+  background-position: center;
+  width: 30px;
+  height: 24px;
+  filter: invert(100%);
+  padding: 0 5px 0 5px;
+}
+
+.notification-badge {
+  position: absolute;
+  height: 16px;
+  width: 16px;
+  border-radius: 50%;
+  border: 1px solid #fff;
+  background: #6d767e;
+  right: 5px;
+  bottom: 0;
+  cursor: default;
+  font-size: 12px;
+  font-family: Cantarell-Regular;
+  font-weight: bold;
+}
+
 li:hover .notification-menu-content {
   display: block;
 }

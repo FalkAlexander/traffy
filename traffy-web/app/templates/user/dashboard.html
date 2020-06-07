@@ -33,7 +33,17 @@
             <div class="navbar-divide"></div>
           </li>
           <li>
+            {% if notifications|length == 0 %}
             <div class="notification-menu"></div>
+            {% else %}
+            <div class="notification-menu unread">
+              {% if notifications|length < 100 %}
+              <div class="notification-badge">{{ notifications|length }}</div>
+              {% else %}
+              <div class="notification-badge">*</div>
+              {% endif %}
+            </div>
+            {% endif %}
             <div class="notification-menu-content">
               {% for notification in notifications %}
               <div class="notification-row">
