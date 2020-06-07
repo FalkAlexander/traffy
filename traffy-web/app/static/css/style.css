@@ -1240,7 +1240,7 @@ li:hover .notification-menu-content {
   height: 15px;
   right: 8px;
   position: absolute;
-  color: #2d3748;
+  font-size: 0px;
   background: url("../icons/close.svg") no-repeat;
   background-size: 15px 15px;
   background-position: center;

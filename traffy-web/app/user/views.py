@@ -18,11 +18,12 @@
 """
 
 from git import Repo
-from flask import Flask, render_template, request, flash, session, redirect
+from flask import Flask, render_template, request, flash, session, redirect, make_response
 from flask_babel import lazy_gettext as _l
 from . import user, notification_functions
 from .. import server, babel, client_version
 import config
+import json
 import os
 
 
@@ -161,6 +162,16 @@ def dashboard():
     #server.set_device_user_agent(ip_address, user_agent)
 
     notifications = notification_functions.get_display_notifications()
+    if "hidden_notifications" in request.cookies:
+        try:
+            hidden_list = json.loads(request.cookies.get("hidden_notifications"))
+
+            for hidden_notification in hidden_list:
+                for notification in notifications:
+                    if hidden_notification == str(notification.id):
+                        notifications.remove(notification)
+        except:
+            pass
 
     if "switch_ui_advanced" in request.form:
         legend_downlink = "↓ " + _l("Accounted")
@@ -203,6 +214,28 @@ def dashboard():
 
     if "switch_ui_basic" in request.form:
         return render_template("user/dashboard.html", volume_left=volume_left, max_volume=max_volume, in_unlimited_time_range=in_unlimited_time_range, notifications=notifications)
+    
+    if "mark_msg_read" in request.form:
+        notification_id = request.form["mark_msg_read"]
+
+        for notification in notifications:
+            if str(notification.id) == notification_id:
+                notifications.remove(notification)
+
+        resp = make_response(render_template("user/dashboard.html", volume_left=volume_left, max_volume=max_volume, in_unlimited_time_range=in_unlimited_time_range, notifications=notifications))
+
+        if "hidden_notifications" not in request.cookies:
+            resp.set_cookie("hidden_notifications", json.dumps([notification_id]))
+        else:
+            try:
+                hidden_list = json.loads(request.cookies.get("hidden_notifications"))
+                if notification_id not in hidden_list:
+                    hidden_list.append(notification_id)
+                    resp.set_cookie("hidden_notifications", json.dumps(hidden_list))
+            except:
+                pass
+
+        return resp
 
     if "reedem_dashboard_btn" in request.form:
         return redirect("/reedem", code=307)

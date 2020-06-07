@@ -46,7 +46,7 @@ class Notification(db.Model):
         self.display_until = display_until
     
     def __repr__(self):
-        return "<Notification %r>" % self.role
+        return "<Notification %r>" % self.id
 
 class SupervisorAccount(db.Model, UserMixin):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
