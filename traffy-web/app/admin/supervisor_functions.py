@@ -44,6 +44,7 @@ def set_account_notifications(account_query, notify_shaping, notify_login_attemp
         db.session.commit()
         return True
     except:
+        db.session.rollback()
         return False
 
 def set_account_password(account_query, password):
@@ -55,6 +56,7 @@ def set_account_password(account_query, password):
         db.session.commit()
         return True
     except:
+        db.session.rollback()
         return False
 
 def set_account_mail(account_query, mail):
@@ -66,6 +68,7 @@ def set_account_mail(account_query, mail):
         db.session.commit()
         return True
     except:
+        db.session.rollback()
         return False
 
 def delete_account(account_query):
@@ -74,6 +77,7 @@ def delete_account(account_query):
         db.session.commit()
         return True
     except:
+        db.session.rollback()
         return False
 
 def create_account(username, first_name, last_name, mail, password, role):
@@ -100,6 +104,7 @@ def create_account(username, first_name, last_name, mail, password, role):
         db.session.commit()
         return True
     except:
+        db.session.rollback()
         return False
 
 #
