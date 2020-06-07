@@ -3,8 +3,7 @@
   <head>
     <meta charset="UTF-8" name="viewport" content="width=device-width, initial-scale=1.0"/>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}"/>
-    <title>{{ _("Supervisor Add Registration Code") }}</title>
-    <script src="{{ url_for('static', filename='js/libs/chart.min.js') }}"></script>
+    <title>{{ _("Supervisor Notifications") }}</title>
   </head>
   <body>
     <div class="nav-container">
@@ -13,8 +12,8 @@
       <nav>
         <ul>
           <li><a href="{{ url_for('admin.dashboard') }}">{{ _("Overview") }}</a></li>
-          <li class="active"><a href="#">{{ _("Registration Codes") }}</a></li>
-          <li><a href="{{ url_for('admin.notifications') }}">{{ _("Notifications") }}</a></li>
+          <li><a href="{{ url_for('admin.reg_codes') }}">{{ _("Registration Codes") }}</a></li>
+          <li class="active"><a href="{{ url_for('admin.notifications') }}">{{ _("Notifications") }}</a></li>
           {% if current_user.is_admin() %}
           <li><a href="{{ url_for('admin.accounts') }}">{{ _("Accounts") }}</a></li>
           {% endif %}
@@ -25,7 +24,6 @@
         <span></span>
       </label>
     </div>
-
     <div class="page-box">
       <div class="content-box">
         {% for message in get_flashed_messages() %}
@@ -35,28 +33,28 @@
           </div>
         </div>
         {% endfor %}
-        <h1>{{ _("Add Registration Code") }}</h1>
+        <h1>{{ _("Create Notification") }}</h1>
         <div class="supervisor-divider"></div>
 
         <form method="POST">
           <div class="center-box">
-            <div class="dialog-box dialog-box-small">
+            <div class="dialog-box dialog-box-small identity-edit">
               <div class="padding-box">
-                <p class="input-descriptor">{{ _("First name") }}</p>
-                <input type="text" name="first_name" value=""/>
-                <p class="input-descriptor">{{ _("Surname") }}</p>
-                <input type="text" name="surname" value=""/>
-                <p class="input-descriptor">{{ _("Mail") }}</p>
-                <input type="text" name="mail" value=""/>
-                <p class="input-descriptor">{{ _("Room") }}</p>
-                <input type="text" name="room" value=""/>
+                <p class="input-descriptor">{{ _("Title") }}</p>
+                <input type="text" name="title" value=""/>
+                <p class="input-descriptor">{{ _("Text") }}</p>
+                <textarea name="body"></textarea>
+                <p class="input-descriptor">{{ _("Valid From") }}</p>
+                <input type="date" name="valid_from" value=""/>
+                <p class="input-descriptor">{{ _("Valid Until") }}</p>
+                <input type="date" name="valid_until" value=""/>
               </div>
             </div>
           </div>
 
           <div class="supervisor-divider"></div>
           <div class="toolbar">
-            <input name="add_key_btn" type="submit" value="{{ _('Add') }}"/>
+            <input name="create_btn" type="submit" value="{{ _('Create') }}"/>
             <input name="cancel_btn" type="submit" value="{{ _('Cancel') }}"/>
           </div>
         </form>

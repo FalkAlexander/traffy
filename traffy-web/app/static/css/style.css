@@ -1260,3 +1260,18 @@ li:hover .notification-menu-content {
   font-size: 17px;
   color: #fff;
 }
+
+textarea {
+  background-color: #fff;
+  border: solid 1px #e2e8f0;
+  height: 150px;
+  border-radius: 8px;
+  width: 90%;
+  justify-content: center;
+  padding: 5px 10px 5px 10px;
+  margin: 8px;
+  display: inline-block;
+  font-family: Cantarell-Regular;
+  font-size: 15px;
+  text-align: left;
+}

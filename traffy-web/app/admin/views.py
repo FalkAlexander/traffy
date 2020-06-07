@@ -24,9 +24,9 @@ from dateutil import rrule
 from datetime import datetime, timedelta
 from user_agents import parse
 from flask_weasyprint import HTML, render_pdf
-from . import admin, supervisor_functions
+from . import admin, supervisor_functions, notification_functions
 from .. import db, server, login_manager
-from ..models import SupervisorAccount, Role
+from ..models import SupervisorAccount, Role, Notification
 import config
 import time
 
@@ -561,6 +561,96 @@ def infrastructure():
 
     return render_template("/admin/infrastructure.html", rows=rows, dev_mode=config.DEV_MODE)
 
+@admin.route("/admin/notifications", methods=["GET", "POST"])
+@login_required
+def notifications():
+    rows = []
+    for row in Notification.query.all():
+        rows.append(NotificationRow(row.id, row.title, row.body, row.display_from, row.display_until))
+
+    if request.method == "POST":
+        if "create_notification_btn" in request.form:
+            return redirect("/admin/create-notification")
+
+    return render_template("/admin/notifications.html", rows=rows)
+
+@admin.route("/admin/create-notification", methods=["GET", "POST"])
+@login_required
+def create_notification():
+    if request.method == "POST":
+        if "cancel_btn" in request.form:
+            return redirect("/admin/notifications")
+
+        if "create_btn" in request.form:
+            title = request.form["title"]
+            body = request.form["body"]
+            valid_from = request.form["valid_from"]
+            valid_until = request.form["valid_until"]
+            
+            if valid_from != "" and valid_until != "":
+                if datetime.strptime(valid_from, "%Y-%m-%d").date() > datetime.strptime(valid_until, "%Y-%m-%d").date():
+                        flash(_l("The notification cant be invalid before its valid time."))
+                        return render_template("/admin/create-notification.html")
+
+            if title == "" or body == "" or valid_from == "" and valid_until == "":
+                flash(_l("Please fill out all input forms."))
+                return render_template("/admin/create-notification.html")
+            else:
+                success = notification_functions.create_notification(title, body, valid_from, valid_until)
+                if not success:
+                    flash(_l("Notification could not get created."))
+                return redirect("/admin/notifications")
+
+    return render_template("/admin/create-notification.html")
+
+@admin.route("/admin/notifications/edit/<notification_id>", methods=["GET", "POST"])
+@login_required
+def edit_notification(notification_id):
+    if request.method == "POST":
+        if "cancel_btn" in request.form:
+            return redirect("/admin/notifications")
+
+        if "save_btn" in request.form:
+            title = request.form["title"]
+            body = request.form["body"]
+            valid_from = request.form["valid_from"]
+            valid_until = request.form["valid_until"]
+            
+            if valid_from != "" and valid_until != "":
+                if datetime.strptime(valid_from, "%Y-%m-%d").date() > datetime.strptime(valid_until, "%Y-%m-%d").date():
+                        flash(_l("The notification cant be invalid before its valid time."))
+                        return render_template("/admin/create-notification.html")
+
+            if title == "" or body == "" or valid_from == "" and valid_until == "":
+                flash(_l("Please fill out all input forms."))
+                return render_template("/admin/create-notification.html")
+            else:
+                success = notification_functions.edit_notification(notification_id, title, body, valid_from, valid_until)
+                if not success:
+                    flash(_l("Notification could not get edited."))
+                return redirect("/admin/notifications")
+
+    notification_data = notification_functions.get_notification_data(notification_id)
+
+    if notification_data is None:
+        flash(_l("Notification does not exist."))
+        return redirect("/admin/notifications")
+
+    return render_template("/admin/edit-notification.html", notification_data=notification_data)
+
+
+@admin.route("/admin/notifications/delete/<notification_id>", methods=["GET", "POST"])
+@login_required
+def delete_notification(notification_id):
+    success = notification_functions.delete_notification(notification_id)
+
+    if success:
+        flash(_l("Notification deleted"))
+    else:
+        flash(_l("An error occured while deleting the notification"))
+
+    return redirect("/admin/notifications")
+
 @admin.route("/admin/logout")
 @login_required
 def logout():
@@ -591,3 +681,16 @@ class AccountRow():
         self.first_name = first_name
         self.role = role
 
+class NotificationRow():
+    id = NotImplemented
+    title = ""
+    body = ""
+    display_from = NotImplemented
+    display_until = NotImplemented
+
+    def __init__(self, id, title, body, display_from, display_until):
+        self.id = id
+        self.title = title
+        self.body = body
+        self.display_from = display_from.strftime("%d.%m.%Y")
+        self.display_until = display_until.strftime("%d.%m.%Y")

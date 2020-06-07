@@ -32,6 +32,22 @@ class Role(db.Model):
     def __repr__(self):
         return "<Role %r>" % self.role
 
+class Notification(db.Model):             
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    title = db.Column(db.String(100), unique=False, nullable=False)
+    body = db.Column(db.String(500), unique=False, nullable=False)
+    display_from = db.Column(db.DateTime, nullable=True)
+    display_until = db.Column(db.DateTime, nullable=True)
+    
+    def __init__(self, title, body, display_from, display_until):
+        self.title = title
+        self.body = body
+        self.display_from = display_from
+        self.display_until = display_until
+    
+    def __repr__(self):
+        return "<Notification %r>" % self.role
+
 class SupervisorAccount(db.Model, UserMixin):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     username = db.Column(db.String(50), unique=True, nullable=False)
