@@ -1,19 +1,20 @@
 ![](https://i.imgur.com/IVYH25L.png)
 
-# Traffy
-Traffy ist die Software zur Verwaltung des Wohnheimnetzwerks im Wohnheim Görlitz.
+# Traffy - Dormitory Network Management
+Traffy is a all-in-one management suite for the regulation of dormitory networks with a focus on ease of usibility for its users. It is specialized in dealing with huge amounts of users/tenants. It was initially developed for the student dormitory in Görlitz.
 
-## Funktionen
-* Erstellen und Verwalten einer Nutzerdatenbank
-* Geräte Zuordnungen zu Nutzern
-* Trafficzählung
-* Datenvolumen Abrechnung
-* Traffic Shaping bei Überschreitung von Regeln
-* Nutzer- und Administrationsinterface
+## Feature Overview
+* 👨‍👩‍👧‍👦️ Tenant database with master data management
+* 💻️ Automated network connection registration with device to user assignment, no software installation or manual interface configuration required
+* 🚦️ Traffic accounting, rules, exceptions and more
+* 🖥️ Intuitive and responsive web interface for users
+* 🚨️ Administration web interface with statistics, monitoring and user/connection settings
+* 🔒️ Security measures to prevent connection tampering
+
+## Architecture
+![](https://i.imgur.com/J9IyXvY.png)
 
 # Installation
-## Voraussetzungen
-* Debian Linux
 
 ## Anleitung
 #### LAN Netzwerkinterface (Mieter-LAN)
@@ -171,9 +172,6 @@ usermod -aG sudo traffy
 Whitelist an Befehlen in ```/etc/sudoers```anlegen:
 
 ```
-traffy  ALL=(ALL:ALL) NOPASSWD:/usr/sbin/dnsmasq *
-traffy  ALL=(ALL:ALL) NOPASSWD:/usr/bin/killall -u nobody -s QUIT dnsmasq
-traffy  ALL=(ALL:ALL) NOPASSWD:/usr/bin/killall -u nobody -s HUP dnsmasq
 traffy  ALL=(ALL:ALL) NOPASSWD:/usr/sbin/iptables *
 traffy  ALL=(ALL:ALL) NOPASSWD:/usr/sbin/tc *
 traffy  ALL=(ALL:ALL) NOPASSWD:/usr/sbin/arp -s *
@@ -302,5 +300,7 @@ User: ```admin```
 
 Password: ```admin```
 
-Anmeldedaten für den Produktivbetrieb unbedingt ändern!
-
+Anmeldedaten für den Produktivbetrieb unbedingt ändern!  
+  
+  
+![](https://i.imgur.com/bLfPmcf.png)
