@@ -1,3 +1,5 @@
+![](https://i.imgur.com/IVYH25L.png | width=100)
+
 # Traffy
 Traffy ist die Software zur Verwaltung des Wohnheimnetzwerks im Wohnheim Görlitz.
 
