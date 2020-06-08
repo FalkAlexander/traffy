@@ -1,7 +1,7 @@
 ![](https://i.imgur.com/IVYH25L.png)
 
 # Traffy - Dormitory Network Management
-Traffy is an all-in-one management suite for the regulation of dormitory networks with the focus on ease of usibility for its users. It is specialized in dealing with huge amounts of users/tenants. It was initially developed for the student dormitory in Görlitz.
+Traffy is an all-in-one management suite for the regulation of dormitory networks with the focus on ease of usability for its users. It is specialized in dealing with huge amounts of users/tenants. It got initially developed for the student dormitory in Görlitz.
 
 ## Feature Overview
 * 👨‍👩‍👧‍👦️ Tenant database with master data management
@@ -14,37 +14,34 @@ Traffy is an all-in-one management suite for the regulation of dormitory network
 ## Architecture
 ![](https://i.imgur.com/J9IyXvY.png)
 
-# Installation
+## Example Installation Instruction (only suited for development environments)
+#### LAN Network Interface (Tenant-LAN)
+This is the interface which is responsible for connecting the tenants with the router (line between router/server and tenant device).
 
-## Anleitung
-#### LAN Netzwerkinterface (Mieter-LAN)
-Über dieses Netzwerkinterface geht der Traffic von und zu den Mietern. Es könnte sich z.B. um einen Link vom (Aggregation) Switch zur LAN NIC des Servers handeln.
-
-Konfigurationsdatei:
+Configuration:
 ```
 /etc/network/interfaces.d/lan
 ```
 
-LAN-Interface = NIC zum Mieter-LAN (LAN)
+LAN-Interface = NIC to the Tenant-LAN (LAN)
 
-LAN-Interface-IP/Gateway = IP des Servers und Gateway gleichermaßen für die User im Mieter-LAN
+LAN-Interface-IP/Gateway = IP of the server/gateway for the users in the LAN
 
 ```
 allow-hotplug <LAN-Interface>
 auto <LAN-Interface>
 iface <LAN-Interface> inet static
 	address <LAN-Interface-IP>
-	netmask <Subnetz-Maske>
+	netmask <Subnet-Mask>
 	gateway <LAN-Interface-IP/Gateway>
 ```
 
-Netzwerkdienst neustarten:
+Restart networking service:
 ```
 service networking restart
 ```
 
-#### Forwarding aktivieren
-Konfigurationsdatei:
+#### Enable forwarding
 ```
 /etc/sysctl.conf
 ```
@@ -53,19 +50,18 @@ Konfigurationsdatei:
 net.ipv4.ip_forward=1
 ```
 
-#### NAT aktivieren
-Damit das LAN Interface Zugriff auf das WAN hat, muss ein internes NAT konfiguriert werden:
+#### Activate internal NAT (alternative: use routes)
+Configure an internal NAT in order to interconnect the networks of the WAN and LAN NICs:
 
 ```
 apt install iptables-persistent
 ```
 
-Konfigurationsdatei:
 ```
 /etc/iptables/rules.v4
 ```
 
-WAN-Interface = NIC ins Internet
+WAN-Interface = NIC to the Internet
 
 ```
 *nat
@@ -77,22 +73,23 @@ COMMIT
 iptables-restore < /etc/iptables/rules.v4
 ```
 
-#### Pseudo NIC hinzufügen
-Intermediate Functional Block Kernel Modul beim Systemstart deklarieren:
+#### Add pseudo NIC
+The pseudo NIC is required in order to allow the shaping of outgoing traffic.
+Declare Intermediate Functional Block Kernel Module:
 ```
 /etc/modules
 ```
-Modulname in Konfigurationsdatei aufnehmen:
+Add module to configuration:
 ```
 ifb
 ```
 
-Kernel Modul bei Bedarf laden:
+Load kernel module at runtime:
 ```
 modprobe ifb
 ```
 
-Ein pseudo Interface ist ausreichend, daher Parameter spezifizieren:
+Count of pseudo NICs, in this case one is sufficient:
 ```
 /etc/modprobe.d/ifb_options.conf
 ```
@@ -101,7 +98,7 @@ Ein pseudo Interface ist ausreichend, daher Parameter spezifizieren:
 options ifb numifbs=1
 ```
 
-Interface beim Systemstart automatisch aktivieren:
+Enable pseudo NIC on boot:
 ```
 /etc/network/interfaces
 ```
@@ -110,7 +107,7 @@ Interface beim Systemstart automatisch aktivieren:
 up ifconfig ifb0 up
 ```
 
-#### Traffy Abhängigkeiten installieren
+#### Traffy dependencies
 * sudo
 * dnsmasq
 * net-tools
@@ -129,6 +126,7 @@ up ifconfig ifb0 up
 * python3-flask-sqlalchemy
 * python3-flask-babel
 * python3-flask-login
+* python3-git
 * build-essential
 * libcairo2
 * libpango-1.0-0
@@ -142,34 +140,36 @@ pip3 install Flask-WeasyPrint
 pip3 install user-agents
 ```
 
-#### Services aktivieren
+#### Enable services
 ```
 systemctl enable mariadb nginx
 systemctl start mariadb nginx
 ```
 
-#### MySQL einrichten
+#### MySQL
 ```
 mysql_secure_installation
 mysql -u root -p
 ```
 
 ```
-CREATE SCHEMA traffy;
+CREATE SCHEMA traffy_server;
+CREATE SCHEMA traffy_web;
 CREATE USER 'traffy_user' IDENTIFIED BY '<password>';
 GRANT USAGE ON *.* TO 'traffy_user'@localhost IDENTIFIED BY '<password>';
-GRANT ALL privileges ON traffy.* TO 'traffy_user'@localhost;
+GRANT ALL privileges ON traffy_server.* TO 'traffy_user'@localhost;
+GRANT ALL privileges ON traffy_web.* TO 'traffy_user'@localhost;
 FLUSH PRIVILEGES;
 quit;
 ```
 
-#### Nutzer erstellen
+#### Create user
 ```
 adduser traffy
 usermod -aG sudo traffy
 ```
 
-Whitelist an Befehlen in ```/etc/sudoers```anlegen:
+Add sudo command whitelist ```/etc/sudoers```:
 
 ```
 traffy  ALL=(ALL:ALL) NOPASSWD:/usr/sbin/iptables *
@@ -181,9 +181,7 @@ traffy  ALL=(ALL:ALL) NOPASSWD:/usr/sbin/ipset add *
 traffy  ALL=(ALL:ALL) NOPASSWD:/usr/sbin/ipset destroy *
 ```
 
-#### NGINX konfigurieren
-Serverblock Konfiguration anlegen für reverse proxying:
-
+#### Configure NGINX reverse proxying
 ```
 nano /etc/nginx/sites-available/traffy.conf
 ```
@@ -207,7 +205,7 @@ server {
 }
 ```
 
-Serverblock Konfiguration anlegen für protocol layer redirect:
+Serverblock configuration for protocol layer redirect:
 
 ```
 nano /etc/nginx/sites-available/traffy-redirect.conf
@@ -226,7 +224,7 @@ server {
 
 ```
 
-Serverblocks aktivieren:
+Enable serverblocks:
 
 ```
 ln -s /etc/nginx/sites-available/traffy.conf /etc/nginx/sites-enabled/traffy.conf
@@ -238,17 +236,13 @@ systemctl restart nginx
 ```
 
 
-#### Traffy herunterladen
-In die Shell des Users ```traffy``` wechseln oder als dieser anmelden.
-
-Dann an einem geeigneten Ort, an welchem der Nutzer ```traffy``` Berechtigungen zum Lesen, Schreiben und Ausführen besitzt, das Repository klonen:
-
+#### Download Traffy
 ```
 cd ~
 git clone https://gitlab.com/fseidl/traffy.git traffy-app
 ```
 
-#### Systemd Service erstellen
+#### Create systemd services
 ```
 touch /etc/systemd/system/traffy.service
 ```
@@ -256,13 +250,13 @@ touch /etc/systemd/system/traffy.service
 Mit einem favorisiertem Editor die Service Datei bearbeiten:
 
 ```
-nano /etc/systemd/system/traffy.service
+nano /etc/systemd/system/traffy-server.service
 ```
 
 ```
 [Unit]
-Description=Traffy Accounting
-After=network.target mariadb.service nginx.service
+Description=Traffy Server
+After=network.target mariadb.service nginx.service dnsmasq.service
 StartLimitIntervalSec=0
 
 [Service]
@@ -271,36 +265,63 @@ Restart=always
 RestartSec=1
 User=traffy
 Group=traffy
-WorkingDirectory=/home/traffy/traffy-app
-ExecStart=/home/traffy/traffy-app/boot.sh
+WorkingDirectory=<path-to-traffy-server-directory>
+ExecStart=python3 server.py
+KillMode=mixed
+
+[Manager]
+TimeoutStopSec=300s
+DefaultRestartSec=300s
 
 [Install]
 WantedBy=multi-user.target
 ```
 
 ```
-systemctl enable traffy
+nano /etc/systemd/system/traffy-web.service
 ```
 
-#### Traffy starten
 ```
-systemctl start traffy
+[Unit]
+Description=Traffy Web Client Stable
+After=network.target nginx.service traffy-stable-server.service
+StartLimitIntervalSec=0
+
+[Service]
+Type=simple
+Restart=always
+RestartSec=1
+User=traffy
+Group=traffy
+WorkingDirectory=<path-to-traffy-web-directory>
+ExecStart=gunicorn3 -b :5000 -c hooks.py web:app
+KillMode=mixed
+
+[Install]
+WantedBy=multi-user.target
 ```
 
-# Einrichtung
-Nach dem Start von Traffy die Administrationsseite aufrufen:
+```
+systemctl enable traffy-server traffy-web
+```
+
+#### Start Traffy
+```
+systemctl start traffy-server traffy-web
+```
+
+# Administration Interface
+Go to:
 
 ```
 http://<WAN-Interface-IP>/admin
 ```
 
-Mit den default Anmeldedaten einloggen:
+Default credentials:
 
 User: ```admin```
 
 Password: ```admin```
-
-Anmeldedaten für den Produktivbetrieb unbedingt ändern!  
   
   
 ![](https://i.imgur.com/bLfPmcf.png)
