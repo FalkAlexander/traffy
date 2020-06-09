@@ -78,7 +78,8 @@ def register():
     elif user.get("registered") is True:
         return redirect("/dashboard", code=307)
     elif user.get("deactivated") is True:
-        return render_template("errors/deactivated.html")
+        deactivation_reason = server.get_reg_key_deactivation_reason_by_ip(ip_address)
+        return render_template("errors/deactivated.html", reason=deactivation_reason)
     elif user.get("ip_stolen") is True:
         return render_template("errors/ip_stolen.html")
 
@@ -90,6 +91,14 @@ def register():
     reg_key = request.form["key"].lower()
     if __reg_key_check(reg_key) is False:
         flash(_l("Invalid registration key.") + " Code: 100")
+        return render_template("user/register.html")
+
+    if server.is_reg_key_deactivated(reg_key) is True:
+        deactivation_reason = server.get_reg_key_deactivation_reason(reg_key)
+        if deactivation_reason is None:
+            flash(_l("Your registration key got deactivated. Please contact the administrator."))
+        else:
+            flash(_l("Your registration key got deactivated. Reason: ") + deactivation_reason)
         return render_template("user/register.html")
 
     devices_count = server.get_registered_devices_count(reg_key)
@@ -115,13 +124,22 @@ def conditions():
     elif user.get("registered") is True:
         return redirect("/dashboard", code=307)
     elif user.get("deactivated") is True:
-        return render_template("errors/deactivated.html")
+        deactivation_reason = server.get_reg_key_deactivation_reason_by_ip(ip_address)
+        return render_template("errors/deactivated.html", reason=deactivation_reason)
     elif user.get("ip_stolen") is True:
         return render_template("errors/ip_stolen.html")
 
     reg_key = session.get("reg_key")
     if __reg_key_check(reg_key) is False:
         flash(_l("Invalid registration key.") + " Code: 100")
+        return render_template("user/register.html")
+    
+    if server.is_reg_key_deactivated(reg_key) is True:
+        deactivation_reason = server.get_reg_key_deactivation_reason(reg_key)
+        if deactivation_reason is None:
+            flash(_l("Your registration key got deactivated. Please contact the administrator."))
+        else:
+            flash(_l("Your registration key got deactivated. Reason: ") + deactivation_reason)
         return render_template("user/register.html")
 
     if "accept_btn" not in request.form:
@@ -147,7 +165,8 @@ def dashboard():
     elif user.get("registered") is False:
         return redirect("/register", code=307)
     elif user.get("deactivated") is True:
-        return render_template("errors/deactivated.html")
+        deactivation_reason = server.get_reg_key_deactivation_reason_by_ip(ip_address)
+        return render_template("errors/deactivated.html", reason=deactivation_reason)
     elif user.get("ip_stolen") is True:
         return render_template("errors/ip_stolen.html")
 
@@ -260,7 +279,8 @@ def reedem():
     elif user.get("registered") is False:
         return redirect("/register", code=307)
     elif user.get("deactivated") is True:
-        return render_template("errors/deactivated.html")
+        deactivation_reason = server.get_reg_key_deactivation_reason_by_ip(ip_address)
+        return render_template("errors/deactivated.html", reason=deactivation_reason)
     elif user.get("ip_stolen") is True:
         return render_template("errors/ip_stolen.html")
 
@@ -290,7 +310,8 @@ def deregister():
     elif user.get("registered") is False:
         return redirect("/register", code=307)
     elif user.get("deactivated") is True:
-        return render_template("errors/deactivated.html")
+        deactivation_reason = server.get_reg_key_deactivation_reason_by_ip(ip_address)
+        return render_template("errors/deactivated.html", reason=deactivation_reason)
     elif user.get("ip_stolen") is True:
         return render_template("errors/ip_stolen.html")
 

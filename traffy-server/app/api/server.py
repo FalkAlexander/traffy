@@ -744,15 +744,53 @@ class ServerAPI:
             return False
         return True
 
-    def set_reg_key_deactivated(self, reg_key):
+    def set_reg_key_deactivated(self, reg_key, reason):
         session = self.db.create_session()
         reg_key_query = self.get_reg_key_query_by_key(session, reg_key)
-        success = self.accounting_srv.deactivate_registration_key(session, reg_key_query)
+        success = self.accounting_srv.deactivate_registration_key(session, reg_key_query, reason)
         session.close()
 
         if not success:
             return False
         return True
+    
+    def is_reg_key_deactivated(self, reg_key):
+        session = self.db.create_session()
+        reg_key_query = self.get_reg_key_query_by_key(session, reg_key)
+        session.close()
+
+        if reg_key_query.active is True:
+            return False
+        else:
+            return True
+    
+    def get_reg_key_deactivation_reason(self, reg_key):
+        session = self.db.create_session()
+        reg_key_query = self.get_reg_key_query_by_key(session, reg_key)
+        reason = reg_key_query.deactivation_reason
+        if reason == "":
+            reason = None
+        session.close()
+
+        return reason
+
+    def get_reg_key_deactivation_reason_by_ip(self, ip_address):
+        session = self.db.create_session()
+        reason = None
+
+        try:
+            ip_address_query = self.get_ip_address_query_by_ip(session, ip_address)
+            address_pair_query = self.get_address_pair_query_by_ip(session, ip_address_query)
+            reg_key_query = self.get_reg_key_query_by_id(session, address_pair_query.reg_key)
+            reason = reg_key_query.deactivation_reason
+            if reason == "":
+                reason = None
+        except:
+            session.rollback()
+        finally:
+            session.close()
+
+        return reason
 
     def get_reg_code_statistics(self, reg_key):
         session = self.db.create_session()

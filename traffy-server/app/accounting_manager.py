@@ -170,6 +170,7 @@ class AccountingService():
     def activate_registration_key(self, session, reg_key_query):
         try:
             reg_key_query.active = True
+            reg_key_query.deactivation_reason = None
             session.commit()
 
             address_pair_query = session.query(AddressPair).filter_by(reg_key=reg_key_query.id).all()
@@ -195,7 +196,7 @@ class AccountingService():
             session.rollback()
             return False
 
-    def deactivate_registration_key(self, session, reg_key_query):
+    def deactivate_registration_key(self, session, reg_key_query, reason):
         try:
             address_pair_query = session.query(AddressPair).filter_by(reg_key=reg_key_query.id).all()
             for row in address_pair_query:
@@ -212,11 +213,21 @@ class AccountingService():
                 iptables_rules_manager.relock_registered_device(ip_address_query.address_v4)
             iptables_accounting_manager.remove_accounter_chain(reg_key_query.id)
 
+            if reason is not None:
+                if reason == "":
+                    reg_key_query.deactivation_reason = None
+                if len(reason) <= 250:
+                    reg_key_query.deactivation_reason = reason
+                elif len(reason) > 250:
+                    reg_key_query.deactivation_reason = reason[:250]
+            else:
+                reg_key_query.deactivation_reason = None
+
             reg_key_query.active = False
             session.commit()
 
             return True
-        except Exception as ex:
+        except:
             session.rollback()
             return False
 

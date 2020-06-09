@@ -12,7 +12,11 @@
         <form method="POST">
           <div class="padding-box">
             <h1>{{ _("Access Deactivated") }}</h1>
+            {% if reason is none %}
             <h2>{{ _("Your registration key has been deactivated. Possible reasons could be that your tenancy agreement with Studentenwerk Dresden has expired or that you have violated against the Rahmennetzordnung. If you think that this is a mistake, then please inform the network administrator. Code: 995") }}</h2>
+            {% else %}
+            <h2>{{ _("Your registration key has been deactivated. Reason:") }} {{ reason }} {{ _("Code: 995") }}</h2>
+            {% endif %}
           </div>
         </form>
       </div>

@@ -42,6 +42,7 @@ class RegistrationKey(Base):
     egress_speed = db.Column(db.BigInteger, nullable=True)
     activation_date = db.Column(db.DateTime, nullable=True)
     deletion_date = db.Column(db.DateTime, nullable=True)
+    deactivation_reason = db.Column(db.String(250), nullable=True)
     
     def __init__(self, key, identity):
         self.key = key

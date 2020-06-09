@@ -191,6 +191,31 @@ def edit_identity(reg_key):
     return render_template("/admin/edit-identity.html",
                             identity_data=identity_data)
 
+@admin.route("/admin/regcodes/<reg_key>/deactivate", methods=["GET", "POST"])
+@login_required
+def deactivate_reg_code(reg_key):
+    if request.method == "POST":
+        if "cancel_btn" in request.form:
+            return redirect("/admin/regcodes/" + reg_key)
+        
+        if "deactivate_btn" in request.form:
+            deactivation_reason = request.form["deactivation_reason"]
+            if len(deactivation_reason) > 250:
+                flash(_l("Error: Maximum number of characters exceeded."))
+                return render_template("/admin/deactivate-regcode.html")
+            
+            if deactivation_reason == "":
+                deactivation_reason = None
+        
+            success = server.set_reg_key_deactivated(reg_key, request.form["deactivation_reason"])
+
+            if not success:
+                flash(_l("An error occured."))
+
+            return redirect("/admin/regcodes/" + reg_key)
+    
+    return render_template("/admin/deactivate-regcode.html")
+
 @admin.route("/admin/regcodes/<reg_key>/delete/<ip_address>", methods=["GET", "POST"])
 @login_required
 def delete_device(reg_key, ip_address):
@@ -313,12 +338,7 @@ def reg_code(reg_key):
 
         # Deactivate Registration Key
         if "deactivate_code" in request.form:
-            success = server.set_reg_key_deactivated(reg_key)
-
-            if not success:
-                flash(_l("An error occured."))
-
-            return redirect("/admin/regcodes/" + reg_key)
+            return redirect("/admin/regcodes/" + reg_key + "/deactivate")
 
         # Delete Registration Code
         if "delete_code" in request.form:
