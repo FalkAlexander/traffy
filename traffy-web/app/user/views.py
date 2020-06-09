@@ -244,13 +244,13 @@ def dashboard():
         resp = make_response(render_template("user/dashboard.html", volume_left=volume_left, max_volume=max_volume, in_unlimited_time_range=in_unlimited_time_range, notifications=notifications))
 
         if "hidden_notifications" not in request.cookies:
-            resp.set_cookie("hidden_notifications", json.dumps([notification_id]))
+            resp.set_cookie("hidden_notifications", json.dumps([notification_id]), secure=True, httponly=True)
         else:
             try:
                 hidden_list = json.loads(request.cookies.get("hidden_notifications"))
                 if notification_id not in hidden_list:
                     hidden_list.append(notification_id)
-                    resp.set_cookie("hidden_notifications", json.dumps(hidden_list))
+                    resp.set_cookie("hidden_notifications", json.dumps(hidden_list), secure=True, httponly=True)
             except:
                 pass
 
