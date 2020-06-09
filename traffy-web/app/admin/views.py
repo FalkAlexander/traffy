@@ -207,7 +207,7 @@ def deactivate_reg_code(reg_key):
             if deactivation_reason == "":
                 deactivation_reason = None
         
-            success = server.set_reg_key_deactivated(reg_key, request.form["deactivation_reason"])
+            success = server.set_reg_key_deactivated(reg_key, deactivation_reason)
 
             if not success:
                 flash(_l("An error occured."))

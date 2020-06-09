@@ -214,8 +214,6 @@ class AccountingService():
             iptables_accounting_manager.remove_accounter_chain(reg_key_query.id)
 
             if reason is not None:
-                if reason == "":
-                    reg_key_query.deactivation_reason = None
                 if len(reason) <= 250:
                     reg_key_query.deactivation_reason = reason
                 elif len(reason) > 250:
