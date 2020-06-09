@@ -4,10 +4,10 @@
 Traffy is an all-in-one management suite for the regulation of dormitory networks with the focus on ease of usability for its users. It is specialized in dealing with huge amounts of users/tenants. It got initially developed for the student dormitory in Görlitz.
 
 ## Feature Overview
-* 👨‍👩‍👧‍👦️ Tenant database with master data management
+* 🏠️ Tenant database with master data management
 * 💻️ Automated network connection registration with device to user assignment, no software installation or manual interface configuration required
-* 🚦️ Traffic accounting, rules, exceptions and more
-* 🖥️ Intuitive and responsive web interface for users
+* 🚥️ Traffic accounting, shaping, rules, exceptions and more
+* 🖥️ Intuitive, responsive and multilingual web interface for users
 * 🚨️ Administration web interface with statistics, monitoring and user/connection settings
 * 🔒️ Security measures to prevent connection tampering
 
@@ -15,6 +15,8 @@ Traffy is an all-in-one management suite for the regulation of dormitory network
 ![](https://i.imgur.com/J9IyXvY.png)
 
 ## Example Installation Instruction (only suited for development environments)
+Example environment: Debian 10
+
 #### LAN Network Interface (Tenant-LAN)
 This is the interface which is responsible for connecting the tenants with the router (line between router/server and tenant device).
 
@@ -183,7 +185,7 @@ traffy  ALL=(ALL:ALL) NOPASSWD:/usr/sbin/ipset destroy *
 
 #### Configure NGINX reverse proxying
 ```
-nano /etc/nginx/sites-available/traffy.conf
+/etc/nginx/sites-available/traffy.conf
 ```
 
 ```
@@ -208,7 +210,7 @@ server {
 Serverblock configuration for protocol layer redirect:
 
 ```
-nano /etc/nginx/sites-available/traffy-redirect.conf
+/etc/nginx/sites-available/traffy-redirect.conf
 ```
 
 ```
@@ -247,10 +249,9 @@ git clone https://gitlab.com/fseidl/traffy.git traffy-app
 touch /etc/systemd/system/traffy.service
 ```
 
-Mit einem favorisiertem Editor die Service Datei bearbeiten:
 
 ```
-nano /etc/systemd/system/traffy-server.service
+/etc/systemd/system/traffy-server.service
 ```
 
 ```
