@@ -1,5 +1,7 @@
+from scapy.all import *
 import config
 import os
+import random
 import subprocess
 
 
@@ -13,13 +15,12 @@ def get_leases():
     return leases
 
 def release(ip_address, mac_address):
-    subprocess.Popen([
-        "sudo",
-        "dhcp_release",
-        config.DHCP_INTERFACE,
-        ip_address,
-        mac_address
-        ], stdout=subprocess.PIPE, preexec_fn=os.setsid).wait()
+    release_mac=mac2str(mac_address)
+    server_ip=config.DHCP_INTERFACE_IP
+    send(IP(src=ip_address, dst=server_ip) / 
+        UDP(sport=68,dport=67) /
+        BOOTP(chaddr=release_mac, ciaddr=ip_address, xid=random.randint(0, 0xFFFFFFFF)) /
+        DHCP(options=[("message-type", "release"), ("server_id", server_ip), "end"]))
 
 def arping(ip_address):
     proc = subprocess.Popen([
