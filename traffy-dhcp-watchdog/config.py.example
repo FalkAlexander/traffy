@@ -1,0 +1,3 @@
+DNSMASQ_LEASE_FILE = "/var/lib/misc/dnsmasq.leases"
+DHCP_INTERFACE = "ens10.43"
+PING_TRIES = 10
