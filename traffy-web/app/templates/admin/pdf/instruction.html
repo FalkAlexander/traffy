@@ -7,10 +7,10 @@
   </head>
   <body>
     <div class="section">
-        <h1>Internet im Studentenwohnheim Görlitz</h1>
+        <h1>Internet im Studierendenwohnheim Görlitz</h1>
         <div class="tight">
             <h3>Das Wohnheimnetz ist Teil des Hochschulnetzwerks.</h3>
-            <h3>Aufgrund dessen existiert eine Datenvolumensbegrenzung für jeden Nutzer.</h3>
+            <h3>Daher existiert eine Datenvolumensbegrenzung für alle Nutzer:innen.</h3>
         </div>
     </div>
         
@@ -21,7 +21,7 @@
     <div class="justify">
         <p><strong>Ansparmodell: </strong>Du erhältst jeden Tag <strong>{{ daily_topup_volume }} GiB</strong> gutgeschrieben. Von 8 bis 18 Uhr erfolgt keine Verbrauchszählung. Am Ende des Tages wird dein unverbrauchtes Datenvolumen in den darauf folgenden Tag mitgenommen. Das Ansparmodell erlaubt es dir, insgesamt <strong>{{ max_saved_volume}} GiB</strong> anzusparen.</p>
         
-        <p><strong>Aufbrauch: </strong>Nach Aufbrauch deines Datenvolumens wird dein Internetzugang auf eine Geschwindigkeit von <strong>{{ shaping_speed }}/s</strong> gedrosselt. Einzig die Hochschulinfrastruktur (z.B. Lernplattformen) ist weiterhin in voller Geschwindigkeit abrufbar. Sobald der Tag herum ist und du somit <strong>{{ daily_topup_volume}} GiB</strong> gutgeschrieben bekommst, ist die Geschwindigkeitsbeschränkung wieder aufgehoben.</p>
+        <p><strong>Aufbrauch: </strong>Nach Aufbrauch deines Datenvolumens wird dein Internetzugang auf eine Geschwindigkeit von <strong>{{ shaping_speed }}/s</strong> gedrosselt. Einzig die Hochschulinfrastruktur (z.B. OPAL) ist weiterhin in voller Geschwindigkeit verfügbar. Sobald der Tag herum ist und du somit <strong>{{ daily_topup_volume}} GiB</strong> gutgeschrieben bekommst, ist die Geschwindigkeitsbeschränkung wieder aufgehoben.</p>
     </div>
     
     <div class="divider"></div>
@@ -56,7 +56,7 @@
     
     <footer>
       <hr></hr>
-        <p>Mieter / Tenant: {{ last_name }}, {{ first_name }} | Raum / Room: {{ room }}<br/>
+        <p>Mieter:in / Tenant: {{ last_name }}, {{ first_name }} | Raum / Room: {{ room }}<br/>
         Formular-ID: {{ creation_date }} | Ausgestellt von {{ current_user.get_role() }}: {{ current_user.get_last_name() }}, {{ current_user.get_first_name() }}
         </p>
     </footer>
@@ -144,7 +144,7 @@
 
         <footer>
           <hr></hr>
-            <p>Mieter / Tenant: {{ last_name }}, {{ first_name }} | Raum / Room: {{ room }}<br/>
+            <p>Mieter:in / Tenant: {{ last_name }}, {{ first_name }} | Raum / Room: {{ room }}<br/>
             Formular-ID: {{ creation_date }} | Ausgestellt von {{ current_user.get_role() }}: {{ current_user.get_last_name() }}, {{ current_user.get_first_name() }}
             </p>
         </footer>
@@ -187,8 +187,8 @@
 
         <p>Die Datenschutzerklärung habe ich erhalten und erkenne sie an.</p>
         <br>
-        <h3>______________________________________</h3>
-        <p>Datum, Unterschrift Mieter*in</p>
+        <h3>_____________________________________________________________</h3>
+        <p>Datum, Vor- und Nachname, Unterschrift Mieter:in</p>
     </div>
   </body>
 </html>
