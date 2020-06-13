@@ -510,6 +510,17 @@ p.input-descriptor.small {
   position: fixed;
   width: 100%;
   z-index: 999;
+  height: 55px;
+}
+
+.nav-logo {
+  background: url("../icons/traffy_logo.svg") no-repeat;
+  background-position: center;
+  width: 50px;
+  background-size: 28px;
+  margin-left: -12px;
+  display: inline-block;
+  height: 100%;
 }
 
 .nav-menu {
@@ -616,6 +627,18 @@ nav a:hover {
   }
 
   .nav-logo {
+    color: #fff;
+    font-size: 20px;
+    font-family: Cantarell-Regular;
+    grid-column: 2 / 3;
+    background: url("../icons/traffy_logo.svg") no-repeat;
+    background-position: center;
+    width: 50px;
+    background-size: 28px;
+    margin-left: -12px;
+  }
+
+  .nav-text {
     color: #fff;
     font-size: 20px;
     font-family: Cantarell-Regular;
