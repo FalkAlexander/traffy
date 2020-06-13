@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2020-06-09 20:28+0200\n"
-"PO-Revision-Date: 2020-06-09 20:30+0200\n"
+"POT-Creation-Date: 2020-06-13 13:01+0200\n"
+"PO-Revision-Date: 2020-06-13 13:02+0200\n"
 "Last-Translator: Falk Seidl <hi@falsei.de>\n"
 "Language: de\n"
 "Language-Team: German <hi@falsei.de>\n"
@@ -761,8 +761,8 @@ msgstr "MAC Adresse"
 
 #: app/templates/admin/key-page.html:111
 #: app/templates/user/dashboard_advanced.html:106
-msgid "Type"
-msgstr "Art"
+msgid "Vendor"
+msgstr "Hersteller"
 
 #: app/templates/admin/key-page.html:112
 #: app/templates/user/dashboard_advanced.html:107
@@ -1385,3 +1385,6 @@ msgstr "Ungültiger Aktionscode"
 
 #~ msgid "Traffy"
 #~ msgstr "Traffy"
+
+#~ msgid "Type"
+#~ msgstr "Art"

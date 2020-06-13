@@ -103,14 +103,14 @@
           <div class="table-head">
             <div class="table-cell big">{{ _("IP Address") }}</div>
             <div class="table-cell big">{{ _("Mac Address") }}</div>
-            <div class="table-cell big">{{ _("Type") }}</div>
+            <div class="table-cell big">{{ _("Vendor") }}</div>
             <div class="table-cell big">{{ _("Registered Since") }}</div>
           </div>
           {% for row in device_list %}
           <div class="table-row">
             <div class="table-cell big">{{ row.ip_address }}</div>
             <div class="table-cell big">{{ row.mac_address }}</div>
-            <div class="table-cell big">{{ row.type }}</div>
+            <div class="table-cell big">{{ row.vendor }}</div>
             <div class="table-cell big">{{ row.registered_since }}</div>
           </div>
           {% endfor %}

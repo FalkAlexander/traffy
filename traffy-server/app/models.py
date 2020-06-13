@@ -66,11 +66,13 @@ class MacAddress(Base):
     id = db.Column(db.BigInteger, primary_key=True, autoincrement=True)
     address = db.Column(db.String(25), unique=True, nullable=False)
     user_agent = db.Column(db.String(500), unique=False, nullable=True)
+    vendor = db.Column(db.String(500), unique=False, nullable=True)
     first_known_since = db.Column(db.DateTime, nullable=False)
     
-    def __init__(self, address, user_agent, first_known_since):
+    def __init__(self, address, user_agent, vendor, first_known_since):
         self.address = address
         self.user_agent = user_agent
+        self.vendor = vendor
         self.first_known_since = first_known_since
     
     def __repr__(self):

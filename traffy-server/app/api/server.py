@@ -24,9 +24,13 @@ from datetime import datetime, timedelta
 from dateutil import rrule
 from user_agents import parse
 from sqlalchemy.sql import func
+import json
 import time
+import codecs
 import config
 import threading
+import urllib.request as urllib2
+
 
 
 class ServerAPI:
@@ -41,6 +45,7 @@ class ServerAPI:
         self.db = server.db
         self.accounting_srv = server.accounting_srv
         self.dev_mode_test = server.dev_mode_test
+        self.__migration_init_vendor_column()
 
     def get_server_version(self):
         return self.server_version
@@ -191,8 +196,12 @@ class ServerAPI:
         if mac_address_query is None:
             if len(user_agent) > 500:
                 user_agent = user_agent[:500]
+            
+            vendor = self.__get_mac_address_vendor(mac_address)
+            if len(vendor) > 500:
+                vendor = vendor[:500]
 
-            session.add(MacAddress(address=mac_address, user_agent=user_agent, first_known_since=datetime.now()))
+            session.add(MacAddress(address=mac_address, user_agent=user_agent, vendor=vendor, first_known_since=datetime.now()))
         else:
             raise RegistrationError(130)
 
@@ -895,7 +904,7 @@ class ServerAPI:
             ip_address_query = session.query(IpAddress).filter_by(id=row.ip_address).first()
             mac_address_query = session.query(MacAddress).filter_by(id=row.mac_address).first()
 
-            device_list.append(DeviceRow(ip_address_query.address_v4, mac_address_query.address, mac_address_query.user_agent, mac_address_query.first_known_since))
+            device_list.append(DeviceRow(ip_address_query.address_v4, mac_address_query.address, mac_address_query.user_agent, mac_address_query.vendor, mac_address_query.first_known_since))
 
         device_list.reverse()
         session.close()
@@ -1014,6 +1023,31 @@ class ServerAPI:
                 break
         
         return in_range
+    
+    def __get_mac_address_vendor(self, mac_address):
+        api_url = "https://macvendors.co/api/"
+        request = urllib2.Request(api_url + mac_address, headers={"User-Agent": "API Browser"})
+
+        try:
+            response = urllib2.urlopen(request, timeout=3)
+            reader = codecs.getreader("utf-8")
+            obj = json.load(reader(response))
+
+            return(obj["result"]["company"]);
+        except:
+            return("N/A")
+    
+    def __migration_init_vendor_column(self):
+        session = self.db.create_session()
+        for row in session.query(AddressPair).all():
+            mac_address_query = session.query(MacAddress).filter_by(id=row.mac_address).first()
+            if mac_address_query.vendor is None:
+                try:
+                    mac_address_query.vendor = self.__get_mac_address_vendor(mac_address_query.address)
+                    session.commit()
+                except:
+                    session.rollback()
+        session.close()
 
 class UserStatus():
     registered = False
@@ -1065,12 +1099,14 @@ class DeviceRow():
     ip_address = ""
     mac_address = ""
     type = ""
+    vendor = ""
     registered_since = ""
 
-    def __init__(self, ip_address, mac_address, user_agent, registered_since):
+    def __init__(self, ip_address, mac_address, user_agent, vendor, registered_since):
         self.ip_address = ip_address
         self.mac_address = mac_address
         self.type = self.find_device(user_agent)
+        self.vendor = vendor
         self.registered_since = registered_since.strftime("%d.%m.%Y %H:%M:%S")
 
     def find_device(self, user_agent):

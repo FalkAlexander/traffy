@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2020-06-09 20:28+0200\n"
+"POT-Creation-Date: 2020-06-13 13:01+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -749,7 +749,7 @@ msgstr ""
 
 #: app/templates/admin/key-page.html:111
 #: app/templates/user/dashboard_advanced.html:106
-msgid "Type"
+msgid "Vendor"
 msgstr ""
 
 #: app/templates/admin/key-page.html:112
