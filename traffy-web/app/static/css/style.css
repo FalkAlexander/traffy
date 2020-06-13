@@ -1335,6 +1335,9 @@ textarea {
 .cell-text {
   width: 80%;
   float: left;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin-right: -20px;
 }
 
 .info-hover-badge .tooltiptext {
