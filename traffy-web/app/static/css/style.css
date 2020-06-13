@@ -1333,7 +1333,7 @@ textarea {
 }
 
 .cell-text {
-  width: 80%;
+  width: 87%;
   float: left;
   overflow: hidden;
   text-overflow: ellipsis;
