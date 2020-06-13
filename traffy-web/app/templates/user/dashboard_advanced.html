@@ -110,7 +110,12 @@
           <div class="table-row">
             <div class="table-cell big">{{ row.ip_address }}</div>
             <div class="table-cell big">{{ row.mac_address }}</div>
-            <div class="table-cell big">{{ row.vendor }}</div>
+            <div class="table-cell big">
+              <div class="cell-text">{{ row.vendor }}</div>
+              <div class="info-hover-badge">
+                <div class="tooltiptext">{{ row.type }}</div>
+              </div>
+            </div>
             <div class="table-cell big">{{ row.registered_since }}</div>
           </div>
           {% endfor %}
