@@ -92,6 +92,32 @@
           {% endfor %}
         </div>
 
+        {% if page_count > 1 %}
+        <div class="page-switcher">
+          <div class="page-button-group">
+            <form method="POST">
+              <input name="first_page_btn" type="submit" value="|←"/>
+            </form>
+          </div>
+          <div class="page-button-group">
+            {% for i in range(page_count) %}
+            <form method="POST">
+              {% if i + 1 == current_page %}
+                <input class="selected" name="switch_page_btn" type="submit" value="{{ i + 1 }}">
+              {% else %}
+                <input name="switch_page_btn" type="submit" value="{{ i + 1 }}"/>
+              {% endif %}
+            </form>
+            {% endfor %}
+          </div>
+          <div class="page-button-group">
+            <form method="POST">
+              <input name="last_page_btn" type="submit" value="→|"/>
+            </form>
+          </div>
+        </div>
+        {% endif %}
+
       </div>
     </div>
 

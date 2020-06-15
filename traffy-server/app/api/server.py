@@ -599,11 +599,18 @@ class ServerAPI:
         session.close()
         return search_results
 
-    def construct_reg_code_list(self):
+    def get_reg_code_count(self):
+        session = self.db.create_session()
+
+        count = session.query(RegistrationKey).count()
+        session.close()
+        return count
+
+    def construct_reg_code_list(self, limit, offset):
         session = self.db.create_session()
 
         rows = []
-        for row in session.query(RegistrationKey).all():
+        for row in session.query(RegistrationKey).limit(limit).offset(offset):
             identity = session.query(Identity).filter_by(id=row.identity).first()
             credit = self.accounting_srv.get_credit(session, row, gib=True)[0]
             if credit < 0:

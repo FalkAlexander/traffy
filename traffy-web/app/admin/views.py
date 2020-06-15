@@ -28,6 +28,7 @@ from . import admin, supervisor_functions, notification_functions
 from .. import db, server, login_manager
 from ..models import SupervisorAccount, Role, Notification
 import config
+import math
 import time
 
 
@@ -101,12 +102,27 @@ def reg_codes():
         search_term = request.form["search_box"].lower()
         search_results = server.get_reg_codes_search_results(search_term)
 
-        return render_template("/admin/regcodes.html", rows=search_results, clear_button=True)
+        return render_template("/admin/regcodes.html", rows=search_results, clear_button=True, page_count=0)
+    
+    limit = 30
+    current_page = 0
+    page_count = math.ceil(server.get_reg_code_count() / limit)
 
-    rows = server.construct_reg_code_list()
+    if "last_page_btn" in request.form:
+        current_page = page_count - 1
+
+    offset = current_page * limit
+    rows = server.construct_reg_code_list(limit, offset)
+
+    if "switch_page_btn" in request.form:
+        current_page = int(request.form["switch_page_btn"]) - 1
+        if current_page >= 0 and current_page <= page_count:
+            offset = current_page * limit
+            rows = server.construct_reg_code_list(limit, offset)
+            return render_template("/admin/regcodes.html", rows=rows, page_count=page_count, dev_mode=config.DEV_MODE, current_page=current_page+1)
 
     if "clear_btn" in request.form:
-        return render_template("/admin/regcodes.html", rows=rows, dev_mode=config.DEV_MODE)
+        return render_template("/admin/regcodes.html", rows=rows, dev_mode=config.DEV_MODE, page_count=page_count, current_page=current_page+1)
 
     if "add_key_btn" in request.form:
         return redirect("/admin/add-regcode")
@@ -115,7 +131,7 @@ def reg_codes():
         server.create_reg_key_test()
         return redirect("/admin/regcodes")
 
-    return render_template("/admin/regcodes.html", rows=rows, dev_mode=config.DEV_MODE)
+    return render_template("/admin/regcodes.html", rows=rows, page_count=page_count, dev_mode=config.DEV_MODE, current_page=current_page+1)
 
 @admin.route("/admin/add-regcode", methods=["GET", "POST"])
 @login_required
