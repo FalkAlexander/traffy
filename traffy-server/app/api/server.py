@@ -610,13 +610,13 @@ class ServerAPI:
         session = self.db.create_session()
 
         rows = []
-        for row in session.query(RegistrationKey).limit(limit).offset(offset):
+        for row in session.query(RegistrationKey).order_by(RegistrationKey.id.desc()).offset(offset).limit(limit):
             identity = session.query(Identity).filter_by(id=row.identity).first()
             credit = self.accounting_srv.get_credit(session, row, gib=True)[0]
             if credit < 0:
                 credit = 0
             rows.append(KeyRow(row.key, identity.last_name, identity.first_name, identity.room, credit, row.active))
-        rows.reverse()
+
         session.close()
         return rows
 
