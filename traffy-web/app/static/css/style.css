@@ -522,7 +522,14 @@ p.input-descriptor.small {
   background-size: 28px;
   margin-left: -12px;
   display: inline-block;
-  height: 100%;
+}
+
+.nav-logo.supervisor {
+  background: url("../icons/traffy_supervisor_logo.png") no-repeat;
+  background-position: center;
+  width: 100px;
+  background-size: 80px;
+  height: 55px;
 }
 
 .nav-menu {
@@ -640,11 +647,12 @@ nav a:hover {
     margin-left: -12px;
   }
 
-  .nav-text {
-    color: #fff;
-    font-size: 20px;
-    font-family: Cantarell-Regular;
-    grid-column: 2 / 3;
+  .nav-logo.supervisor {
+    background: url("../icons/traffy_supervisor_logo.png") no-repeat;
+    background-position: center;
+    width: 100px;
+    background-size: 80px;
+    height: 55px;
   }
 
   nav {
@@ -1099,7 +1107,8 @@ nav a:hover {
   transform: rotate(45deg);
 }
 
-.dialog-box select {
+.dialog-box select,
+.page-switcher select {
   all: unset;
   background-color: #fff;
   border: solid 1px #e2e8f0;
@@ -1418,4 +1427,14 @@ textarea {
 .page-button-group {
   display: inline-block;
   margin: 0 5px 0 5px;
+}
+
+.page-switcher select {
+  float: right;
+  width: 80px;
+  margin: 0;
+  background-color: #fff;
+  height: 28px;
+  text-overflow: ellipsis;
+  overflow: hidden;
 }
