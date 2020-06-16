@@ -99,46 +99,50 @@
 
         <h1>{{ _("Devices") }}</h1>
         <div class="supervisor-divider"></div>
-        <div class="table">
-          <div class="table-head">
-            <div class="table-cell big">{{ _("IP Address") }}</div>
-            <div class="table-cell big">{{ _("Mac Address") }}</div>
-            <div class="table-cell big">{{ _("Vendor") }}</div>
-            <div class="table-cell big">{{ _("Registered Since") }}</div>
-          </div>
-          {% for row in device_list %}
-          <div class="table-row">
-            <div class="table-cell big">{{ row.ip_address }}</div>
-            <div class="table-cell big">{{ row.mac_address }}</div>
-            <div class="table-cell big">
-              <div class="cell-text">{{ row.vendor }}</div>
-              <div class="info-hover-badge">
-                <div class="tooltiptext">{{ row.type }}</div>
-              </div>
+        <div class="table-container">
+          <div class="table">
+            <div class="table-head">
+              <div class="table-cell big">{{ _("IP Address") }}</div>
+              <div class="table-cell big">{{ _("Mac Address") }}</div>
+              <div class="table-cell big">{{ _("Vendor") }}</div>
+              <div class="table-cell big">{{ _("Registered Since") }}</div>
             </div>
-            <div class="table-cell big">{{ row.registered_since }}</div>
+            {% for row in device_list %}
+            <div class="table-row">
+              <div class="table-cell big">{{ row.ip_address }}</div>
+              <div class="table-cell big">{{ row.mac_address }}</div>
+              <div class="table-cell big">
+                <div class="cell-text">{{ row.vendor }}</div>
+                <div class="info-hover-badge">
+                  <div class="tooltiptext">{{ row.type }}</div>
+                </div>
+              </div>
+              <div class="table-cell big">{{ row.registered_since }}</div>
+            </div>
+            {% endfor %}
           </div>
-          {% endfor %}
         </div>
 
-        <h1>{{ _("Connection Owner") }}</h1>
+        <h1>{{ _("Line Subscriber") }}</h1>
         <div class="supervisor-divider"></div>
-        <div class="table">
-          <div class="table-head">
-            <div class="table-cell big">{{ _("Surname") }}</div>
-            <div class="table-cell big">{{ _("First Name") }}</div>
-            <div class="table-cell big">{{ _("Mail Address") }}</div>
-            <div class="table-cell big">{{ _("Room") }}</div>
-          </div>
-          <div class="table-row">
-            <div class="table-cell big">{{ identity_data.last_name }}</div>
-            <div class="table-cell big">{{ identity_data.first_name }}</div>
-            <div class="table-cell big">{{ identity_data.mail }}</div>
-            {% if identity_data.new_room is none %}
-            <div class="table-cell big">{{ identity_data.room }}</div>
-            {% else %}
-            <div class="table-cell big">{{ identity_data.room }} ({{ identity_data.new_room }} {{ _("as of") }} {{ identity_data.scheduled_move }})</div>
-            {% endif %}
+        <div class="table-container">
+          <div class="table">
+            <div class="table-head">
+              <div class="table-cell big">{{ _("Surname") }}</div>
+              <div class="table-cell big">{{ _("First Name") }}</div>
+              <div class="table-cell big">{{ _("Mail Address") }}</div>
+              <div class="table-cell big">{{ _("Room") }}</div>
+            </div>
+            <div class="table-row">
+              <div class="table-cell big">{{ identity_data.last_name }}</div>
+              <div class="table-cell big">{{ identity_data.first_name }}</div>
+              <div class="table-cell big">{{ identity_data.mail }}</div>
+              {% if identity_data.new_room is none %}
+              <div class="table-cell big">{{ identity_data.room }}</div>
+              {% else %}
+              <div class="table-cell big">{{ identity_data.room }} ({{ identity_data.new_room }} {{ _("as of") }} {{ identity_data.scheduled_move }})</div>
+              {% endif %}
+            </div>
           </div>
         </div>
       </div>

@@ -784,6 +784,15 @@ nav a:hover {
   .table-cell {
     width: 100% !important;
   }
+
+  .table-container {
+    width: 100%;
+    overflow-y: auto;
+  }
+
+  .table-container .table .table-cell.big {
+    width: 180px !important;
+  }
 }
 
 .table {
@@ -844,6 +853,12 @@ nav a:hover {
 
 .table .table-cell.medium {
   width: 200px !important;
+}
+
+@media only screen and (min-width: 900px) {
+  .table-container .table .table-cell.big {
+    width: 50% !important;
+  }
 }
 
 .table .table-cell.big {
