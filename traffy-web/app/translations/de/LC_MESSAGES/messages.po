@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2020-06-17 00:15+0200\n"
-"PO-Revision-Date: 2020-06-17 00:16+0200\n"
+"POT-Creation-Date: 2020-06-17 00:48+0200\n"
+"PO-Revision-Date: 2020-06-17 00:49+0200\n"
 "Last-Translator: Falk Seidl <hi@falsei.de>\n"
 "Language: de\n"
 "Language-Team: German <hi@falsei.de>\n"
@@ -510,7 +510,7 @@ msgstr "Registrierte Nutzer"
 
 #: app/templates/admin/dashboard.html:55
 msgid "Average Credit"
-msgstr "Durchschnittliches Datenvolumen"
+msgstr "Ø Datenvolumen"
 
 #: app/templates/admin/dashboard.html:59
 msgid "Shaped Users"
