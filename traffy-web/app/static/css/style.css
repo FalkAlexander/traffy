@@ -788,6 +788,18 @@ nav a:hover {
 
   .table-container {
     overflow-x: scroll;
+    margin-bottom: 25px;
+  }
+
+  .table-container::-webkit-scrollbar {
+    -webkit-appearance: none;
+    width: 8px;
+    height: 8px;
+  }
+  
+  .table-container::-webkit-scrollbar-thumb {
+    border-radius: 8px;
+    background-color:#667690;
   }
 
   .table-container .table .table-cell.big {
@@ -800,7 +812,7 @@ nav a:hover {
    border-collapse: collapse;
    width: 100%;
    table-layout: fixed;
-   margin-bottom: 25px;
+   margin-bottom: 5px;
 }
 
 .table .table-row,
