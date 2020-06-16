@@ -522,6 +522,7 @@ p.input-descriptor.small {
   background-size: 28px;
   margin-left: -12px;
   display: inline-block;
+  height: 55px;
 }
 
 .nav-logo.supervisor {
@@ -529,7 +530,6 @@ p.input-descriptor.small {
   background-position: center;
   width: 100px;
   background-size: 80px;
-  height: 55px;
 }
 
 .nav-menu {
@@ -645,6 +645,7 @@ nav a:hover {
     width: 50px;
     background-size: 28px;
     margin-left: -12px;
+    height: 55px;
   }
 
   .nav-logo.supervisor {
@@ -652,7 +653,6 @@ nav a:hover {
     background-position: center;
     width: 100px;
     background-size: 80px;
-    height: 55px;
   }
 
   nav {
