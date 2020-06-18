@@ -812,7 +812,7 @@ nav a:hover {
    border-collapse: collapse;
    width: 100%;
    table-layout: fixed;
-   margin-bottom: 5px;
+   margin-bottom: 25px;
 }
 
 .table .table-row,
