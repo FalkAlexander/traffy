@@ -239,6 +239,7 @@
             <p><strong>{{ _("Status:") }}</strong> {{ _("Registration Code Active") }}</p>
             {% else %}
             <p><strong>{{ _("Status:") }}</strong> {{ _("Registration Code Deactivated") }}</p>
+            <p><strong>{{ _("Reason:") }}</strong> {{ deactivation_reason }}</p>
             {% endif %}
             <form method="POST">
               {% if key_active %}

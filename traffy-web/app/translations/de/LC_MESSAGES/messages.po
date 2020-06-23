@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2020-06-17 00:48+0200\n"
-"PO-Revision-Date: 2020-06-17 00:49+0200\n"
+"POT-Creation-Date: 2020-06-23 23:58+0200\n"
+"PO-Revision-Date: 2020-06-23 23:59+0200\n"
 "Last-Translator: Falk Seidl <hi@falsei.de>\n"
 "Language: de\n"
 "Language-Team: German <hi@falsei.de>\n"
@@ -47,8 +47,8 @@ msgstr "Gedrosselt"
 msgid "Exceptions"
 msgstr "Ausnahmen"
 
-#: app/admin/views.py:149 app/admin/views.py:189 app/admin/views.py:563
-#: app/admin/views.py:632 app/admin/views.py:661
+#: app/admin/views.py:149 app/admin/views.py:189 app/admin/views.py:570
+#: app/admin/views.py:639 app/admin/views.py:668
 msgid "Please fill out all input forms."
 msgstr "Bitte alle Eingabefelder ausfüllen."
 
@@ -70,7 +70,7 @@ msgstr "Fehler: Maximale Zeichenanzahl wurde überschritten."
 
 #: app/admin/views.py:229 app/admin/views.py:306 app/admin/views.py:324
 #: app/admin/views.py:333 app/admin/views.py:342 app/admin/views.py:351
-#: app/admin/views.py:364 app/admin/views.py:381 app/admin/views.py:492
+#: app/admin/views.py:364 app/admin/views.py:381 app/admin/views.py:499
 msgid "An error occured."
 msgstr "Es ist ein Fehler aufgetreten."
 
@@ -116,68 +116,68 @@ msgstr "Aktiviert"
 msgid "Disabled"
 msgstr "Deaktiviert"
 
-#: app/admin/views.py:480
+#: app/admin/views.py:487
 msgid "Invalid supervisor account."
 msgstr "Ungültiges Supervisor Konto."
 
-#: app/admin/views.py:501
+#: app/admin/views.py:508
 msgid "Password requirements not met."
 msgstr "Passwortanforderungen wurden nicht erreicht."
 
-#: app/admin/views.py:503
+#: app/admin/views.py:510
 msgid "Password changed."
 msgstr "Passwort geändert."
 
-#: app/admin/views.py:512
+#: app/admin/views.py:519
 msgid "Mail address entered is invalid."
 msgstr "Die eingegebene Mail Adresse ist ungültig."
 
-#: app/admin/views.py:514
+#: app/admin/views.py:521
 msgid "Mail address changed."
 msgstr "Die Mail Adresse wurde geändert."
 
-#: app/admin/views.py:521
+#: app/admin/views.py:528
 msgid "No other supervisor account left, cannot delete this one."
 msgstr "Dies ist das einzige Supervisor Konto, es kann nicht gelöscht werden."
 
-#: app/admin/views.py:526
+#: app/admin/views.py:533
 msgid "Error deleting account."
 msgstr "Fehler beim Löschen des Kontos."
 
-#: app/admin/views.py:529
+#: app/admin/views.py:536
 msgid "Account deleted."
 msgstr "Konto gelöscht."
 
-#: app/admin/views.py:568
+#: app/admin/views.py:575
 msgid "Account could not get created."
 msgstr "Das Konto konnte nicht erstellt werden."
 
-#: app/admin/views.py:628 app/admin/views.py:657
+#: app/admin/views.py:635 app/admin/views.py:664
 msgid "The notification cant be invalid before its valid time."
 msgstr ""
 "Die Benachrichtigung kann nicht vor ihrer Gültigkeit bereits ungültig sein."
 
-#: app/admin/views.py:637
+#: app/admin/views.py:644
 msgid "Notification could not get created."
 msgstr "Die Benachrichtigung konnte nicht erstellt werden."
 
-#: app/admin/views.py:666
+#: app/admin/views.py:673
 msgid "Notification could not get edited."
 msgstr "Die Benachrichtigung konnte nicht editiert werden."
 
-#: app/admin/views.py:672
+#: app/admin/views.py:679
 msgid "Notification does not exist."
 msgstr "Die Benachrichtigung existiert nicht."
 
-#: app/admin/views.py:684
+#: app/admin/views.py:691
 msgid "Notification deleted"
 msgstr "Die Benachrichtigung wurde gelöscht"
 
-#: app/admin/views.py:686
+#: app/admin/views.py:693
 msgid "An error occured while deleting the notification"
 msgstr "Es ist ein Fehler beim löschen der Benachrichtigung aufgetreten"
 
-#: app/admin/views.py:705
+#: app/admin/views.py:712
 msgid "Login to access that resource."
 msgstr "Anmelden um Zugriff auf die Ressource zu erhalten."
 
@@ -278,7 +278,7 @@ msgstr "Konto:"
 #: app/templates/admin/infrastructure.html:133
 #: app/templates/admin/key-page.html:156 app/templates/admin/key-page.html:169
 #: app/templates/admin/key-page.html:193 app/templates/admin/key-page.html:217
-#: app/templates/admin/key-page.html:237 app/templates/admin/key-page.html:256
+#: app/templates/admin/key-page.html:237 app/templates/admin/key-page.html:257
 msgid "Description:"
 msgstr "Beschreibung:"
 
@@ -516,7 +516,7 @@ msgstr "Ø Datenvolumen"
 msgid "Shaped Users"
 msgstr "Gedrosselte Nutzer"
 
-#: app/templates/admin/dashboard.html:164 app/templates/admin/key-page.html:372
+#: app/templates/admin/dashboard.html:164 app/templates/admin/key-page.html:373
 #: app/templates/user/dashboard_advanced.html:249
 msgid "Total"
 msgstr "Insgesamt"
@@ -526,7 +526,7 @@ msgid "Supervisor Registration Code Deactivation"
 msgstr "Supervisor Registrierungscode Deaktivierung"
 
 #: app/templates/admin/deactivate-regcode.html:36
-#: app/templates/admin/key-page.html:236 app/templates/admin/key-page.html:245
+#: app/templates/admin/key-page.html:236 app/templates/admin/key-page.html:246
 msgid "Deactivate Registration Code"
 msgstr "Registrierungscode deaktivieren"
 
@@ -853,15 +853,19 @@ msgstr "Registrierungscode aktiviert"
 msgid "Registration Code Deactivated"
 msgstr "Registrierungscode deaktiviert"
 
-#: app/templates/admin/key-page.html:247
+#: app/templates/admin/key-page.html:242
+msgid "Reason:"
+msgstr "Grund:"
+
+#: app/templates/admin/key-page.html:248
 msgid "Activate Registration Code"
 msgstr "Aktiviere Registrierungscode"
 
-#: app/templates/admin/key-page.html:255 app/templates/admin/key-page.html:261
+#: app/templates/admin/key-page.html:256 app/templates/admin/key-page.html:262
 msgid "Delete Registration Code"
 msgstr "Registrierungscode löschen"
 
-#: app/templates/admin/key-page.html:256
+#: app/templates/admin/key-page.html:257
 msgid ""
 "Use this if an user moved out of his apartment permanently. All user data "
 "will get deleted and all devices registered with this code will go offline "
@@ -872,11 +876,11 @@ msgstr ""
 "registrierten Geräte werden ab dem Auszugsdatum keine Verbindung zum "
 "Internet mehr aufbauen können."
 
-#: app/templates/admin/key-page.html:257
+#: app/templates/admin/key-page.html:258
 msgid "Important:"
 msgstr "Wichtig:"
 
-#: app/templates/admin/key-page.html:257
+#: app/templates/admin/key-page.html:258
 msgid ""
 "If no move-out date / date of deletion is specified, then the deletion will "
 "happen immediately! Be careful!"
@@ -885,15 +889,15 @@ msgstr ""
 "Registrierungsschlüssel mit sofortiger Wirkung gelöscht! Seien Sie "
 "vorsichtig!"
 
-#: app/templates/admin/key-page.html:260
+#: app/templates/admin/key-page.html:261
 msgid "Move-Out Date / Date of deletion (optional):"
 msgstr "Auszugsdatum / Löschdatum (optional):"
 
-#: app/templates/admin/key-page.html:263
+#: app/templates/admin/key-page.html:264
 msgid "Move-Out / Date of deletion planned for "
 msgstr "Auszug / Löschung geplant für den "
 
-#: app/templates/admin/key-page.html:264
+#: app/templates/admin/key-page.html:265
 msgid "Cancel Pending Deletion"
 msgstr "Geplante Löschung Abbrechen"
 

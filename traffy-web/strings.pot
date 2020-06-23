@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2020-06-17 00:48+0200\n"
+"POT-Creation-Date: 2020-06-23 23:58+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -43,8 +43,8 @@ msgstr ""
 msgid "Exceptions"
 msgstr ""
 
-#: app/admin/views.py:149 app/admin/views.py:189 app/admin/views.py:563
-#: app/admin/views.py:632 app/admin/views.py:661
+#: app/admin/views.py:149 app/admin/views.py:189 app/admin/views.py:570
+#: app/admin/views.py:639 app/admin/views.py:668
 msgid "Please fill out all input forms."
 msgstr ""
 
@@ -66,7 +66,7 @@ msgstr ""
 
 #: app/admin/views.py:229 app/admin/views.py:306 app/admin/views.py:324
 #: app/admin/views.py:333 app/admin/views.py:342 app/admin/views.py:351
-#: app/admin/views.py:364 app/admin/views.py:381 app/admin/views.py:492
+#: app/admin/views.py:364 app/admin/views.py:381 app/admin/views.py:499
 msgid "An error occured."
 msgstr ""
 
@@ -112,67 +112,67 @@ msgstr ""
 msgid "Disabled"
 msgstr ""
 
-#: app/admin/views.py:480
+#: app/admin/views.py:487
 msgid "Invalid supervisor account."
 msgstr ""
 
-#: app/admin/views.py:501
+#: app/admin/views.py:508
 msgid "Password requirements not met."
 msgstr ""
 
-#: app/admin/views.py:503
+#: app/admin/views.py:510
 msgid "Password changed."
 msgstr ""
 
-#: app/admin/views.py:512
+#: app/admin/views.py:519
 msgid "Mail address entered is invalid."
 msgstr ""
 
-#: app/admin/views.py:514
+#: app/admin/views.py:521
 msgid "Mail address changed."
 msgstr ""
 
-#: app/admin/views.py:521
+#: app/admin/views.py:528
 msgid "No other supervisor account left, cannot delete this one."
 msgstr ""
 
-#: app/admin/views.py:526
+#: app/admin/views.py:533
 msgid "Error deleting account."
 msgstr ""
 
-#: app/admin/views.py:529
+#: app/admin/views.py:536
 msgid "Account deleted."
 msgstr ""
 
-#: app/admin/views.py:568
+#: app/admin/views.py:575
 msgid "Account could not get created."
 msgstr ""
 
-#: app/admin/views.py:628 app/admin/views.py:657
+#: app/admin/views.py:635 app/admin/views.py:664
 msgid "The notification cant be invalid before its valid time."
 msgstr ""
 
-#: app/admin/views.py:637
+#: app/admin/views.py:644
 msgid "Notification could not get created."
 msgstr ""
 
-#: app/admin/views.py:666
+#: app/admin/views.py:673
 msgid "Notification could not get edited."
 msgstr ""
 
-#: app/admin/views.py:672
+#: app/admin/views.py:679
 msgid "Notification does not exist."
 msgstr ""
 
-#: app/admin/views.py:684
+#: app/admin/views.py:691
 msgid "Notification deleted"
 msgstr ""
 
-#: app/admin/views.py:686
+#: app/admin/views.py:693
 msgid "An error occured while deleting the notification"
 msgstr ""
 
-#: app/admin/views.py:705
+#: app/admin/views.py:712
 msgid "Login to access that resource."
 msgstr ""
 
@@ -273,7 +273,7 @@ msgstr ""
 #: app/templates/admin/infrastructure.html:133
 #: app/templates/admin/key-page.html:156 app/templates/admin/key-page.html:169
 #: app/templates/admin/key-page.html:193 app/templates/admin/key-page.html:217
-#: app/templates/admin/key-page.html:237 app/templates/admin/key-page.html:256
+#: app/templates/admin/key-page.html:237 app/templates/admin/key-page.html:257
 msgid "Description:"
 msgstr ""
 
@@ -507,7 +507,7 @@ msgstr ""
 msgid "Shaped Users"
 msgstr ""
 
-#: app/templates/admin/dashboard.html:164 app/templates/admin/key-page.html:372
+#: app/templates/admin/dashboard.html:164 app/templates/admin/key-page.html:373
 #: app/templates/user/dashboard_advanced.html:249
 msgid "Total"
 msgstr ""
@@ -517,7 +517,7 @@ msgid "Supervisor Registration Code Deactivation"
 msgstr ""
 
 #: app/templates/admin/deactivate-regcode.html:36
-#: app/templates/admin/key-page.html:236 app/templates/admin/key-page.html:245
+#: app/templates/admin/key-page.html:236 app/templates/admin/key-page.html:246
 msgid "Deactivate Registration Code"
 msgstr ""
 
@@ -835,40 +835,44 @@ msgstr ""
 msgid "Registration Code Deactivated"
 msgstr ""
 
-#: app/templates/admin/key-page.html:247
+#: app/templates/admin/key-page.html:242
+msgid "Reason:"
+msgstr ""
+
+#: app/templates/admin/key-page.html:248
 msgid "Activate Registration Code"
 msgstr ""
 
-#: app/templates/admin/key-page.html:255 app/templates/admin/key-page.html:261
+#: app/templates/admin/key-page.html:256 app/templates/admin/key-page.html:262
 msgid "Delete Registration Code"
 msgstr ""
 
-#: app/templates/admin/key-page.html:256
+#: app/templates/admin/key-page.html:257
 msgid ""
 "Use this if an user moved out of his apartment permanently. All user data"
 " will get deleted and all devices registered with this code will go "
 "offline on deletion date."
 msgstr ""
 
-#: app/templates/admin/key-page.html:257
+#: app/templates/admin/key-page.html:258
 msgid "Important:"
 msgstr ""
 
-#: app/templates/admin/key-page.html:257
+#: app/templates/admin/key-page.html:258
 msgid ""
 "If no move-out date / date of deletion is specified, then the deletion "
 "will happen immediately! Be careful!"
 msgstr ""
 
-#: app/templates/admin/key-page.html:260
+#: app/templates/admin/key-page.html:261
 msgid "Move-Out Date / Date of deletion (optional):"
 msgstr ""
 
-#: app/templates/admin/key-page.html:263
+#: app/templates/admin/key-page.html:264
 msgid "Move-Out / Date of deletion planned for "
 msgstr ""
 
-#: app/templates/admin/key-page.html:264
+#: app/templates/admin/key-page.html:265
 msgid "Cancel Pending Deletion"
 msgstr ""
 

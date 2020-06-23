@@ -414,6 +414,12 @@ def reg_code(reg_key):
     # User Settings Variables
     custom_volume_enabled, value_custom_topup, custom_max_enabled, value_max_volume, accounting_enabled, key_active, deletion_date = server.get_reg_code_settings_values(reg_key)
 
+    # Deactivation Reason
+    if key_active is False:
+        deactivation_reason = server.get_reg_key_deactivation_reason(reg_key)
+    else:
+        deactivation_reason = NotImplemented
+
     # Room
     room = server.get_reg_code_room(reg_key)
 
@@ -450,6 +456,7 @@ def reg_code(reg_key):
                            accounting_enabled=accounting_enabled,
                            key_active=key_active,
                            room=room,
+                           deactivation_reason=deactivation_reason,
                            deletion_date=deletion_date)
 
 @admin.route("/admin/accounts", methods=["GET", "POST"])
