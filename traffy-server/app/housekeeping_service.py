@@ -83,7 +83,7 @@ class HousekeepingThread(threading.Thread):
                 self.__remove_orphaned_reg_keys(session)
             except:
                 session.rollback()
-                logging.debug("Exception thrown in Housekeeping Service")
+                logging.error("Exception thrown in Housekeeping Service")
             finally:
                 session.close()
 

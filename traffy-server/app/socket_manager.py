@@ -33,6 +33,7 @@ class SocketManager():
         self.server = server
 
     def start(self):
+        self.server_api = ServerAPI(self.server)
         thread = threading.Thread(target=self.__server_start, args=[])
         thread.daemon = True
         thread.start()
@@ -44,7 +45,6 @@ class SocketManager():
 
     def __server_start(self):
         while self.run:
-            self.server_api = ServerAPI(self.server)
             self.rpc = SimpleXMLRPCServer(addr=("127.0.0.1", 40404), allow_none=True)
             self.rpc.register_instance(self.server_api)
             self.rpc.serve_forever()
