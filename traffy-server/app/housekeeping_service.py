@@ -80,7 +80,11 @@ class HousekeepingThread(threading.Thread):
             try:
                 session = self.db.create_session()
                 self.__remove_orphaned_devices(session)
+                session.close()
+
+                session = self.db.create_session()
                 self.__remove_orphaned_reg_keys(session)
+                session.close()
             except:
                 session.rollback()
                 logging.error("Exception thrown in Housekeeping Service")
