@@ -654,19 +654,12 @@ class ServerAPI:
             identity_query.last_name = surname
             identity_query.mail = mail
 
-            deletion_date = None
-            if move_date != "":
-                deletion_date = datetime.strptime(move_date, "%Y-%m-%d")
-            
-            for address_pair in session.query(AddressPair).filter_by(reg_key=reg_key_query.id).all():
-                if deletion_date is not None:
-                    address_pair.deletion_date = deletion_date
-                else:
-                    address_pair.deletion_date = None
-
-            if deletion_date is not None:
+            if move_date != "" and move_date is not None:
+                move_date = datetime.strptime(move_date, "%Y-%m-%d")
+                identity_query.move_date = move_date
                 identity_query.new_room = room
             else:
+                identity_query.move_date = None
                 identity_query.room = room
                 identity_query.new_room = None
 
@@ -874,16 +867,11 @@ class ServerAPI:
         session = self.db.create_session()
         reg_key_query = self.get_reg_key_query_by_key(session, reg_key)
         identity = session.query(Identity).filter_by(id=reg_key_query.identity).first()
-        address_pair_query = session.query(AddressPair).filter_by(reg_key=reg_key_query.id).first()
 
-        if address_pair_query is not None:
-            deletion_date = address_pair_query.deletion_date
-            if deletion_date is None:
-                identity_data = IdentityRow(identity.id, identity.last_name, identity.first_name, identity.mail, identity.room, identity.new_room, deletion_date)
-            else:
-                identity_data = IdentityRow(identity.id, identity.last_name, identity.first_name, identity.mail, identity.room, identity.new_room, deletion_date.strftime("%d.%m.%Y %H:%M:%S"))
+        if identity.move_date is None:
+            identity_data = IdentityRow(identity.id, identity.last_name, identity.first_name, identity.mail, identity.room, identity.new_room, identity.move_date)
         else:
-            identity_data = IdentityRow(identity.id, identity.last_name, identity.first_name, identity.mail, identity.room, identity.new_room, "")
+            identity_data = IdentityRow(identity.id, identity.last_name, identity.first_name, identity.mail, identity.room, identity.new_room, identity.move_date.strftime("%d.%m.%Y %H:%M:%S"))
 
         session.close()
         return identity_data

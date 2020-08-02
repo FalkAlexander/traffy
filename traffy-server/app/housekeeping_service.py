@@ -94,11 +94,14 @@ class HousekeepingThread(threading.Thread):
             time.sleep(self.interval)
     
     def __remove_orphaned_devices(self, session):
-        deletion_pairs = session.query(AddressPair).filter(AddressPair.deletion_date != None).all()
-        for row in deletion_pairs:
-            if row.deletion_date <= datetime.now():
-                ip_address = session.query(IpAddress).filter_by(id=row.ip_address).first()
-                self.server_api.deregister_device(ip_address.address_v4)
+        moving_users = session.query(Identity).filter(Identity.move_date != None).all()
+        for row in moving_users:
+            if row.move_date <= datetime.now():
+                reg_key_query = session.query(RegistrationKey).filter(RegistrationKey.identity == row.id).first()
+                address_pair_query = session.query(AddressPair).filter(AddressPair.reg_key == reg_key_query.id).all()
+                for device in address_pair_query:
+                    ip_address = session.query(IpAddress).filter_by(id=device.ip_address).first()
+                    self.server_api.deregister_device(ip_address.address_v4)
 
     def __remove_orphaned_reg_keys(self, session):
         deletion_keys = session.query(RegistrationKey).filter(RegistrationKey.deletion_date != None).all()

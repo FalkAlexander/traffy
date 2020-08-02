@@ -101,6 +101,7 @@ class Identity(Base):
     mail = db.Column(db.String(500), unique=False, nullable=False)
     room = db.Column(db.String(20), unique=False, nullable=False)
     new_room = db.Column(db.String(20), unique=False, nullable=True)
+    move_date = db.Column(db.DateTime, nullable=True)
     
     def __init__(self, first_name, last_name, mail, room):
         self.first_name = first_name
@@ -182,7 +183,6 @@ class AddressPair(Base):
     reg_key = db.Column(db.BigInteger, db.ForeignKey("registration_key.id"))
     mac_address = db.Column(db.BigInteger, db.ForeignKey("mac_address.id"))
     ip_address = db.Column(db.BigInteger, db.ForeignKey("ip_address.id"))
-    deletion_date = db.Column(db.DateTime, nullable=True)
     
     def __init__(self, reg_key, mac_address, ip_address):
         self.reg_key = reg_key
