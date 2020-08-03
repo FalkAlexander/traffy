@@ -1438,7 +1438,7 @@ textarea {
   height: 35px;
   border-radius: 0% !important;
   cursor: pointer;
-  margin: 0;
+  margin: 5px 0 5px 0;
 }
 
 .page-switcher input.selected,
@@ -1453,7 +1453,6 @@ textarea {
 
 .page-button-group {
   display: inline-block;
-  margin: 0 5px 0 5px;
 }
 
 .page-switcher select {
