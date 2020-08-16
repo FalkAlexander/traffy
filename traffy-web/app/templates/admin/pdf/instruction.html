@@ -73,6 +73,9 @@
         </div>
         <div class="instruction-text">
             <h3>Verbinde dein Gerät mit dem Ethernet-Anschluss</h3>
+            <div class="instruction-description">
+                <p>Empfohlen wird die Nutzung eines (W-)LAN Routers.</p>
+            </div>
         </div>
     </div>
     <div class="instruction-section">
@@ -116,11 +119,10 @@
             <h2>5</h2>
         </div>
         <div class="instruction-text">
-            <h3>Fertig!</h3>
+            <h3>Dein Internetzugang ist fertig eingerichtet</h3>
         </div>
 
         <div class="instruction-description">
-            <p>Dein Internetzugang ist jetzt eingerichtet.</p>
             <div class="info-box">
                 <p><strong>Tipp: </strong>Besuche regelmäßig <strong>{{ traffy_ip }}</strong> oder <strong>{{ traffy_domain }}</strong> in deinem Browser um dein Datenvolumen abzufragen.</p>
             </div>
@@ -138,17 +140,108 @@
             {% for admin in admins %}
             <p><strong>Netzadministrator: </strong>{{ admin[0] }}<br/>
             <strong>E-Mail: </strong>{{ admin[1] }}<br/>
-            <strong>Zi-Nr. / Room: </strong>{{ admin[2] }}</p>
+            <strong>Zi-Nr.: </strong>{{ admin[2] }}</p>
             {% endfor %}
         </div>
 
         <footer>
           <hr></hr>
-            <p>Mieter:in / Tenant: {{ last_name }}, {{ first_name }} | Raum / Room: {{ room }}<br/>
+            <p>Mieter:in: {{ last_name }}, {{ first_name }} | Raum: {{ room }}<br/>
             Formular-ID: {{ creation_date }} | Ausgestellt von {{ current_user.get_role() }}: {{ current_user.get_last_name() }}, {{ current_user.get_first_name() }}
             </p>
         </footer>
     </div>
+
+    <div class="header">
+        <h3>Instructions</h3>
+        <h1>Setting up Internet access</h1>
+    </div>
+    
+    <div class="instruction-section">
+        <div class="instruction-count">
+            <h2>1</h2>
+        </div>
+        <div class="instruction-text">
+            <h3>Connect your device to the Ethernet port</h3>
+            <div class="instruction-description">
+                <p>The use of a Wi-Fi/LAN router is advised.</p>
+            </div>
+        </div>
+    </div>
+    <div class="instruction-section">
+        <div class="instruction-count">
+            <h2>2</h2>
+        </div>
+        <div class="instruction-text">
+            <h3>The registration page opens automatically</h3>
+        </div>
+        
+        <div class="instruction-description">
+            <p>Your browser opens and redirects you to the registration page. If not, visit the following URL in your browser:</p>
+            <div class="info-box">
+                <p><strong>{{ traffy_ip }}</strong> oder <strong>{{ traffy_domain }}</strong></p>
+            </div>
+        </div>
+
+        <div class="instruction-count">
+            <h2>3</h2>
+        </div>
+        <div class="instruction-text">
+            <h3>Enter your registration key</h3>
+        </div>
+
+        <div class="instruction-description">
+            <p>The registration is necessary only once when connecting a device for the first time. You can associate a maximum of {{ max_devices }} devices with your registration key. However, it is always possible to unregister a device in favor of another one. Your registration key:</p>
+            <div class="info-box">
+                <p><strong>{{ reg_key }}</strong></p>
+                <p>Make sure not to lose your registration key and keep it in secret!</p>
+            </div>
+        </div>
+
+        <div class="instruction-count">
+            <h2>4</h2>
+        </div>
+        <div class="instruction-text">
+            <h3>Accept the Rahmennetzordnung (Terms and conditions)</h3>
+        </div>
+
+        <div class="instruction-count">
+            <h2>5</h2>
+        </div>
+        <div class="instruction-text">
+            <h3>You're ready to go</h3>
+        </div>
+
+        <div class="instruction-description">
+            <div class="info-box">
+                <p><strong>Hint: </strong>Visit regularly <strong>{{ traffy_ip }}</strong> or <strong>{{ traffy_domain }}</strong> in your Browser to check your remaining data volume.</p>
+            </div>
+        </div>
+
+        <div class="instruction-count">
+            <h2>?</h2>
+        </div>
+        <div class="instruction-text">
+            <h3 style="padding-left: 4px;">Any questions or help needed?</h3>
+        </div>
+ 
+        <div class="instruction-description">
+            <br/>
+            {% for admin in admins %}
+            <p><strong>Network administrator: </strong>{{ admin[0] }}<br/>
+            <strong>Email: </strong>{{ admin[1] }}<br/>
+            <strong>Room: </strong>{{ admin[2] }}</p>
+            {% endfor %}
+        </div>
+
+        <footer>
+          <hr></hr>
+            <p>Tenant: {{ last_name }}, {{ first_name }} | Room: {{ room }}<br/>
+            Form ID: {{ creation_date }} | Issued by {{ current_user.get_role() }}: {{ current_user.get_last_name() }}, {{ current_user.get_first_name() }}
+            </p>
+        </footer>
+    </div>
+
     <div class="section">
         <h1>Datenschutzerklärung</h1>
         <div class="tight">
