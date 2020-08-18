@@ -70,6 +70,8 @@ def dashboard():
 
     values_downlink, values_downlink_unlimited_range, values_downlink_shaped, values_downlink_excepted, values_uplink, values_uplink_unlimited_range, values_uplink_shaped, values_uplink_excepted, labels, active_users, registered_users, average_credit, shaped_users = server.get_supervisor_dashboard_stats()
 
+    show_erp = server.is_erp_integration_enabled()
+
     return render_template("/admin/dashboard.html",
                            labels=labels,
                            values_downlink=values_downlink,
@@ -91,7 +93,8 @@ def dashboard():
                            active_users=active_users,
                            registered_users=registered_users,
                            average_credit=average_credit,
-                           shaped_users=shaped_users)
+                           shaped_users=shaped_users,
+                           show_erp=show_erp)
 
 @admin.route("/admin/regcodes", methods=["GET", "POST"])
 @login_required

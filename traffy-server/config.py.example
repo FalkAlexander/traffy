@@ -29,4 +29,5 @@ SHAPING_EXCEPTIONS = [WAN_IP_ADDRESS,
                     "195.37.162.0/24",          # GR-NET
                     "141.56.0.0/16",            # HTW
                     "141.43.0.0/16"]            # B-TU
+ENABLE_ERP_INTEGRATION = False
 

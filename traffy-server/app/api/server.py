@@ -973,6 +973,10 @@ class ServerAPI:
 
         session.close()
         return first_name, last_name, room
+
+    def is_erp_integration_enabled(self):
+        return config.ENABLE_ERP_INTEGRATION
+
     #
     # Tests
     #

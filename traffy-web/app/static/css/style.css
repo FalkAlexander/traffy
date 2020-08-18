@@ -746,7 +746,8 @@ nav a:hover {
   box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.15);
 }
 
-.statistic-flowbox h2 {
+.statistic-flowbox h2,
+.progress-flowbox h2 {
   font-family: Cantarell-Light;
   font-size: 22px;
   color: #6d767e;
@@ -1463,4 +1464,105 @@ textarea {
   height: 28px;
   text-overflow: ellipsis;
   overflow: hidden;
+}
+
+
+
+.progress-flowbox {
+  display: flex;
+}
+
+.progress-flowbox > * {
+  margin-left: auto;
+  margin-right: auto;
+  padding-top: 20px;
+}
+
+.progress-flowbox > * > img {
+  width: 65px;
+  height: 65px;
+  margin-left: auto;
+  margin-right: auto;
+  margin-bottom: 15px;
+  display: block;
+}
+
+.progress-flowbox > * > h2 {
+  max-width: 65px;
+  white-space: nowrap;
+  text-align: center;
+  justify-content: center;
+  display: flex;
+}
+
+.progress-flowbox p {
+  font-family: Cantarell-ExtraBold;
+  font-size: 35px;
+  color: #000;
+  text-align: center;
+}
+
+.progress-connector {
+  margin-top: auto;
+  margin-bottom: auto; 
+  width: 300px;
+  height: 8px;
+  border-radius: 30px;
+  padding: 0px;
+  margin-left: 25px;
+  margin-right: 25px;
+}
+
+@media only screen and (max-width: 900px) {
+  .progress-connector {
+    width: 100px;
+    height: 5px;
+    margin-left: 10px;
+    margin-right: 10px;
+  }
+
+  .progress-flowbox > * > img {
+    width: 35px;
+    height: 35px;
+  }
+
+  .master-sync-box {
+    padding-left: 0px;
+    padding-right: 0px;
+  }
+
+  .progress-flowbox > * > h2 {
+    font-size: 15px;
+  }
+
+  .progress-flowbox > * > .status-badge {
+    width: 25px !important;
+    height: 25px !important;
+    margin-left: 30px !important;
+  }
+}
+
+.progress-connector.first {
+  background: linear-gradient(90deg, rgba(45,55,72,1) 0%, rgba(78,156,172,1) 100%);
+}
+
+.progress-connector.second {
+  background: linear-gradient(90deg, rgba(78,156,172,1) 0%, rgba(170,241,255,1) 100%);
+}
+
+.master-sync-box {
+  border-radius: 5px;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+  margin-bottom: 20px;
+  margin-left: 15px;
+  margin-right: 15px;
+  padding-left: 50px;
+  padding-right: 50px;
+}
+
+.progress-flowbox > * > .status-badge {
+  position: absolute;
+  margin-left: 40px;
+  width: 35px;
+  height: 35px;
 }

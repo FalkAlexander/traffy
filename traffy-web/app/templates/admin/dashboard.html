@@ -34,7 +34,7 @@
     {% endfor %}
     <div class="page-box">
       <div class="content-box">
-        <h1>{{ _("Total Traffic Consumption") }}</h1>
+        <h1>{{ _("Total traffic consumption") }}</h1>
         <div class="supervisor-divider"></div>
         <div class="chart-container">
           <canvas id="chart"></canvas>
@@ -60,6 +60,42 @@
             <p>{{ shaped_users }}</p>
           </div>
         </div>
+
+        {% if show_erp %}
+        <h1>{{ _("Master data synchronization") }}</h1>
+        <div class="supervisor-divider"></div>
+        <div class="master-sync-box">
+          <div class="progress-flowbox">
+            <div>
+              <div class="status-badge">
+                <img src="{{ url_for('static', filename='img/ok.svg') }}"/>
+              </div>
+              <img src="{{ url_for('static', filename='img/server.svg') }}"/>
+              <h2>Traffy</h2>
+            </div>
+
+            <div class="progress-connector first"></div>
+
+            <div>
+              <div class="status-badge">
+                <img src="{{ url_for('static', filename='img/ok.svg') }}"/>
+              </div>
+              <img src="{{ url_for('static', filename='img/dbms.svg') }}"/>
+              <h2>DBMS Adapter</h2>
+            </div>
+
+            <div class="progress-connector second"></div>
+
+            <div>
+              <div class="status-badge">
+                <img src="{{ url_for('static', filename='img/ok.svg') }}"/>
+              </div>
+              <img src="{{ url_for('static', filename='img/datasource.svg') }}"/>
+              <h2>Datasource</h2>
+            </div>
+          </div>
+        </div>
+        {% endif %}
       </div>
     </div>
     <script>
