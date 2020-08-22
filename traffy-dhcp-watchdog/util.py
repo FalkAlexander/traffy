@@ -1,7 +1,24 @@
-from scapy.all import *
+"""
+ Copyright (C) 2020 Falk Seidl <hi@falsei.de>
+ 
+ Author: Falk Seidl <hi@falsei.de>
+ 
+ This program is free software; you can redistribute it and/or
+ modify it under the terms of the GNU General Public License as
+ published by the Free Software Foundation; either version 2 of the
+ License, or (at your option) any later version.
+ 
+ This program is distributed in the hope that it will be useful, but
+ WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ General Public License for more details.
+ 
+ You should have received a copy of the GNU General Public License
+ along with this program; if not, see <http://www.gnu.org/licenses/>.
+"""
+
 import config
-import os
-import random
+import dbus
 import subprocess
 
 
@@ -14,17 +31,11 @@ def get_leases():
     
     return leases
 
-def release(ip_address, mac_address):
-    release_mac=mac2str(mac_address)
-    server_ip=config.DHCP_INTERFACE_IP
-    send(IP(src=ip_address, dst=server_ip) / 
-        UDP(sport=68,dport=67) /
-        BOOTP(chaddr=release_mac, ciaddr=ip_address, xid=random.randint(0, 0xFFFFFFFF)) /
-        DHCP(options=[("message-type", "release"), ("server_id", server_ip), "end"]))
+def release(dbus_interface, ip_address):
+    dbus_interface.DeleteDhcpLease(dbus.String(ip_address))
 
 def arping(ip_address):
     proc = subprocess.Popen([
-            "sudo",
             "arping",
             ip_address,
             "-c",

@@ -1,3 +1,2 @@
 DNSMASQ_LEASE_FILE = "/var/lib/misc/dnsmasq.leases"
-DHCP_INTERFACE_IP = "10.96.129.1"
 PING_TRIES = 10
