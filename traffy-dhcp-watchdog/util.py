@@ -20,7 +20,62 @@
 import config
 import dbus
 import subprocess
+from easysnmp import Session
 
+
+def parse_interface_name(value):
+    if len(value) == 4:
+        switch = "1"
+        slot = value[0]
+        if value[2] == "0":
+            port = value[3]
+        else:     
+            port = value[2:]
+        return switch + "-" + slot + "-" + port
+    elif len(value) == 6:
+        switch = str(int(value[0]) + 1)
+        slot = value[2]
+        if value[4] == "0":     
+            port = value[5]
+        else:
+            port = value[4:]
+        return switch + "-" + slot + "-" + port
+    else:
+        return value
+
+def query_interfaces_status():
+    interface_dict = {}
+    for id in config.SWITCHES:
+        switch_name = config.SWITCHES[id]["name"]
+        hostname = config.SWITCHES[id]["hostname"]
+        username = config.SWITCHES[id]["username"]
+        password = config.SWITCHES[id]["password"]
+
+        session = Session(hostname=hostname,
+                        security_level=u"auth_with_privacy",
+                        security_username=username,
+                        auth_protocol=u"SHA",
+                        auth_password=password,
+                        privacy_password=password,
+                        version=3)
+
+        interfaces_status = session.walk("1.3.6.1.2.1.2.2.1.8")
+
+        for item in interfaces_status:
+            search_text = "tag:" + switch_name + "_" + parse_interface_name(item.oid.replace("iso.3.6.1.2.1.2.2.1.8.", ""))
+            result_line = ""
+            with open(config.ALLOCATION) as file:
+                for line in file:
+                    line = line.rstrip()
+                    if search_text in line:
+                        result_line = line
+                        break
+
+            if result_line != "":
+                port_ip_address = result_line.split(",")[1]
+                interface_dict[port_ip_address] = item.value
+    
+    return interface_dict
 
 def get_leases():
     leases = []

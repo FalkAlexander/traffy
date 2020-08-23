@@ -29,17 +29,26 @@ proxy = bus.get_object("uk.org.thekelleys.dnsmasq", "/uk/org/thekelleys/dnsmasq"
 interface = dbus.Interface(proxy, dbus_interface="uk.org.thekelleys.dnsmasq")
 
 def response_check(ip_address, mac_address):
-    if util.arping(ip_address) is True:
-        return
-    
+    if config.ENABLE_SNMP:
+        if interfaces_status_list.get(ip_address) != "2":
+            return
+    else:
+        if util.arping(ip_address) is True:
+            return
+        
     util.release(interface, ip_address)
     print("Released " + ip_address + " / " + mac_address)
 
 leases = util.get_leases()
+if config.ENABLE_SNMP:
+    interfaces_status_list = util.query_interfaces_status()
 
 for lease in leases:
     ip_address = lease[1]
     mac_address = lease[0]
 
-    resp_thread = threading.Thread(target=response_check, args=(ip_address, mac_address))
-    resp_thread.start()
+    if config.ENABLE_SNMP:
+        response_check(ip_address, mac_address)
+    else:
+        resp_thread = threading.Thread(target=response_check, args=(ip_address, mac_address))
+        resp_thread.start()

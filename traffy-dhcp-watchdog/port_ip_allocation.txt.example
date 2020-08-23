@@ -1,0 +1,4 @@
+dhcp-circuitid=set:my-switch_1-1-1,my-switch/1/1/1
+dhcp-range=tag:my-switch_1-1-1,10.90.0.5,10.90.0.5,255.255.255.0
+dhcp-circuitid=set:my-switch_1-1-2,my-switch/1/1/2
+dhcp-range=tag:my-switch_1-1-2,10.90.0.6,10.90.0.6,255.255.255.0

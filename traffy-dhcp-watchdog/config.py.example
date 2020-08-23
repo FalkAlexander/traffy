@@ -1,2 +1,7 @@
 DNSMASQ_LEASE_FILE = "/var/lib/misc/dnsmasq.leases"
-PING_TRIES = 10
+ENABLE_SNMP = False
+if ENABLE_SNMP:
+    SWITCHES = {1: {"name": "my-switch", "hostname": "10.90.0.2", "username": "mysnmpuser", "password": "mysupersecurepassword"}}
+    ALLOCATION = "port_ip_allocation.txt"
+else:
+    PING_TRIES = 10
