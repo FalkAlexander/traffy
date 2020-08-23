@@ -1,7 +1,10 @@
 DNSMASQ_LEASE_FILE = "/var/lib/misc/dnsmasq.leases"
 ENABLE_SNMP = False
 if ENABLE_SNMP:
-    SWITCHES = {1: {"name": "my-switch", "hostname": "10.90.0.2", "username": "mysnmpuser", "password": "mysupersecurepassword"}}
+    SWITCHES = {1: {"name": "my-switch", "hostname": "10.90.0.2", "username": "mysnmpuser", "password": "mysupersecurepassword", "engine_id": "8000195604747261666679"}}
     ALLOCATION = "port_ip_allocation.txt"
+    ENABLE_TRAP = False
+    if ENABLE_TRAP:
+        TRAP_PORT = 1212
 else:
     PING_TRIES = 10

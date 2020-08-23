@@ -21,12 +21,9 @@ import config
 import dbus
 import subprocess
 import threading
+import trap_listener
 import util
 
-
-bus = dbus.SystemBus()
-proxy = bus.get_object("uk.org.thekelleys.dnsmasq", "/uk/org/thekelleys/dnsmasq")
-interface = dbus.Interface(proxy, dbus_interface="uk.org.thekelleys.dnsmasq")
 
 def response_check(ip_address, mac_address):
     if config.ENABLE_SNMP:
@@ -39,16 +36,23 @@ def response_check(ip_address, mac_address):
     util.release(interface, ip_address)
     print("Released " + ip_address + " / " + mac_address)
 
-leases = util.get_leases()
-if config.ENABLE_SNMP:
-    interfaces_status_list = util.query_interfaces_status()
+if config.ENABLE_SNMP and config.ENABLE_TRAP:
+    trap_listener.run_trap_listener()
+else:
+    bus = dbus.SystemBus()
+    proxy = bus.get_object("uk.org.thekelleys.dnsmasq", "/uk/org/thekelleys/dnsmasq")
+    interface = dbus.Interface(proxy, dbus_interface="uk.org.thekelleys.dnsmasq")
 
-for lease in leases:
-    ip_address = lease[1]
-    mac_address = lease[0]
-
+    leases = util.get_leases()
     if config.ENABLE_SNMP:
-        response_check(ip_address, mac_address)
-    else:
-        resp_thread = threading.Thread(target=response_check, args=(ip_address, mac_address))
-        resp_thread.start()
+        interfaces_status_list = util.query_interfaces_status()
+
+    for lease in leases:
+        ip_address = lease[1]
+        mac_address = lease[0]
+
+        if config.ENABLE_SNMP:
+            response_check(ip_address, mac_address)
+        else:
+            resp_thread = threading.Thread(target=response_check, args=(ip_address, mac_address))
+            resp_thread.start()
