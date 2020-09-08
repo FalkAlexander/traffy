@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2020-06-23 23:58+0200\n"
-"PO-Revision-Date: 2020-06-23 23:59+0200\n"
+"POT-Creation-Date: 2020-09-08 19:47+0200\n"
+"PO-Revision-Date: 2020-09-08 19:49+0200\n"
 "Last-Translator: Falk Seidl <hi@falsei.de>\n"
 "Language: de\n"
 "Language-Team: German <hi@falsei.de>\n"
@@ -21,163 +21,172 @@ msgstr ""
 "Generated-By: Babel 2.8.0\n"
 "X-Generator: Gtranslator 3.36.0\n"
 
-#: app/admin/views.py:55
+#: app/admin/views.py:56
 msgid "Wrong credentials. This attempt got reported."
 msgstr "Ungültige Zugangsdaten. Der Anmeldeversuch wurde gemeldet."
 
-#: app/admin/views.py:62 app/admin/views.py:66 app/admin/views.py:388
-#: app/admin/views.py:392 app/user/views.py:196 app/user/views.py:200
+#: app/admin/views.py:63 app/admin/views.py:67 app/admin/views.py:467
+#: app/admin/views.py:471 app/user/views.py:200 app/user/views.py:204
 msgid "Accounted"
 msgstr "Angerechnet"
 
-#: app/admin/views.py:63 app/admin/views.py:67 app/admin/views.py:389
-#: app/admin/views.py:393 app/user/views.py:197 app/user/views.py:201
+#: app/admin/views.py:64 app/admin/views.py:68 app/admin/views.py:468
+#: app/admin/views.py:472 app/user/views.py:201 app/user/views.py:205
 msgid "Timerule"
 msgstr "Zeitregel"
 
-#: app/admin/views.py:64 app/admin/views.py:68 app/admin/views.py:390
-#: app/admin/views.py:394 app/templates/admin/key-page.html:61
-#: app/templates/user/dashboard_advanced.html:91 app/user/views.py:198
-#: app/user/views.py:202
+#: app/admin/views.py:65 app/admin/views.py:69 app/admin/views.py:469
+#: app/admin/views.py:473 app/templates/admin/key-page.html:61
+#: app/templates/user/dashboard_advanced.html:91 app/user/views.py:202
+#: app/user/views.py:206
 msgid "Shaped"
 msgstr "Gedrosselt"
 
-#: app/admin/views.py:65 app/admin/views.py:69 app/admin/views.py:391
-#: app/admin/views.py:395 app/user/views.py:199 app/user/views.py:203
+#: app/admin/views.py:66 app/admin/views.py:70 app/admin/views.py:470
+#: app/admin/views.py:474 app/user/views.py:203 app/user/views.py:207
 msgid "Exceptions"
 msgstr "Ausnahmen"
 
-#: app/admin/views.py:149 app/admin/views.py:189 app/admin/views.py:570
-#: app/admin/views.py:639 app/admin/views.py:668
+#: app/admin/views.py:157 app/admin/views.py:216 app/admin/views.py:649
+#: app/admin/views.py:718 app/admin/views.py:747
 msgid "Please fill out all input forms."
 msgstr "Bitte alle Eingabefelder ausfüllen."
 
-#: app/admin/views.py:184
+#: app/admin/views.py:165
+msgid "An error occured while adding the registration code."
+msgstr ""
+"Es ist ein Fehler bei der Erstellung dieses Registrierungsschlüssels "
+"aufgetreten."
+
+#: app/admin/views.py:208
 msgid "Move date must be in the future."
 msgstr "Das Umzugsdatum muss in der Zukunft liegen."
 
-#: app/admin/views.py:193
-msgid "You can not schedule a move if the room will stay the same."
-msgstr "Ein Umzug ist nicht möglich, wenn sich der Raum nicht ändert."
+#: app/admin/views.py:223
+msgid ""
+"You can not schedule a move if the room and dormitory will stay the same."
+msgstr ""
+"Es ist nicht möglich einen Umzug zu planen, wenn Raum und Wohnheim gleich "
+"bleiben."
 
-#: app/admin/views.py:204
+#: app/admin/views.py:239
 msgid "Identity could not get changed."
 msgstr "Die Identität konnte nicht verändert werden."
 
-#: app/admin/views.py:220
+#: app/admin/views.py:258
 msgid "Error: Maximum number of characters exceeded."
 msgstr "Fehler: Maximale Zeichenanzahl wurde überschritten."
 
-#: app/admin/views.py:229 app/admin/views.py:306 app/admin/views.py:324
-#: app/admin/views.py:333 app/admin/views.py:342 app/admin/views.py:351
-#: app/admin/views.py:364 app/admin/views.py:381 app/admin/views.py:499
+#: app/admin/views.py:267 app/admin/views.py:385 app/admin/views.py:403
+#: app/admin/views.py:412 app/admin/views.py:421 app/admin/views.py:430
+#: app/admin/views.py:443 app/admin/views.py:460 app/admin/views.py:578
 msgid "An error occured."
 msgstr "Es ist ein Fehler aufgetreten."
 
-#: app/admin/views.py:242
+#: app/admin/views.py:280
 msgid "Device unregistered"
 msgstr "Gerät de-registriert."
 
-#: app/admin/views.py:249 app/user/views.py:93 app/user/views.py:134
+#: app/admin/views.py:327 app/user/views.py:97 app/user/views.py:138
 msgid "Invalid registration key."
 msgstr "Ungültiger Registrierungsschlüssel."
 
-#: app/admin/views.py:288 app/admin/views.py:297 app/admin/views.py:315
+#: app/admin/views.py:367 app/admin/views.py:376 app/admin/views.py:394
 msgid "Input entered is invalid."
 msgstr "Die getätigten Eingaben sind fehlerbehaftet."
 
-#: app/admin/views.py:367
+#: app/admin/views.py:446
 msgid "Registration key successfully deleted."
 msgstr "Registrierungsschlüssel wurde erfolgreich gelöscht."
 
-#: app/admin/views.py:369
+#: app/admin/views.py:448
 msgid "Registration key deletion scheduled successfully."
 msgstr "Löschung des Registrierungsschlüssels wurde erfolgreich geplant."
 
-#: app/admin/views.py:383
+#: app/admin/views.py:462
 msgid "Canceled pending registration key deletion."
 msgstr "Geplante Löschung des Registrierungsschlüssels abgebrochen."
 
-#: app/admin/views.py:399 app/templates/user/dashboard_advanced.html:93
+#: app/admin/views.py:478 app/templates/user/dashboard_advanced.html:93
 msgid "Yes"
 msgstr "Ja"
 
-#: app/admin/views.py:401 app/templates/user/dashboard_advanced.html:95
+#: app/admin/views.py:480 app/templates/user/dashboard_advanced.html:95
 msgid "No"
 msgstr "Nein"
 
-#: app/admin/views.py:404 app/templates/admin/key-page.html:173
+#: app/admin/views.py:483 app/templates/admin/key-page.html:173
 #: app/templates/admin/key-page.html:197
 msgid "Enabled"
 msgstr "Aktiviert"
 
-#: app/admin/views.py:406 app/templates/admin/key-page.html:176
+#: app/admin/views.py:485 app/templates/admin/key-page.html:176
 #: app/templates/admin/key-page.html:200
 msgid "Disabled"
 msgstr "Deaktiviert"
 
-#: app/admin/views.py:487
+#: app/admin/views.py:566
 msgid "Invalid supervisor account."
 msgstr "Ungültiges Supervisor Konto."
 
-#: app/admin/views.py:508
+#: app/admin/views.py:587
 msgid "Password requirements not met."
 msgstr "Passwortanforderungen wurden nicht erreicht."
 
-#: app/admin/views.py:510
+#: app/admin/views.py:589
 msgid "Password changed."
 msgstr "Passwort geändert."
 
-#: app/admin/views.py:519
+#: app/admin/views.py:598
 msgid "Mail address entered is invalid."
 msgstr "Die eingegebene Mail Adresse ist ungültig."
 
-#: app/admin/views.py:521
+#: app/admin/views.py:600
 msgid "Mail address changed."
 msgstr "Die Mail Adresse wurde geändert."
 
-#: app/admin/views.py:528
+#: app/admin/views.py:607
 msgid "No other supervisor account left, cannot delete this one."
 msgstr "Dies ist das einzige Supervisor Konto, es kann nicht gelöscht werden."
 
-#: app/admin/views.py:533
+#: app/admin/views.py:612
 msgid "Error deleting account."
 msgstr "Fehler beim Löschen des Kontos."
 
-#: app/admin/views.py:536
+#: app/admin/views.py:615
 msgid "Account deleted."
 msgstr "Konto gelöscht."
 
-#: app/admin/views.py:575
+#: app/admin/views.py:654
 msgid "Account could not get created."
 msgstr "Das Konto konnte nicht erstellt werden."
 
-#: app/admin/views.py:635 app/admin/views.py:664
+#: app/admin/views.py:714 app/admin/views.py:743
 msgid "The notification cant be invalid before its valid time."
 msgstr ""
 "Die Benachrichtigung kann nicht vor ihrer Gültigkeit bereits ungültig sein."
 
-#: app/admin/views.py:644
+#: app/admin/views.py:723
 msgid "Notification could not get created."
 msgstr "Die Benachrichtigung konnte nicht erstellt werden."
 
-#: app/admin/views.py:673
+#: app/admin/views.py:752
 msgid "Notification could not get edited."
 msgstr "Die Benachrichtigung konnte nicht editiert werden."
 
-#: app/admin/views.py:679
+#: app/admin/views.py:758
 msgid "Notification does not exist."
 msgstr "Die Benachrichtigung existiert nicht."
 
-#: app/admin/views.py:691
+#: app/admin/views.py:770
 msgid "Notification deleted"
 msgstr "Die Benachrichtigung wurde gelöscht"
 
-#: app/admin/views.py:693
+#: app/admin/views.py:772
 msgid "An error occured while deleting the notification"
 msgstr "Es ist ein Fehler beim löschen der Benachrichtigung aufgetreten"
 
-#: app/admin/views.py:712
+#: app/admin/views.py:791
 msgid "Login to access that resource."
 msgstr "Anmelden um Zugriff auf die Ressource zu erhalten."
 
@@ -391,16 +400,16 @@ msgid "Username"
 msgstr "Benutzername"
 
 #: app/templates/admin/accounts.html:52 app/templates/admin/add-account.html:48
-#: app/templates/admin/add-regcode.html:47
-#: app/templates/admin/edit-identity.html:47
+#: app/templates/admin/add-regcode.html:49
+#: app/templates/admin/edit-identity.html:49
 #: app/templates/admin/key-page.html:79 app/templates/admin/regcodes.html:65
 #: app/templates/user/dashboard_advanced.html:131
 msgid "Surname"
 msgstr "Nachname"
 
 #: app/templates/admin/accounts.html:53 app/templates/admin/add-account.html:46
-#: app/templates/admin/add-regcode.html:45
-#: app/templates/admin/edit-identity.html:45
+#: app/templates/admin/add-regcode.html:47
+#: app/templates/admin/edit-identity.html:47
 #: app/templates/admin/regcodes.html:66
 msgid "First name"
 msgstr "Vorname"
@@ -418,21 +427,21 @@ msgid "Add Supervisor Account"
 msgstr "Supervisor-Account hinzufügen"
 
 #: app/templates/admin/add-account.html:50
-#: app/templates/admin/add-regcode.html:49
-#: app/templates/admin/edit-identity.html:49
+#: app/templates/admin/add-regcode.html:51
+#: app/templates/admin/edit-identity.html:51
 msgid "Mail"
 msgstr "E-Mail"
 
 #: app/templates/admin/add-account.html:68
-#: app/templates/admin/add-regcode.html:59
+#: app/templates/admin/add-regcode.html:67
 msgid "Add"
 msgstr "Hinzufügen"
 
 #: app/templates/admin/add-account.html:69
-#: app/templates/admin/add-regcode.html:60
+#: app/templates/admin/add-regcode.html:68
 #: app/templates/admin/create-notification.html:58
 #: app/templates/admin/deactivate-regcode.html:52
-#: app/templates/admin/edit-identity.html:72
+#: app/templates/admin/edit-identity.html:93
 #: app/templates/admin/edit-notification.html:58
 msgid "Cancel"
 msgstr "Abbrechen"
@@ -445,8 +454,18 @@ msgstr "Supervisor Registrierungscode Erstellen"
 msgid "Add Registration Code"
 msgstr "Erstelle Registrierungscode"
 
-#: app/templates/admin/add-regcode.html:51
-#: app/templates/admin/edit-identity.html:51
+#: app/templates/admin/add-regcode.html:45
+#: app/templates/admin/edit-identity.html:45
+msgid "Person ID"
+msgstr "Debitor-Nr."
+
+#: app/templates/admin/add-regcode.html:53
+#: app/templates/admin/edit-identity.html:53
+msgid "Dormitory"
+msgstr "Wohnheim"
+
+#: app/templates/admin/add-regcode.html:59
+#: app/templates/admin/edit-identity.html:64
 #: app/templates/admin/key-page.html:82 app/templates/admin/regcodes.html:67
 #: app/templates/user/dashboard_advanced.html:134
 msgid "Room"
@@ -493,7 +512,7 @@ msgid "Supervisor Dashboard"
 msgstr "Supervisor Dashboard"
 
 #: app/templates/admin/dashboard.html:37
-msgid "Total Traffic Consumption"
+msgid "Total traffic consumption"
 msgstr "Gesamtverbrauch"
 
 #: app/templates/admin/dashboard.html:43
@@ -516,7 +535,11 @@ msgstr "Ø Datenvolumen"
 msgid "Shaped Users"
 msgstr "Gedrosselte Nutzer"
 
-#: app/templates/admin/dashboard.html:164 app/templates/admin/key-page.html:373
+#: app/templates/admin/dashboard.html:65
+msgid "Master data synchronization"
+msgstr "Stammdatensynchronisation"
+
+#: app/templates/admin/dashboard.html:200 app/templates/admin/key-page.html:373
 #: app/templates/user/dashboard_advanced.html:249
 msgid "Total"
 msgstr "Insgesamt"
@@ -546,30 +569,34 @@ msgstr "Supervisor Identitätsveränderung"
 msgid "Edit Identity"
 msgstr "Identität Anpassen"
 
-#: app/templates/admin/edit-identity.html:58
+#: app/templates/admin/edit-identity.html:79
 msgid "Move Date (optional)"
 msgstr "Umzugsdatum (optional)"
 
-#: app/templates/admin/edit-identity.html:62
+#: app/templates/admin/edit-identity.html:83
 msgid "There is a planned room move for this user on "
 msgstr "Für diesen Nutzer ist ein Umzugstermin geplant für den "
 
-#: app/templates/admin/edit-identity.html:62
+#: app/templates/admin/edit-identity.html:83
 msgid "to room"
 msgstr "zum Raum"
 
-#: app/templates/admin/edit-identity.html:62
+#: app/templates/admin/edit-identity.html:83
+msgid "dormitory"
+msgstr "Wohnheim"
+
+#: app/templates/admin/edit-identity.html:83
 msgid ""
 "If you want to cancel this move or edit the room, click the button below."
 msgstr ""
 "Wenn Sie diesen Umzugstermin abbrechen oder den Raum editieren möchten, dann "
 "nutzen Sie den Button hierunter."
 
-#: app/templates/admin/edit-identity.html:63
+#: app/templates/admin/edit-identity.html:84
 msgid "Cancel Move"
 msgstr "Umzugstermin löschen"
 
-#: app/templates/admin/edit-identity.html:71
+#: app/templates/admin/edit-identity.html:92
 #: app/templates/admin/edit-notification.html:57
 msgid "Save"
 msgstr "Speichern"
@@ -1260,22 +1287,22 @@ msgstr "Ein Registrierungsschlüssel wird für den Netzwerkzugriff benötigt"
 msgid "Register"
 msgstr "Anmelden"
 
-#: app/user/views.py:99 app/user/views.py:140
+#: app/user/views.py:103 app/user/views.py:144
 msgid ""
 "Your registration key got deactivated. Please contact the administrator."
 msgstr ""
 "Dein Registrierungscode wurde deaktiviert. Bitte kontaktiere den "
 "Administrator."
 
-#: app/user/views.py:101 app/user/views.py:142
+#: app/user/views.py:105 app/user/views.py:146
 msgid "Your registration key got deactivated. Reason: "
 msgstr "Dein Registrierungscode wurde deaktiviert. Grund: "
 
-#: app/user/views.py:106
+#: app/user/views.py:110
 msgid "Maximum number of devices already registered."
 msgstr "Maximale Anzahl an Geräten ist bereits registriert."
 
-#: app/user/views.py:291
+#: app/user/views.py:295
 msgid "Invalid voucher"
 msgstr "Ungültiger Aktionscode"
 
@@ -1384,3 +1411,9 @@ msgstr "Ungültiger Aktionscode"
 
 #~ msgid "Connection Owner"
 #~ msgstr "Anschlussinhaber"
+
+#~ msgid "You can not schedule a move if the room will stay the same."
+#~ msgstr "Ein Umzug ist nicht möglich, wenn sich der Raum nicht ändert."
+
+#~ msgid "Total Traffic Consumption"
+#~ msgstr "Gesamtverbrauch"
