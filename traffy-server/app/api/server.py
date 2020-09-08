@@ -599,7 +599,7 @@ class ServerAPI:
             credit = self.accounting_srv.get_credit(session, row, gib=True)[0]
             if credit < 0:
                 credit = 0
-            search_results.append(KeyRow(identity.last_name, identity.first_name, dormitory_name, identity.room, credit, row.active))
+            search_results.append(KeyRow(row.key, identity.last_name, identity.first_name, dormitory_name, identity.room, credit, row.active))
 
         session.close()
         return search_results
@@ -635,7 +635,7 @@ class ServerAPI:
             credit = self.accounting_srv.get_credit(session, row, gib=True)[0]
             if credit < 0:
                 credit = 0
-            rows.append(KeyRow(identity.last_name, identity.first_name, dormitory_name, identity.room, credit, row.active))
+            rows.append(KeyRow(row.key, identity.last_name, identity.first_name, dormitory_name, identity.room, credit, row.active))
 
         session.close()
         return rows
@@ -1110,6 +1110,7 @@ class UserStatus():
         self.external = external
 
 class KeyRow():
+    reg_key = ""
     last_name = ""
     first_name = ""
     dormitory = ""
@@ -1117,7 +1118,8 @@ class KeyRow():
     credit = ""
     active = True
 
-    def __init__(self, last_name, first_name, dormitory, room, credit, active):
+    def __init__(self, reg_key, last_name, first_name, dormitory, room, credit, active):
+        self.reg_key = reg_key
         self.last_name = last_name
         self.first_name = first_name
         self.dormitory = dormitory
