@@ -101,18 +101,21 @@ class Identity(Base):
     last_name = db.Column(db.String(500), unique=False, nullable=False)
     mail = db.Column(db.String(500), unique=False, nullable=False)
     dormitory_id = db.Column(db.Integer, unique=False, nullable=False)
+    new_dormitory_id = db.Column(db.Integer, unique=False, nullable=True)
     room = db.Column(db.String(20), unique=False, nullable=False)
     new_room = db.Column(db.String(20), unique=False, nullable=True)
     move_date = db.Column(db.DateTime, nullable=True)
     
-    def __init__(self, first_name, last_name, mail, room):
+    def __init__(self, customer_id, first_name, last_name, mail, dormitory_id, room):
+        self.customer_id = customer_id
         self.first_name = first_name
         self.last_name = last_name
         self.mail = mail
+        self.dormitory_id = dormitory_id
         self.room = room
     
     def __repr__(self):
-        return "<Identity %r>" % self.first_name
+        return "<Identity %r>" % self.customer_id
 
 class Traffic(Base):
     __tablename__ = "traffic"
