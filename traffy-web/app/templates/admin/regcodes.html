@@ -61,9 +61,9 @@
 
         <div class="table">
           <div class="table-head">
-            <div class="table-cell huge collapse">{{ _("Registration Key") }}</div>
             <div class="table-cell big">{{ _("Surname") }}</div>
             <div class="table-cell big">{{ _("First name") }}</div>
+            <div class="table-cell medium collapse">{{ _("Dormitory") }}</div>
             <div class="table-cell tiny collapse">{{ _("Room") }}</div>
             <div class="table-cell small collapse">{{ _("Credit") }}</div>
             <div class="table-cell-button"></div>
@@ -74,9 +74,9 @@
           {% else %}
           <div class="table-row deactivated">
           {% endif %}
-            <div class="table-cell huge collapse">{{ row.reg_key }}</div>
             <div class="table-cell big">{{ row.last_name }}</div>
             <div class="table-cell big">{{ row.first_name }}</div>
+            <div class="table-cell medium collapse">{{ row.dormitory }}</div>
             <div class="table-cell tiny collapse">{{ row.room }}</div>
             <div class="table-cell small collapse">{{ row.credit }} GiB</div>
             <div class="table-cell-button">

@@ -591,10 +591,15 @@ class ServerAPI:
 
         for row in reg_key_query:
             identity = session.query(Identity).filter_by(id=row.identity).first()
+            dormitory_query = session.query(Dormitory).filter_by(id=identity.dormitory_id).first()
+            if dormitory_query:
+                dormitory_name = dormitory_query.name
+            else:
+                dormitory_name = str(identity.dormitory_id)
             credit = self.accounting_srv.get_credit(session, row, gib=True)[0]
             if credit < 0:
                 credit = 0
-            search_results.append(KeyRow(row.key, identity.last_name, identity.first_name, identity.room, credit, row.active))
+            search_results.append(KeyRow(identity.last_name, identity.first_name, dormitory_name, identity.room, credit, row.active))
 
         session.close()
         return search_results
@@ -622,10 +627,15 @@ class ServerAPI:
         rows = []
         for row in session.query(RegistrationKey).order_by(RegistrationKey.id.desc()).offset(offset).limit(limit):
             identity = session.query(Identity).filter_by(id=row.identity).first()
+            dormitory_query = session.query(Dormitory).filter_by(id=identity.dormitory_id).first()
+            if dormitory_query:
+                dormitory_name = dormitory_query.name
+            else:
+                dormitory_name = str(identity.dormitory_id)
             credit = self.accounting_srv.get_credit(session, row, gib=True)[0]
             if credit < 0:
                 credit = 0
-            rows.append(KeyRow(row.key, identity.last_name, identity.first_name, identity.room, credit, row.active))
+            rows.append(KeyRow(identity.last_name, identity.first_name, dormitory_name, identity.room, credit, row.active))
 
         session.close()
         return rows
@@ -1100,17 +1110,17 @@ class UserStatus():
         self.external = external
 
 class KeyRow():
-    reg_key = ""
     last_name = ""
     first_name = ""
+    dormitory = ""
     room = ""
     credit = ""
     active = True
 
-    def __init__(self, reg_key, last_name, first_name, room, credit, active):
-        self.reg_key = reg_key
+    def __init__(self, last_name, first_name, dormitory, room, credit, active):
         self.last_name = last_name
         self.first_name = first_name
+        self.dormitory = dormitory
         self.room = room
         self.credit = credit
         self.active = active
