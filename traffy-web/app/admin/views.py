@@ -17,7 +17,7 @@
  along with this program; if not, see <http://www.gnu.org/licenses/>.
 """
 
-from flask import Flask, render_template, request, jsonify, flash, session, redirect, url_for
+from flask import Flask, render_template, request, jsonify, flash, session, redirect, url_for, send_file
 from flask_babel import lazy_gettext as _l
 from flask_login import current_user, login_user, login_required, logout_user
 from dateutil import rrule
@@ -30,6 +30,7 @@ from ..models import SupervisorAccount, Role, Notification
 import config
 import math
 import time
+import zipfile
 
 
 @admin.route("/admin", methods=["GET"])
@@ -244,6 +245,45 @@ def delete_device(reg_key, ip_address):
     server.deregister_device(ip_address)
     flash(_l("Device unregistered"))
     return redirect("/admin/regcodes/" + reg_key)
+
+@admin.route("/admin/bulk_download_pdf")
+def bulk_download_pdf():
+    zipf = zipfile.ZipFile("/tmp/bulk_instructions.zip", "w", zipfile.ZIP_DEFLATED)
+
+    reg_keys_rows = server.construct_reg_code_list(500, 0)
+    max_saved_volume, initial_volume, daily_topup_volume, shaping_speed, traffy_ip, traffy_domain, max_devices = server.get_instruction_pdf_values()
+    creation_date = str(int(time.time()))
+    for row in reg_keys_rows:
+        reg_key = row["reg_key"]
+        first_name, last_name, room = server.get_reg_code_identity(reg_key)
+    
+        html = render_template("/admin/pdf/instruction.html",
+                                    reg_key=reg_key,
+                                    initial_volume=initial_volume,
+                                    daily_topup_volume=daily_topup_volume,
+                                    max_saved_volume=max_saved_volume,
+                                    shaping_speed=shaping_speed,
+                                    traffy_ip=traffy_ip,
+                                    traffy_domain=traffy_domain,
+                                    max_devices=max_devices,
+                                    first_name=first_name,
+                                    last_name=last_name,
+                                    room=room,
+                                    creation_date=creation_date,
+                                    current_user=current_user)
+
+        file_path = "/tmp/" + last_name + ", " + first_name + ", " + room + ".pdf"
+        with open(file_path, "wb") as fh:
+            fh.write(HTML(string=html).write_pdf())
+        
+        zipf.write(file_path, "/" + last_name + ", " + first_name + ", " + room + ".pdf")
+        print("Created " + last_name + ", " + first_name + ", " + room + ".pdf")
+    
+    zipf.close()
+    return send_file('/tmp/bulk_instructions.zip',
+            mimetype = 'zip',
+            attachment_filename= 'bulk_instructions.zip',
+            as_attachment = True)
 
 @admin.route("/admin/regcodes/<reg_key>", methods=["GET", "POST"])
 @login_required
