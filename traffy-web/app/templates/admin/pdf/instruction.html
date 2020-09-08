@@ -3,11 +3,11 @@
   <head>
     <meta charset="UTF-8"/>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/instruction.css') }}"/>
-    <title>Netzzugang Wohnheim Görlitz</title>
+    <title>Netzzugang Wohnheim {{ community }}</title>
   </head>
   <body>
     <div class="section">
-        <h1>Internet im Studierendenwohnheim Görlitz</h1>
+        <h1>Internet im Studierendenwohnheim {{ community }}</h1>
         <div class="tight">
             <h3>Das Wohnheimnetz ist Teil des Hochschulnetzwerks.</h3>
             <h3>Daher existiert eine Datenvolumensbegrenzung für alle Nutzer:innen.</h3>
@@ -27,7 +27,7 @@
     <div class="divider"></div>
 
     <div class="section">
-        <h1>Internet in the Görlitz student dormitory</h1>
+        <h1>Internet in the {{ community }} student dormitory</h1>
         <div class="tight">
             <h3>The dormitory network is part of the university network.</h3>
             <h3>Because of this, there is a data volume limit for each user.</h3>

@@ -270,7 +270,8 @@ def bulk_download_pdf():
                                     last_name=last_name,
                                     room=room,
                                     creation_date=creation_date,
-                                    current_user=current_user)
+                                    current_user=current_user,
+                                    community=config.COMMUNITY)
 
         file_path = "/tmp/" + last_name + ", " + first_name + ", " + room + ".pdf"
         with open(file_path, "wb") as fh:
@@ -319,7 +320,8 @@ def reg_code(reg_key):
                                    last_name=last_name,
                                    room=room,
                                    creation_date=creation_date,
-                                   current_user=current_user)
+                                   current_user=current_user,
+                                   community=config.COMMUNITY)
 
             return render_pdf(HTML(string=html), download_filename=last_name.encode("ascii", errors="xmlcharrefreplace").decode() + "," + first_name.encode("ascii", errors="xmlcharrefreplace").decode() + "_Instruction.pdf")
 
