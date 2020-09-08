@@ -140,28 +140,42 @@ def reg_codes():
 @admin.route("/admin/add-regcode", methods=["GET", "POST"])
 @login_required
 def add_regcode():
+    dormitories = server.get_dormitories()
+
     if request.method == "POST":
         if "cancel_btn" in request.form:
             return redirect("/admin/regcodes")
 
         if "add_key_btn" in request.form:
+            person_id = request.form["person_id"]
             first_name = request.form["first_name"]
             surname = request.form["surname"]
             mail = request.form["mail"]
+            dormitory = request.form["dormitory"]
             room = request.form["room"]
-            if first_name == "" or surname == "" or mail == "" or room == "":
+            if person_id == "" or first_name == "" or surname == "" or mail == "" or dormitory == "" or room == "":
                 flash(_l("Please fill out all input forms."))
-                return render_template("/admin/add-regcode.html")
+                return render_template("/admin/add-regcode.html", dormitories=dormitories)
             else:
-                reg_key = server.add_registration_code(first_name, surname, mail, room)
-                return redirect("/admin/regcodes/" + reg_key)
+                try:
+                    dormitory_id = server.get_dormitory_id_from_name(dormitory)
+                    reg_key = server.add_registration_code(person_id, first_name, surname, mail, dormitory_id, room)
+                    return redirect("/admin/regcodes/" + reg_key)
+                except:
+                    flash(_l("An error occured while adding the registration code."))
+                    return render_template("/admin/add-regcode.html", dormitories=dormitories)
 
-    return render_template("/admin/add-regcode.html")
+    return render_template("/admin/add-regcode.html", dormitories=dormitories)
 
 @admin.route("/admin/regcodes/<reg_key>/identity/edit", methods=["GET", "POST"])
 @login_required
 def edit_identity(reg_key):
     identity_data = server.get_reg_code_identity_data(reg_key)
+    dormitories = server.get_dormitories()
+    current_dormitory_name = server.get_dormitory_name_from_id(identity_data.get("dormitory_id"))
+    new_dormitory_name = ""
+    if identity_data.get("new_dormitory_id") is not None and identity_data.get("new_dormitory_id") != "":
+         new_dormitory_name = server.get_dormitory_name_from_id(identity_data.get("new_dormitory_id"))
 
     if request.method == "POST":
         if "cancel_btn" in request.form:
@@ -169,14 +183,20 @@ def edit_identity(reg_key):
         
         if "cancel_move_btn" in request.form:
             identity_data["move_date"] = ""
+            identity_data["new_dormitory_id"] = None
             identity_data["new_room"] = None
             return render_template("/admin/edit-identity.html",
-                                    identity_data=identity_data)
+                                    identity_data=identity_data,
+                                    dormitories=dormitories,
+                                    current_dormitory_name=current_dormitory_name,
+                                    new_dormitory_name=new_dormitory_name)
 
         if "save_btn" in request.form:
+            person_id = request.form["person_id"]
             first_name = request.form["first_name"]
             surname = request.form["surname"]
             mail = request.form["mail"]
+            dormitory_id = server.get_dormitory_id_from_name(request.form["dormitory"])
             room = request.form["room"]
             try:
                 move_date = request.form["move_date"]
@@ -187,29 +207,43 @@ def edit_identity(reg_key):
                 if datetime.today().date() >= datetime.strptime(move_date, "%Y-%m-%d").date():
                         flash(_l("Move date must be in the future."))
                         return render_template("/admin/edit-identity.html",
-                                                identity_data=identity_data)
+                                                identity_data=identity_data,
+                                                dormitories=dormitories,
+                                                current_dormitory_name=current_dormitory_name,
+                                                new_dormitory_name=new_dormitory_name)
 
-            if first_name == "" or surname == "" or mail == "" or room == "":
+            if person_id == "" or first_name == "" or surname == "" or mail == "" or dormitory_id == "" or room == "":
                 flash(_l("Please fill out all input forms."))
                 return render_template("/admin/edit-identity.html",
-                                        identity_data=identity_data)
-            elif identity_data.get("room") == room and move_date != "":
-                flash(_l("You can not schedule a move if the room will stay the same."))
+                                        identity_data=identity_data,
+                                        dormitories=dormitories,
+                                        current_dormitory_name=current_dormitory_name,
+                                        new_dormitory_name=new_dormitory_name)
+            elif identity_data.get("room") == room and identity_data.get("dormitory_id") == dormitory_id and move_date != "":
+                flash(_l("You can not schedule a move if the room and dormitory will stay the same."))
                 return render_template("/admin/edit-identity.html",
-                                        identity_data=identity_data)
+                                        identity_data=identity_data,
+                                        dormitories=dormitories,
+                                        current_dormitory_name=current_dormitory_name,
+                                        new_dormitory_name=new_dormitory_name)
             else:
+                identity_data["person_id"] = person_id
                 identity_data["first_name"] = first_name
                 identity_data["last_name"] = surname
                 identity_data["mail"] = mail
+                identity_data["dormitory_id"] = dormitory_id
                 identity_data["room"] = room
                 identity_data["deletion_date"] = move_date
-                success = server.edit_reg_key_identity(reg_key, first_name, surname, mail, room, move_date)
+                success = server.edit_reg_key_identity(reg_key, person_id, first_name, surname, mail, dormitory_id, room, move_date)
                 if not success:
                     flash(_l("Identity could not get changed."))
                 return redirect("/admin/regcodes/" + reg_key)
 
     return render_template("/admin/edit-identity.html",
-                            identity_data=identity_data)
+                            identity_data=identity_data,
+                            dormitories=dormitories,
+                            current_dormitory_name=current_dormitory_name,
+                            new_dormitory_name=new_dormitory_name)
 
 @admin.route("/admin/regcodes/<reg_key>/deactivate", methods=["GET", "POST"])
 @login_required

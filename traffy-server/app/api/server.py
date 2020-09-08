@@ -18,7 +18,7 @@
 """
 
 from app.exceptions.user_exceptions import RegistrationError, DatabaseError, DeregistrationError
-from ..models import RegistrationKey, IpAddress, MacAddress, AddressPair, Traffic, Identity
+from ..models import RegistrationKey, IpAddress, MacAddress, AddressPair, Traffic, Identity, Dormitory
 from ..util import arp_manager, generate_registration_key, lease_parser, iptables_rules_manager, iptables_accounting_manager, shaping_manager
 from datetime import datetime, timedelta
 from dateutil import rrule
@@ -606,6 +606,16 @@ class ServerAPI:
         session.close()
         return count
 
+    def get_dormitories(self):
+        session = self.db.create_session()
+
+        dormitories = []
+        for dormitory in session.query(Dormitory).all():
+            dormitories.append(dormitory.name)
+        
+        session.close()
+        return dormitories
+
     def construct_reg_code_list(self, limit, offset):
         session = self.db.create_session()
 
@@ -620,12 +630,12 @@ class ServerAPI:
         session.close()
         return rows
 
-    def add_registration_code(self, first_name, surname, mail, room):
+    def add_registration_code(self, person_id, first_name, surname, mail, dormitory_id, room):
         try:
             session = self.db.create_session()
 
-            session.add(Identity(first_name=first_name, last_name=surname, mail=mail, room=room))
-            identity = session.query(Identity).filter_by(first_name=first_name, last_name=surname, mail=mail, room=room).first()
+            session.add(Identity(customer_id=person_id, first_name=first_name, last_name=surname, mail=mail, dormitory_id=dormitory_id, room=room))
+            identity = session.query(Identity).filter_by(customer_id=person_id, first_name=first_name, last_name=surname, mail=mail, dormitory_id=dormitory_id, room=room).first()
 
             reg_key = generate_registration_key.generate()
 
@@ -643,13 +653,14 @@ class ServerAPI:
 
         return reg_key
     
-    def edit_reg_key_identity(self, reg_key, first_name, surname, mail, room, move_date):
+    def edit_reg_key_identity(self, reg_key, person_id, first_name, surname, mail, dormitory_id, room, move_date):
         try:
             session = self.db.create_session()
 
             reg_key_query = session.query(RegistrationKey).filter_by(key=reg_key).first()
             identity_query = session.query(Identity).filter_by(id=reg_key_query.identity).first()
 
+            identity_query.customer_id = person_id
             identity_query.first_name = first_name
             identity_query.last_name = surname
             identity_query.mail = mail
@@ -657,15 +668,19 @@ class ServerAPI:
             if move_date != "" and move_date is not None:
                 move_date = datetime.strptime(move_date, "%Y-%m-%d")
                 identity_query.move_date = move_date
+                identity_query.new_dormitory_id = dormitory_id 
                 identity_query.new_room = room
             else:
                 identity_query.move_date = None
+                identity_query.dormitory_id = dormitory_id
+                identity_query.new_dormitory_id = None
                 identity_query.room = room
                 identity_query.new_room = None
 
             session.commit()
             success = True
-        except:
+        except Exception as ex:
+            print(ex)
             session.rollback()
             success = False
         finally:
@@ -772,6 +787,30 @@ class ServerAPI:
             return False
         else:
             return True
+
+    def get_dormitory_id_from_name(self, dormitory_name):
+        try:
+            session = self.db.create_session()
+
+            dormitory_query = session.query(Dormitory).filter_by(name=dormitory_name).first()
+            dormitory_id = dormitory_query.id
+
+            session.close()
+            return dormitory_id
+        except:
+            return None
+    
+    def get_dormitory_name_from_id(self, dormitory_id):
+        try:
+            session = self.db.create_session()
+
+            dormitory_query = session.query(Dormitory).filter_by(id=dormitory_id).first()
+            dormitory_name = dormitory_query.name
+
+            session.close()
+            return dormitory_name
+        except:
+            return None
     
     def get_reg_key_deactivation_reason(self, reg_key):
         session = self.db.create_session()
@@ -869,9 +908,9 @@ class ServerAPI:
         identity = session.query(Identity).filter_by(id=reg_key_query.identity).first()
 
         if identity.move_date is None:
-            identity_data = IdentityRow(identity.id, identity.last_name, identity.first_name, identity.mail, identity.room, identity.new_room, identity.move_date)
+            identity_data = IdentityRow(identity.id, identity.customer_id, identity.last_name, identity.first_name, identity.mail, identity.dormitory_id, identity.new_dormitory_id, identity.room, identity.new_room, identity.move_date)
         else:
-            identity_data = IdentityRow(identity.id, identity.last_name, identity.first_name, identity.mail, identity.room, identity.new_room, identity.move_date.strftime("%d.%m.%Y %H:%M:%S"))
+            identity_data = IdentityRow(identity.id, identity.customer_id, identity.last_name, identity.first_name, identity.mail, identity.dormitory_id, identity.new_dormitory_id, identity.room, identity.new_room, identity.move_date.strftime("%d.%m.%Y %H:%M:%S"))
 
         session.close()
         return identity_data
@@ -1078,18 +1117,24 @@ class KeyRow():
 
 class IdentityRow():
     id = ""
+    person_id = ""
     last_name = ""
     first_name = ""
     mail = ""
+    dormitory_id = ""
+    new_dormitory_id = ""
     room = ""
     new_room = ""
     scheduled_move = ""
 
-    def __init__(self, id, last_name, first_name, mail, room, new_room, scheduled_move):
+    def __init__(self, id, person_id, last_name, first_name, mail, dormitory_id, new_dormitory_id, room, new_room, scheduled_move):
         self.id = id
+        self.person_id = person_id
         self.last_name = last_name
         self.first_name = first_name
         self.mail = mail
+        self.dormitory_id = dormitory_id
+        self.new_dormitory_id = new_dormitory_id
         self.room = room
         self.new_room = new_room
         self.scheduled_move = scheduled_move

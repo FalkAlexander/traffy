@@ -42,24 +42,45 @@
           <div class="center-box">
             <div class="dialog-box dialog-box-small identity-edit">
               <div class="padding-box">
+                <p class="input-descriptor">{{ _("Person ID") }}</p>
+                <input type="text" name="person_id" value="{{ identity_data.person_id }}"/>
                 <p class="input-descriptor">{{ _("First name") }}</p>
                 <input type="text" name="first_name" value="{{ identity_data.first_name }}"/>
                 <p class="input-descriptor">{{ _("Surname") }}</p>
                 <input type="text" name="surname" value="{{ identity_data.last_name }}"/>
                 <p class="input-descriptor">{{ _("Mail") }}</p>
                 <input type="text" name="mail" value="{{ identity_data.mail }}"/>
+                <p class="input-descriptor">{{ _("Dormitory") }}</p>
+                {% if identity_data.new_room is none and identity_data.new_dormitory_id is none %}
+                <select name="dormitory">
+                  {% for dormitory in dormitories %}
+                      {% if dormitory == current_dormitory_name %}
+                      <option value="{{ dormitory }}" selected="selected">{{ dormitory }}</option>
+                      {% else %}
+                      <option value="{{ dormitory }}">{{ dormitory }}</option>
+                      {% endif %}
+                  {% endfor %}
+                </select>
                 <p class="input-descriptor">{{ _("Room") }}</p>
-                {% if identity_data.new_room is none %}
                 <input type="text" name="room" value="{{ identity_data.room }}"/>
                 {% else %}
+                <select name="dormitory" disabled>
+                  {% for dormitory in dormitories %}
+                      {% if dormitory == current_dormitory_name %}
+                      <option value="{{ dormitory }}" selected="selected">{{ dormitory }}</option>
+                      {% else %}
+                      <option value="{{ dormitory }}">{{ dormitory }}</option>
+                      {% endif %}
+                  {% endfor %}
+                </select>
                 <input type="text" name="room" value="{{ identity_data.room }}" disabled/>
                 {% endif %}
-                {% if identity_data.new_room is none %}
+                {% if identity_data.new_room is none and identity_data.new_dormitory_id is none %}
                 <p class="input-descriptor">{{ _("Move Date (optional)") }}</p>
                 <input type="date" name="move_date" value="{{ identity_data.deletion_date }}"/>
                 {% endif %}
-                {% if identity_data.new_room is not none %}
-                <p class="input-descriptor">{{ _("There is a planned room move for this user on ") }} {{ identity_data.scheduled_move }} {{ _("to room") }} {{ identity_data.new_room }}. {{ _("If you want to cancel this move or edit the room, click the button below.") }}</p>
+                {% if identity_data.new_room is not none or identity_data.new_dormitory_id is not none %}
+                <p class="input-descriptor">{{ _("There is a planned room move for this user on ") }} {{ identity_data.scheduled_move }} {{ _("to room") }} {{ identity_data.new_room }} ({{ _("dormitory") }}  {{ new_dormitory_name }}). {{ _("If you want to cancel this move or edit the room, click the button below.") }}</p>
                 <input name="cancel_move_btn" type="submit" value="{{ _('Cancel Move') }}"/>
                 {% endif %}
               </div>

@@ -1155,6 +1155,12 @@ nav a:hover {
   background-repeat: no-repeat;
 }
 
+.dialog-box select:disabled,
+.page-switcher select:disabled {
+  color: #b5b5b5;
+  background-color: #b5b5b5;
+}
+
 .monospace {
   display: inline-block;
   font-family: Consolas, "Courier New", monospace;
