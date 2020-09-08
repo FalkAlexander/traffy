@@ -27,6 +27,9 @@ import logging
 #
 
 def add_static_arp_entry(ip_address, mac_address):
+    if config.STATELESS:
+        return
+
     subprocess.Popen([
         "sudo",
         "arp",
@@ -38,6 +41,9 @@ def add_static_arp_entry(ip_address, mac_address):
     logging.debug("Started IP spoofing protection for " + ip_address)
 
 def remove_static_arp_entry(ip_address):
+    if config.STATELESS:
+        return
+    
     subprocess.Popen([
         "sudo",
         "arp",

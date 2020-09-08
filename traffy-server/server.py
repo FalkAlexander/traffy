@@ -194,58 +194,62 @@ class Server():
 
     def shutdown(self, signal, frame):
         # Stop Housekeeping
-        self.housekeeping_srv.stop()
+        if not config.STATELESS:
+            self.housekeeping_srv.stop()
 
         # Disable Socket
         self.sm.stop()
 
-        # Stop Accounting
-        self.accounting_srv.stop()
+        if not config.STATELESS:
+            # Stop Accounting
+            self.accounting_srv.stop()
 
-        # Shutdown Shaping
-        shaping_manager.shutdown_shaping()
+            # Shutdown Shaping
+            shaping_manager.shutdown_shaping()
 
-        # Clear Firewall Rules
-        iptables_rules_manager.apply_block_rule(delete=True)
-        iptables_rules_manager.apply_redirect_rule(delete=True)
-        iptables_rules_manager.apply_dns_rule(delete=True)
-        self.firewall_relock_unregistered_devices()
-        iptables_rules_manager.attach_traffic_to_portal(delete=True)
-        iptables_rules_manager.create_portal_route(delete=True)
-        iptables_rules_manager.create_portal_box(delete=True)
+            # Clear Firewall Rules
+            iptables_rules_manager.apply_block_rule(delete=True)
+            iptables_rules_manager.apply_redirect_rule(delete=True)
+            iptables_rules_manager.apply_dns_rule(delete=True)
+            self.firewall_relock_unregistered_devices()
+            iptables_rules_manager.attach_traffic_to_portal(delete=True)
+            iptables_rules_manager.create_portal_route(delete=True)
+            iptables_rules_manager.create_portal_box(delete=True)
 
-        logging.info("Clearing accounting chains…")
-        self.remove_accounting_chains()
-        logging.info("Stopped accounting services")
+            logging.info("Clearing accounting chains…")
+            self.remove_accounting_chains()
+            logging.info("Stopped accounting services")
 
-        logging.info("Network not managed anymore")
+            logging.info("Network not managed anymore")
 
     def startup(self):
+        if not config.STATELESS:
         # Setup Shaping
-        shaping_manager.setup_shaping()
+            shaping_manager.setup_shaping()
 
-        # Apply Firewall Rules
-        iptables_rules_manager.create_portal_box(delete=False)
-        iptables_rules_manager.create_portal_route(delete=False)
-        iptables_rules_manager.attach_traffic_to_portal(delete=False)
-        iptables_rules_manager.apply_block_rule(delete=False)
-        iptables_rules_manager.apply_redirect_rule(delete=False)
-        iptables_rules_manager.apply_dns_rule(delete=False)
-        self.firewall_unlock_registered_devices()
+            # Apply Firewall Rules
+            iptables_rules_manager.create_portal_box(delete=False)
+            iptables_rules_manager.create_portal_route(delete=False)
+            iptables_rules_manager.attach_traffic_to_portal(delete=False)
+            iptables_rules_manager.apply_block_rule(delete=False)
+            iptables_rules_manager.apply_redirect_rule(delete=False)
+            iptables_rules_manager.apply_dns_rule(delete=False)
+            self.firewall_unlock_registered_devices()
 
-        # Start Accounting
-        logging.info("Preparing accounting chains…")
-        self.setup_accounting_chains()
-        self.accounting_srv.start(10)
-        logging.info("Started accounting services")
+            # Start Accounting
+            logging.info("Preparing accounting chains…")
+            self.setup_accounting_chains()
+            self.accounting_srv.start(10)
+            logging.info("Started accounting services")
 
-        self.dev_mode_test = DevModeTest(self.db)
+            self.dev_mode_test = DevModeTest(self.db)
 
         # Enable Socket
         self.sm.start()
 
         # Start Housekeeping
-        self.housekeeping_srv.start(20, self.sm.server_api)
+        if not config.STATELESS:
+            self.housekeeping_srv.start(20, self.sm.server_api)
 
         logging.info("Network now fully managed")
         logging.info("Traffy server ready after " + str((datetime.now() - self.boot_timestamp).total_seconds()) + "s")

@@ -31,3 +31,4 @@ SHAPING_EXCEPTIONS = [WAN_IP_ADDRESS,
                     "141.43.0.0/16"]            # B-TU
 ENABLE_ERP_INTEGRATION = False
 
+STATELESS = False

@@ -65,6 +65,10 @@ def index():
 
 @user.route("/register", methods=["GET", "POST"])
 def register():
+    if config.STATELESS:
+        branch_name, commits = __get_developer_infos()
+        return redirect("/about")
+
     ip_address = request.environ.get("HTTP_X_REAL_IP", request.remote_addr)
 
     try:

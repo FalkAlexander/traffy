@@ -24,6 +24,9 @@ import logging
 
 
 def create_box(reg_key, delete=False):
+    if config.STATELESS:
+        return
+
     reg_key = str(reg_key)
     names = [reg_key + "-INGRESS", reg_key + "-EGRESS", reg_key + "-INGRESS-EXC", reg_key + "-EGRESS-EXC"]
     action = "-N"
@@ -45,6 +48,9 @@ def create_box(reg_key, delete=False):
             ], stdout=subprocess.PIPE, preexec_fn=os.setsid).wait()
 
 def create_box_route(reg_key, delete=False):
+    if config.STATELESS:
+        return
+
     reg_key = str(reg_key)
     names = [reg_key + "-INGRESS", reg_key + "-EGRESS", reg_key + "-INGRESS-EXC", reg_key + "-EGRESS-EXC"]
     action = "-I"
@@ -63,6 +69,9 @@ def create_box_route(reg_key, delete=False):
             ], stdout=subprocess.PIPE, preexec_fn=os.setsid).wait()
 
 def attach_traffic_to_box(reg_key, delete=False):
+    if config.STATELESS:
+        return
+
     reg_key = str(reg_key)
     names_ingress = [reg_key + "-INGRESS", reg_key + "-INGRESS-EXC"]
     names_egress = [reg_key + "-EGRESS", reg_key + "-EGRESS-EXC"]
@@ -92,6 +101,9 @@ def attach_traffic_to_box(reg_key, delete=False):
             ], stdout=subprocess.PIPE, preexec_fn=os.setsid).wait()
 
 def add_ip_to_box(reg_key, ip_address):
+    if config.STATELESS:
+        return
+
     reg_key = str(reg_key)
     name_ingress = reg_key + "-INGRESS"
     name_egress = reg_key + "-EGRESS"
@@ -117,6 +129,9 @@ def add_ip_to_box(reg_key, ip_address):
     add_exception_box_ips(reg_key, ip_address)
 
 def remove_ip_from_box(reg_key, ip_address):
+    if config.STATELESS:
+        return
+
     reg_key = str(reg_key)
     name_ingress = reg_key + "-INGRESS"
     name_egress = reg_key + "-EGRESS"
@@ -143,6 +158,9 @@ def remove_ip_from_box(reg_key, ip_address):
     remove_exception_box_ips(reg_key, ip_address)
 
 def get_box_ingress_bytes(reg_key):
+    if config.STATELESS:
+        return
+
     reg_key = str(reg_key)
     name = reg_key + "-INGRESS"
     cmd = subprocess.Popen([
@@ -159,6 +177,9 @@ def get_box_ingress_bytes(reg_key):
     return parse_iptables_output(cmd) - get_exception_box_ingress_bytes(reg_key)
 
 def get_box_egress_bytes(reg_key):
+    if config.STATELESS:
+        return
+
     reg_key = str(reg_key)
     name = reg_key + "-EGRESS"
     cmd = subprocess.Popen([
@@ -175,6 +196,9 @@ def get_box_egress_bytes(reg_key):
     return parse_iptables_output(cmd) - get_exception_box_egress_bytes(reg_key)
 
 def reset_box_counter(reg_key):
+    if config.STATELESS:
+        return
+
     reg_key = str(reg_key)
     names = [reg_key + "-INGRESS", reg_key + "-EGRESS", reg_key + "-INGRESS-EXC", reg_key + "-EGRESS-EXC"]
 
@@ -190,6 +214,9 @@ def reset_box_counter(reg_key):
 # For from Accounting Excepted Traffic
 
 def add_exception_box_ips(reg_key, ip_address):
+    if config.STATELESS:
+        return
+
     reg_key = str(reg_key)
     name_ingress = reg_key + "-INGRESS-EXC"
     name_egress = reg_key + "-EGRESS-EXC"
@@ -223,6 +250,9 @@ def add_exception_box_ips(reg_key, ip_address):
         ], stdout=subprocess.PIPE, preexec_fn=os.setsid).wait()
 
 def remove_exception_box_ips(reg_key, ip_address):
+    if config.STATELESS:
+        return
+
     reg_key = str(reg_key)
     name_ingress = reg_key + "-INGRESS-EXC"
     name_egress = reg_key + "-EGRESS-EXC"
@@ -256,6 +286,9 @@ def remove_exception_box_ips(reg_key, ip_address):
         ], stdout=subprocess.PIPE, preexec_fn=os.setsid).wait()
 
 def get_exception_box_ingress_bytes(reg_key):
+    if config.STATELESS:
+        return
+
     reg_key = str(reg_key)
     name = reg_key + "-INGRESS-EXC"
     cmd = subprocess.Popen([
@@ -272,6 +305,9 @@ def get_exception_box_ingress_bytes(reg_key):
     return parse_iptables_output(cmd)
 
 def get_exception_box_egress_bytes(reg_key):
+    if config.STATELESS:
+        return
+
     reg_key = str(reg_key)
     name = reg_key + "-EGRESS-EXC"
     cmd = subprocess.Popen([
@@ -315,6 +351,9 @@ def parse_iptables_output(cmd):
         return traffic
 
 def create_ipset(reg_key):
+    if config.STATELESS:
+        return
+
     cmd = subprocess.Popen([
         "sudo",
         "ipset",
@@ -325,6 +364,9 @@ def create_ipset(reg_key):
     cmd.wait()
 
 def add_ipset_ip(reg_key, ip_address):
+    if config.STATELESS:
+        return
+
     cmd = subprocess.Popen([
         "sudo",
         "ipset",
@@ -335,6 +377,9 @@ def add_ipset_ip(reg_key, ip_address):
     cmd.wait()
 
 def destroy_ipset(reg_key):
+    if config.STATELESS:
+        return
+
     cmd = subprocess.Popen([
         "sudo",
         "ipset",

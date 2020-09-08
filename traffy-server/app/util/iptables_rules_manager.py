@@ -24,6 +24,9 @@ import logging
 
 
 def apply_redirect_rule(delete=False):
+    if config.STATELESS:
+        return
+
     ports = ["80"]
     chain_rule = "-A"
 
@@ -103,6 +106,9 @@ def apply_redirect_rule(delete=False):
     logging.info("Applied captive portal ACLs")
 
 def create_portal_box(delete=False):
+    if config.STATELESS:
+        return
+
     action = "-N"
 
     if delete is True:
@@ -116,6 +122,9 @@ def create_portal_box(delete=False):
         ], stdout=subprocess.PIPE, preexec_fn=os.setsid).wait()
 
 def create_portal_route(delete=False):
+    if config.STATELESS:
+        return
+
     action = "-I"
 
     if delete is True:
@@ -131,6 +140,9 @@ def create_portal_route(delete=False):
         ], stdout=subprocess.PIPE, preexec_fn=os.setsid).wait()
 
 def attach_traffic_to_portal(delete=False):
+    if config.STATELESS:
+        return
+
     directions = ["INPUT", "OUTPUT"]
     action = "-I"
 
@@ -148,6 +160,9 @@ def attach_traffic_to_portal(delete=False):
             ], stdout=subprocess.PIPE, preexec_fn=os.setsid).wait()
 
 def apply_dns_rule(delete=False):
+    if config.STATELESS:
+        return
+
     protocols = ["tcp", "tcp", "udp", "udp"]
     port_argument = ["--dport", "--sport", "--dport", "--sport"]
     states = ["NEW,ESTABLISHED", "ESTABLISHED", "NEW,ESTABLISHED", "ESTABLISHED"]
@@ -193,6 +208,9 @@ def apply_dns_rule(delete=False):
     logging.info("Applied DNS tunnel protection")
 
 def apply_block_rule(delete=False):
+    if config.STATELESS:
+        return
+
     chain = "-I"
 
     if delete is True:
@@ -243,6 +261,9 @@ def apply_block_rule(delete=False):
     logging.info("Applied unregistered users ACL")
 
 def unlock_registered_device(ip_address):
+    if config.STATELESS:
+        return
+
     table = ["nat", "filter"]
     chain = ["PREROUTING", "PORTAL"]
 
@@ -263,6 +284,9 @@ def unlock_registered_device(ip_address):
     logging.debug("Added registration rule of " + ip_address)
 
 def relock_registered_device(ip_address):
+    if config.STATELESS:
+        return
+
     table = ["nat", "filter"]
     chain = ["PREROUTING", "PORTAL"]
 

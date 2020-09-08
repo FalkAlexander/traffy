@@ -23,6 +23,9 @@ import subprocess
 import logging
 
 def setup_shaping():
+    if config.STATELESS:
+        return
+
     # Create root queueing disciplines
     for interface in config.LAN_INTERFACES:
         subprocess.Popen([
@@ -40,30 +43,15 @@ def setup_shaping():
             "0"
             ], stdout=subprocess.PIPE, preexec_fn=os.setsid).wait()
 
-    # Create shaping exception classes
-    # for interface in [config.WAN_INTERFACE, config.BRIDGE_INGRESS_INTERFACE]:
-    #     subprocess.Popen([
-    #         "sudo",
-    #         "tc",
-    #         "class",
-    #         "add",
-    #         "dev",
-    #         interface,
-    #         "parent",
-    #         "1:",
-    #         "classid",
-    #         "1:0",
-    #         "htb",
-    #         "rate",
-    #         "10gbit"
-    #         ], stdout=subprocess.PIPE, preexec_fn=os.setsid).wait()
-
     for ip in config.SHAPING_EXCEPTIONS:
         __add_shaping_exception_for_ip(ip)
 
     logging.info("Prepared traffic shaping queueing discipline")
 
 def enable_shaping_for_ip(ip_id, ip_address):
+    if config.STATELESS:
+        return
+
     for interface in config.LAN_INTERFACES:
         # Create shaping class for ip
         subprocess.Popen([
@@ -109,6 +97,9 @@ def enable_shaping_for_ip(ip_id, ip_address):
     logging.debug("Enabled traffic shaping for " + ip_address)
 
 def disable_shaping_for_ip(ip_id, ip_address):
+    if config.STATELESS:
+        return
+
     for interface in config.LAN_INTERFACES:
         # Remove matching filter
         for handle in __get_rule_handles(interface, ip_address):
@@ -147,6 +138,9 @@ def disable_shaping_for_ip(ip_id, ip_address):
     logging.debug("Disabled traffic shaping for " + ip_address)
 
 def shutdown_shaping():
+    if config.STATELESS:
+        return
+
     for interface in config.LAN_INTERFACES:
         subprocess.Popen([
             "sudo",

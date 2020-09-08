@@ -7,3 +7,5 @@ GIT_REPO_PATH = "/home/traffy/traffy-app"
 COMMUNITY = "Görlitz"
 ADMINS = [["Falk Seidl", "admin.goerlitz@wh.studentenwerk-dresden.de", "2521"], ["Niklas Merkelt", "admin.goerlitz@wh.studentenwerk-dresden.de", "2419"]]
 FACILITY_MANAGEMENT = [["Georg Wohlfahrt", "Georg.Wohlfahrt@studentenwerk-dresden.de"]]
+
+STATELESS = False

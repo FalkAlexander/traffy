@@ -54,7 +54,7 @@ def create_app():
     def __jinja2_filter_datetime(date, fmt=None):
         format="%d.%m.%Y %H:%M:%S"
         date = datetime.fromtimestamp(date)
-        return date.strftime(format) 
+        return date.strftime(format)
 
     # User Interface
     from .user import user as user_blueprint
