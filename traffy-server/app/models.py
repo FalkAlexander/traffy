@@ -96,9 +96,11 @@ class Identity(Base):
     __tablename__ = "identity"
 
     id = db.Column(db.BigInteger, primary_key=True, autoincrement=True)
+    customer_id = db.Column(db.BigInteger, unique=False, nullable=False)
     first_name = db.Column(db.String(500), unique=False, nullable=False)
     last_name = db.Column(db.String(500), unique=False, nullable=False)
     mail = db.Column(db.String(500), unique=False, nullable=False)
+    dormitory_id = db.Column(db.Integer, unique=False, nullable=False)
     room = db.Column(db.String(20), unique=False, nullable=False)
     new_room = db.Column(db.String(20), unique=False, nullable=True)
     move_date = db.Column(db.DateTime, nullable=True)
@@ -191,6 +193,20 @@ class AddressPair(Base):
     
     def __repr__(self):
         return "<AddressPairs %r>" % self.reg_key
+
+class Dormitory(Base):
+    __tablename__ = "dormitory"
+
+    id = db.Column(db.BigInteger, primary_key=True, autoincrement=True)
+    internal_id = db.Column(db.BigInteger, unique=True, nullable=True)
+    name = db.Column(db.String(100), unique=True, nullable=False)
+
+    def __init__(self, internal_id, name):
+        self.internal_id = internal_id
+        self.name = name
+    
+    def __repr__(self):
+        return "<Dormitory %r>" % self.internal_id
 
 def create_all(engine):
     Base.metadata.create_all(engine)
