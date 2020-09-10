@@ -109,14 +109,37 @@ class ServerAPI:
     # Registration
     #
 
+    def set_data_policy_accepted(self, reg_key):
+        session = self.db.create_session()
+
+        try:
+            reg_key_query = self.get_reg_key_query_by_key(session, reg_key)
+            if reg_key_query.data_policy_accepted is not True:
+                reg_key_query.data_policy_accepted = True
+                self.database_commit(session)
+        except:
+            session.rollback()
+        finally:
+            session.close()
+    
+    def set_eula_accepted(self, reg_key):
+        session = self.db.create_session()
+
+        try:
+            reg_key_query = self.get_reg_key_query_by_key(session, reg_key)
+            if reg_key_query.eula_accepted is not True:
+                reg_key_query.eula_accepted = True
+                self.database_commit(session)
+        except:
+            session.rollback()
+        finally:
+            session.close()
+
     def register_device(self, reg_key, ip_address, user_agent):
         session = self.db.create_session()
 
         try:
             reg_key_query = self.get_reg_key_query_by_key(session, reg_key)
-
-            # Rahmennetzordnung
-            self.__set_reg_key_eula_accepted(reg_key_query, True)
 
             # Create IP Entry
             self.__create_ip_entry(session, ip_address)
@@ -178,9 +201,6 @@ class ServerAPI:
         identity = session.query(Identity).filter_by(id=reg_key.identity).first()
         session.close()
         return identity.room
-
-    def __set_reg_key_eula_accepted(self, reg_key_query, accepted):
-        reg_key_query.eula_accepted = True
 
     def __create_ip_entry(self, session, ip_address):
         session.add(IpAddress(address_v4=ip_address, address_v6=None))

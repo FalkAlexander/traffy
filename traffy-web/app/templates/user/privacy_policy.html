@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" name="viewport" content="width=device-width, initial-scale=1.0"/>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}"/>
-    <title>{{ _("Terms and Conditions") }}</title>
+    <title>{{ _("Privacy Policy") }}</title>
   </head>
   <body>
     {% for message in get_flashed_messages() %}
@@ -16,16 +16,16 @@
     <div class="center-box agb">
       <div class="dialog-box dialog-box-wide">
         <div class="padding-box">
-          <h1>{{ _("Terms and Conditions") }}</h1>
+          <h1>{{ _("Privacy Policy") }}</h1>
           <h2>{{ _("Acceptance is required for using this network") }}</h2>
           <div class="scroll-box">
             <p>
-              {% include 'includes/rahmennetzordnung.html' %}
+              {% include 'includes/datenschutzerklärung.html' %}
             </p>
           </div>
         </div>
         <form method="POST">
-          <input name="accept_eula_btn" type="submit" value="{{ _('Accept') }}"/>
+          <input name="accept_privacy_policy_btn" type="submit" value="{{ _('Accept') }}"/>
         </form>
       </div>
     </div>

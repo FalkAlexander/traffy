@@ -146,10 +146,51 @@ def conditions():
             flash(_l("Your registration key got deactivated. Reason: ") + deactivation_reason)
         return render_template("user/register.html")
 
-    if "accept_btn" not in request.form:
+    if "accept_eula_btn" not in request.form:
         return render_template("user/conditions.html")
 
+    server.set_eula_accepted(reg_key)
+
+    return redirect("/privacy-policy", code=307)
+
+@user.route("/privacy-policy", methods=["POST"])
+def privacy_policy():
+    ip_address = request.environ.get("HTTP_X_REAL_IP", request.remote_addr)
+
+    try:
+        user = server.access_check(ip_address)
+    except ConnectionRefusedError:
+        return render_template("errors/backend_lost.html")
+
+    if user.get("external") is True:
+        branch_name, commits = __get_developer_infos()
+        return render_template("user/about.html", branch_name=branch_name, commits=commits, external=True)
+    elif user.get("registered") is True:
+        return redirect("/dashboard", code=307)
+    elif user.get("deactivated") is True:
+        deactivation_reason = server.get_reg_key_deactivation_reason_by_ip(ip_address)
+        return render_template("errors/deactivated.html", reason=deactivation_reason)
+    elif user.get("ip_stolen") is True:
+        return render_template("errors/ip_stolen.html")
+
+    reg_key = session.get("reg_key")
+    if __reg_key_check(reg_key) is False:
+        flash(_l("Invalid registration key.") + " Code: 100")
+        return render_template("user/register.html")
+    
+    if server.is_reg_key_deactivated(reg_key) is True:
+        deactivation_reason = server.get_reg_key_deactivation_reason(reg_key)
+        if deactivation_reason is None:
+            flash(_l("Your registration key got deactivated. Please contact the administrator."))
+        else:
+            flash(_l("Your registration key got deactivated. Reason: ") + deactivation_reason)
+        return render_template("user/register.html")
+
+    if "accept_privacy_policy_btn" not in request.form:
+        return render_template("user/privacy_policy.html")
+
     ip_address = session.get("ip_address")
+    server.set_data_policy_accepted(reg_key)
     server.register_device(reg_key, ip_address, request.headers.get("User-Agent"))
 
     return redirect("/dashboard", code=307)

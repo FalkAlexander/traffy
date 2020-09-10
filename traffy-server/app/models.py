@@ -33,6 +33,7 @@ class RegistrationKey(Base):
     created_on = db.Column(db.DateTime, nullable=False)
     active = db.Column(db.Boolean(True), nullable=False)
     eula_accepted = db.Column(db.Boolean(False), nullable=False)
+    data_policy_accepted = db.Column(db.Boolean(False), nullable=False)
     identity = db.Column(db.BigInteger, db.ForeignKey("identity.id"))
     enable_accounting = db.Column(db.Boolean(True), nullable=False)
     daily_topup_volume = db.Column(db.BigInteger, nullable=True)
@@ -49,6 +50,7 @@ class RegistrationKey(Base):
         self.created_on = datetime.now()
         self.active = True
         self.eula_accepted = False
+        self.data_policy_accepted = False
         self.identity = identity
         self.enable_accounting = True
         self.daily_topup_volume = None
