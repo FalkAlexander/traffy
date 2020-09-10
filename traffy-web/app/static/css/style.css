@@ -857,7 +857,7 @@ nav a:hover {
 }
 
 .table .table-cell.tiny {
-  width: 60px !important;
+  width: 70px !important;
 }
 
 .table .table-cell.small {
@@ -1383,7 +1383,8 @@ textarea {
   }
 }
 
-.info-hover-badge {
+.info-hover-badge,
+.flag-hover-badge {
   width: 20px;
   height: 20px;
   background: #646972;
@@ -1393,11 +1394,46 @@ textarea {
   text-align: center;
   font-size: 16px;
   background: url("../icons/device.svg") #8b9ab4 no-repeat;
-  background-position: center;
+  background-position: center !important;
 }
 
-.info-hover-badge:hover {
+.info-hover-badge:hover,
+.flag-hover-badge:hover {
   opacity: 100%;
+}
+
+.flag-hover-container {
+  display: inline-flex;
+  flex-wrap: wrap;
+}
+
+.flag-hover-badge {
+  background-size: 84% !important;
+  margin: 1px;
+}
+
+.flag-hover-badge.deactivated {
+  background: url("../icons/deactivated.svg") #8b9ab4 no-repeat;
+}
+
+.flag-hover-badge.deletion {
+  background: url("../icons/deletion.svg") #8b9ab4 no-repeat;
+}
+
+.flag-hover-badge.shaped {
+  background: url("../icons/shaped.svg") #8b9ab4 no-repeat;
+}
+
+.flag-hover-badge.custom-settings {
+  background: url("../icons/custom-settings.svg") #8b9ab4 no-repeat;
+}
+
+.flag-hover-badge.accounting-disabled {
+  background: url("../icons/accounting-disabled.svg") #8b9ab4 no-repeat;
+}
+
+.flag-hover-badge.move {
+  background: url("../icons/move.svg") #8b9ab4 no-repeat;
 }
 
 .cell-text {
@@ -1408,7 +1444,8 @@ textarea {
   margin-right: -20px;
 }
 
-.info-hover-badge .tooltiptext {
+.info-hover-badge .tooltiptext,
+.flag-hover-badge .tooltiptext {
   visibility: hidden;
   background-color: #000;
   color: #fff;
@@ -1425,7 +1462,8 @@ textarea {
   margin-left: -55px;
 }
 
-.info-hover-badge:hover .tooltiptext {
+.info-hover-badge:hover .tooltiptext,
+.flag-hover-badge:hover .tooltiptext {
   visibility: visible;
 }
 

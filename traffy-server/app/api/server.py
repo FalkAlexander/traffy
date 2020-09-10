@@ -599,7 +599,25 @@ class ServerAPI:
             credit = self.accounting_srv.get_credit(session, row, gib=True)[0]
             if credit < 0:
                 credit = 0
-            search_results.append(KeyRow(row.key, identity.last_name, identity.first_name, dormitory_name, identity.room, credit, row.active))
+            
+            key_row = KeyRow(row.key, identity.last_name, identity.first_name, dormitory_name, identity.room, credit, row.active)
+            
+            if identity.new_dormitory_id is not None or identity.new_room is not None:
+                key_row.set_flag_move(True)
+            
+            if row.deletion_date is not None:
+                key_row.set_flag_deletion(True)
+            
+            if self.accounting_srv.is_reg_key_shaped(session, row) is True:
+                key_row.set_flag_shaped(True)
+            
+            if row.enable_accounting is False:
+                key_row.set_flag_accounting_disabled(True)
+            
+            if row.daily_topup_volume is not None:
+                key_row.set_flag_custom_settings(True)
+
+            search_results.append(key_row)
 
         session.close()
         return search_results
@@ -635,7 +653,25 @@ class ServerAPI:
             credit = self.accounting_srv.get_credit(session, row, gib=True)[0]
             if credit < 0:
                 credit = 0
-            rows.append(KeyRow(row.key, identity.last_name, identity.first_name, dormitory_name, identity.room, credit, row.active))
+
+            key_row = KeyRow(row.key, identity.last_name, identity.first_name, dormitory_name, identity.room, credit, row.active)
+            
+            if identity.new_dormitory_id is not None or identity.new_room is not None:
+                key_row.set_flag_move(True)
+            
+            if row.deletion_date is not None:
+                key_row.set_flag_deletion(True)
+            
+            if self.accounting_srv.is_reg_key_shaped(session, row) is True:
+                key_row.set_flag_shaped(True)
+            
+            if row.enable_accounting is False:
+                key_row.set_flag_accounting_disabled(True)
+            
+            if row.daily_topup_volume is not None:
+                key_row.set_flag_custom_settings(True)
+
+            rows.append(key_row)
 
         session.close()
         return rows
@@ -1117,6 +1153,7 @@ class KeyRow():
     room = ""
     credit = ""
     active = True
+    flags = {}
 
     def __init__(self, reg_key, last_name, first_name, dormitory, room, credit, active):
         self.reg_key = reg_key
@@ -1126,6 +1163,28 @@ class KeyRow():
         self.room = room
         self.credit = credit
         self.active = active
+        self.flags = {
+            "deletion": False,
+            "shaped": False,
+            "custom_settings": False,
+            "accounting_disabled": False,
+            "move": False
+        }
+    
+    def set_flag_deletion(self, boolean):
+        self.flags["deletion"] = boolean
+    
+    def set_flag_shaped(self, boolean):
+        self.flags["shaped"] = boolean
+
+    def set_flag_custom_settings(self, boolean):
+        self.flags["custom_settings"] = boolean
+    
+    def set_flag_accounting_disabled(self, boolean):
+        self.flags["accounting_disabled"] = boolean
+    
+    def set_flag_move(self, boolean):
+        self.flags["move"] = boolean
 
 class IdentityRow():
     id = ""

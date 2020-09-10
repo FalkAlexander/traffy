@@ -66,19 +66,55 @@
             <div class="table-cell medium collapse">{{ _("Dormitory") }}</div>
             <div class="table-cell tiny collapse">{{ _("Room") }}</div>
             <div class="table-cell small collapse">{{ _("Credit") }}</div>
+            <div class="table-cell tiny collapse">{{ _("Flags") }}</div>
             <div class="table-cell-button"></div>
           </div>
           {% for row in rows %}
-          {% if row.active %}
           <div class="table-row">
-          {% else %}
-          <div class="table-row deactivated">
-          {% endif %}
             <div class="table-cell big">{{ row.last_name }}</div>
             <div class="table-cell big">{{ row.first_name }}</div>
             <div class="table-cell medium collapse">{{ row.dormitory }}</div>
             <div class="table-cell tiny collapse">{{ row.room }}</div>
             <div class="table-cell small collapse">{{ row.credit }} GiB</div>
+            <div class="table-cell tiny collapse">
+              <div class="flag-hover-container">
+                {% if row.flags.get("deletion") %}
+                <div class="flag-hover-badge deletion">
+                  <div class="tooltiptext">{{ _("Scheduled for deletion") }}</div>
+                </div>
+                {% endif %}
+
+                {% if not row.active %}
+                <div class="flag-hover-badge deactivated">
+                  <div class="tooltiptext">{{ _("Deactivated") }}</div>
+                </div>
+                {% endif %}
+
+                {% if row.flags.get("shaped") %}
+                <div class="flag-hover-badge shaped">
+                  <div class="tooltiptext">{{ _("Traffic shaping active") }}</div>
+                </div>
+                {% endif %}
+
+                {% if row.flags.get("custom_settings") %}
+                <div class="flag-hover-badge custom-settings">
+                  <div class="tooltiptext">{{ _("Custom credit settings activated") }}</div>
+                </div>
+                {% endif %}
+
+                {% if row.flags.get("accounting_disabled") %}
+                <div class="flag-hover-badge accounting-disabled">
+                  <div class="tooltiptext">{{ _("Accounting disabled") }}</div>
+                </div>
+                {% endif %}
+
+                {% if row.flags.get("move") %}
+                <div class="flag-hover-badge move">
+                  <div class="tooltiptext">{{ _("Scheduled for move") }}</div>
+                </div>
+                {% endif %}
+              </div>
+            </div>
             <div class="table-cell-button">
               <input name="stats_btn" type="submit" value="">
                 <form method="POST">
