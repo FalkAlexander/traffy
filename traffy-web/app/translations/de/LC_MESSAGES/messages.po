@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2020-09-08 19:47+0200\n"
-"PO-Revision-Date: 2020-09-08 19:49+0200\n"
+"POT-Creation-Date: 2020-09-11 00:35+0200\n"
+"PO-Revision-Date: 2020-09-11 00:38+0200\n"
 "Last-Translator: Falk Seidl <hi@falsei.de>\n"
 "Language: de\n"
 "Language-Team: German <hi@falsei.de>\n"
@@ -26,24 +26,24 @@ msgid "Wrong credentials. This attempt got reported."
 msgstr "Ungültige Zugangsdaten. Der Anmeldeversuch wurde gemeldet."
 
 #: app/admin/views.py:63 app/admin/views.py:67 app/admin/views.py:467
-#: app/admin/views.py:471 app/user/views.py:200 app/user/views.py:204
+#: app/admin/views.py:471 app/user/views.py:241 app/user/views.py:245
 msgid "Accounted"
 msgstr "Angerechnet"
 
 #: app/admin/views.py:64 app/admin/views.py:68 app/admin/views.py:468
-#: app/admin/views.py:472 app/user/views.py:201 app/user/views.py:205
+#: app/admin/views.py:472 app/user/views.py:242 app/user/views.py:246
 msgid "Timerule"
 msgstr "Zeitregel"
 
 #: app/admin/views.py:65 app/admin/views.py:69 app/admin/views.py:469
 #: app/admin/views.py:473 app/templates/admin/key-page.html:61
-#: app/templates/user/dashboard_advanced.html:91 app/user/views.py:202
-#: app/user/views.py:206
+#: app/templates/user/dashboard_advanced.html:91 app/user/views.py:243
+#: app/user/views.py:247
 msgid "Shaped"
 msgstr "Gedrosselt"
 
 #: app/admin/views.py:66 app/admin/views.py:70 app/admin/views.py:470
-#: app/admin/views.py:474 app/user/views.py:203 app/user/views.py:207
+#: app/admin/views.py:474 app/user/views.py:244 app/user/views.py:248
 msgid "Exceptions"
 msgstr "Ausnahmen"
 
@@ -88,6 +88,7 @@ msgid "Device unregistered"
 msgstr "Gerät de-registriert."
 
 #: app/admin/views.py:327 app/user/views.py:97 app/user/views.py:138
+#: app/user/views.py:178
 msgid "Invalid registration key."
 msgstr "Ungültiger Registrierungsschlüssel."
 
@@ -402,7 +403,7 @@ msgstr "Benutzername"
 #: app/templates/admin/accounts.html:52 app/templates/admin/add-account.html:48
 #: app/templates/admin/add-regcode.html:49
 #: app/templates/admin/edit-identity.html:49
-#: app/templates/admin/key-page.html:79 app/templates/admin/regcodes.html:65
+#: app/templates/admin/key-page.html:79 app/templates/admin/regcodes.html:64
 #: app/templates/user/dashboard_advanced.html:131
 msgid "Surname"
 msgstr "Nachname"
@@ -410,7 +411,7 @@ msgstr "Nachname"
 #: app/templates/admin/accounts.html:53 app/templates/admin/add-account.html:46
 #: app/templates/admin/add-regcode.html:47
 #: app/templates/admin/edit-identity.html:47
-#: app/templates/admin/regcodes.html:66
+#: app/templates/admin/regcodes.html:65
 msgid "First name"
 msgstr "Vorname"
 
@@ -461,6 +462,7 @@ msgstr "Debitor-Nr."
 
 #: app/templates/admin/add-regcode.html:53
 #: app/templates/admin/edit-identity.html:53
+#: app/templates/admin/regcodes.html:66
 msgid "Dormitory"
 msgstr "Wohnheim"
 
@@ -972,9 +974,33 @@ msgstr "Testcode hinzufügen"
 msgid "Clear Results"
 msgstr "Suchergebnisse bereinigen"
 
-#: app/templates/admin/regcodes.html:64
-msgid "Registration Key"
-msgstr "Registrierungscode"
+#: app/templates/admin/regcodes.html:69
+msgid "Flags"
+msgstr "Zustand"
+
+#: app/templates/admin/regcodes.html:83
+msgid "Scheduled for deletion"
+msgstr "Vorgemerkt zum Löschen"
+
+#: app/templates/admin/regcodes.html:89
+msgid "Deactivated"
+msgstr "Deaktiviert"
+
+#: app/templates/admin/regcodes.html:95
+msgid "Traffic shaping active"
+msgstr "Drosselung aktiv"
+
+#: app/templates/admin/regcodes.html:101
+msgid "Custom credit settings activated"
+msgstr "Benutzerdefiniertes Datenvolumen"
+
+#: app/templates/admin/regcodes.html:107
+msgid "Accounting disabled"
+msgstr "Datenzählung deaktiviert"
+
+#: app/templates/admin/regcodes.html:113
+msgid "Scheduled for move"
+msgstr "Mieterumzug geplant"
 
 #: app/templates/admin/includes/footer.html:2
 msgid "Görlitz Student Dormitory"
@@ -1185,10 +1211,12 @@ msgid "Terms and Conditions"
 msgstr "Rahmennetzordnung"
 
 #: app/templates/user/conditions.html:20
+#: app/templates/user/privacy_policy.html:20
 msgid "Acceptance is required for using this network"
 msgstr "Die Nutzung des Netzwerks verpflichtet zur Akzeptanz"
 
 #: app/templates/user/conditions.html:28
+#: app/templates/user/privacy_policy.html:28
 msgid "Accept"
 msgstr "Akzeptieren"
 
@@ -1255,6 +1283,11 @@ msgstr ""
 msgid "Deregister"
 msgstr "Abmelden"
 
+#: app/templates/user/privacy_policy.html:6
+#: app/templates/user/privacy_policy.html:19
+msgid "Privacy Policy"
+msgstr "Datenschutzerklärung"
+
 #: app/templates/user/reedem.html:6
 msgid "Reedem Voucher"
 msgstr "Aktionscode einlösen"
@@ -1287,14 +1320,14 @@ msgstr "Ein Registrierungsschlüssel wird für den Netzwerkzugriff benötigt"
 msgid "Register"
 msgstr "Anmelden"
 
-#: app/user/views.py:103 app/user/views.py:144
+#: app/user/views.py:103 app/user/views.py:144 app/user/views.py:184
 msgid ""
 "Your registration key got deactivated. Please contact the administrator."
 msgstr ""
 "Dein Registrierungscode wurde deaktiviert. Bitte kontaktiere den "
 "Administrator."
 
-#: app/user/views.py:105 app/user/views.py:146
+#: app/user/views.py:105 app/user/views.py:146 app/user/views.py:186
 msgid "Your registration key got deactivated. Reason: "
 msgstr "Dein Registrierungscode wurde deaktiviert. Grund: "
 
@@ -1302,7 +1335,7 @@ msgstr "Dein Registrierungscode wurde deaktiviert. Grund: "
 msgid "Maximum number of devices already registered."
 msgstr "Maximale Anzahl an Geräten ist bereits registriert."
 
-#: app/user/views.py:295
+#: app/user/views.py:336
 msgid "Invalid voucher"
 msgstr "Ungültiger Aktionscode"
 
@@ -1417,3 +1450,6 @@ msgstr "Ungültiger Aktionscode"
 
 #~ msgid "Total Traffic Consumption"
 #~ msgstr "Gesamtverbrauch"
+
+#~ msgid "Registration Key"
+#~ msgstr "Registrierungscode"
