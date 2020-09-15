@@ -195,12 +195,6 @@ def apply_dns_rule(delete=False):
                 "state",
                 "--state",
                 states[parameter],
-                "-m",
-                "limit",
-                "--limit",
-                "1/s",
-                "--limit-burst",
-                "30",
                 "-j",
                 "ACCEPT"
                 ], stdout=subprocess.PIPE, preexec_fn=os.setsid).wait()
