@@ -17,6 +17,7 @@
  along with this program; if not, see <http://www.gnu.org/licenses/>.
 """
 
+from app.util import ipset_helper
 import config
 import os
 import subprocess
@@ -33,11 +34,6 @@ def create_box(reg_key, delete=False):
 
     if delete is True:
         action = "-X"
-        destroy_ipset(reg_key)
-    else:
-        create_ipset(reg_key)
-        for exc_ip in config.SHAPING_EXCEPTIONS:
-            add_ipset_ip(reg_key, exc_ip)
 
     for name in names:
         subprocess.Popen([
@@ -231,7 +227,7 @@ def add_exception_box_ips(reg_key, ip_address):
         "-m",
         "set",
         "--match-set",
-        reg_key,
+        "exceptions",
         "src"
         ], stdout=subprocess.PIPE, preexec_fn=os.setsid).wait()
 
@@ -243,7 +239,7 @@ def add_exception_box_ips(reg_key, ip_address):
         "-m",
         "set",
         "--match-set",
-        reg_key,
+        "exceptions",
         "dst",
         "-s",
         ip_address
@@ -267,7 +263,7 @@ def remove_exception_box_ips(reg_key, ip_address):
         "-m",
         "set",
         "--match-set",
-        reg_key,
+        "exceptions",
         "src"
         ], stdout=subprocess.PIPE, preexec_fn=os.setsid).wait()
 
@@ -279,7 +275,7 @@ def remove_exception_box_ips(reg_key, ip_address):
         "-m",
         "set",
         "--match-set",
-        reg_key,
+        "exceptions",
         "dst",
         "-s",
         ip_address
@@ -350,41 +346,10 @@ def parse_iptables_output(cmd):
             traffic += int(element)
         return traffic
 
-def create_ipset(reg_key):
-    if config.STATELESS:
-        return
-
-    cmd = subprocess.Popen([
-        "sudo",
-        "ipset",
-        "create",
-        reg_key,
-        "hash:net"
-        ], stdout=subprocess.PIPE)
-    cmd.wait()
-
-def add_ipset_ip(reg_key, ip_address):
-    if config.STATELESS:
-        return
-
-    cmd = subprocess.Popen([
-        "sudo",
-        "ipset",
-        "add",
-        reg_key,
-        ip_address
-        ], stdout=subprocess.PIPE)
-    cmd.wait()
-
-def destroy_ipset(reg_key):
-    if config.STATELESS:
-        return
-
-    cmd = subprocess.Popen([
-        "sudo",
-        "ipset",
-        "destroy",
-        reg_key
-        ], stdout=subprocess.PIPE)
-    cmd.wait()
-
+def create_exception_ipset(delete=False):
+    if delete is True:
+        ipset_helper.destroy_ipset("exceptions")
+    else:
+        ipset_helper.create_ipset("exceptions")
+        for exc_ip in config.ACCOUNTING_EXCEPTIONS:
+            ipset_helper.add_ipset_ip("exceptions", exc_ip)

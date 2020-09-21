@@ -216,6 +216,9 @@ class Server():
             iptables_rules_manager.create_portal_route(delete=True)
             iptables_rules_manager.create_portal_box(delete=True)
 
+            # Delete Exception IpSet
+            iptables_accounting_manager.create_exception_ipset(delete=True)
+
             logging.info("Clearing accounting chains…")
             self.remove_accounting_chains()
             logging.info("Stopped accounting services")
@@ -224,8 +227,11 @@ class Server():
 
     def startup(self):
         if not config.STATELESS:
-        # Setup Shaping
+            # Setup Shaping
             shaping_manager.setup_shaping()
+
+            # Setup Exception IpSet
+            iptables_accounting_manager.create_exception_ipset(delete=False)
 
             # Apply Firewall Rules
             iptables_rules_manager.create_portal_box(delete=False)
