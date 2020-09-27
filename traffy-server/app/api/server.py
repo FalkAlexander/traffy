@@ -385,10 +385,13 @@ class ServerAPI:
     def access_check(self, ip_address):
         session = self.db.create_session()
 
-        mac_address = self.__get_mac_pair_for_ip(ip_address)
+        try:
+            mac_address = self.__get_mac_pair_for_ip(ip_address)
 
-        ip_address_query = self.get_ip_address_query_by_ip(session, ip_address)
-        mac_address_query = self.get_mac_address_query_by_mac(session, mac_address)
+            ip_address_query = self.get_ip_address_query_by_ip(session, ip_address)
+            mac_address_query = self.get_mac_address_query_by_mac(session, mac_address)
+        except:
+            session.rollback()
 
         if self.__is_ip_in_range(ip_address) is False:
             session.close()
@@ -406,7 +409,11 @@ class ServerAPI:
             session.close()
             return UserStatus(registered=False, deactivated=False, ip_stolen=True, external=False)
 
-        address_pair_query = self.get_address_pair_query_by_mac_ip(session, mac_address_query, ip_address_query)
+        try:
+            address_pair_query = self.get_address_pair_query_by_mac_ip(session, mac_address_query, ip_address_query)
+        except:
+            session.rollback()
+
         if address_pair_query is None:
             session.close()
             return UserStatus(registered=False, deactivated=False, ip_stolen=False, external=False)
@@ -567,7 +574,6 @@ class ServerAPI:
                 labels.append(date.strftime("%d.%m."))
 
             active_users = session.query(RegistrationKey).filter_by(active=True).count()
-            ip_adresses = session.query(IpAddress).count()
             registered_users = session.query(AddressPair).count()
 
             traffic_rows = session.query(Traffic).filter_by(timestamp=today).all()
@@ -745,8 +751,7 @@ class ServerAPI:
 
             session.commit()
             success = True
-        except Exception as ex:
-            print(ex)
+        except:
             session.rollback()
             success = False
         finally:
@@ -1137,7 +1142,7 @@ class ServerAPI:
             reader = codecs.getreader("utf-8")
             obj = json.load(reader(response))
 
-            return(obj["result"]["company"]);
+            return(obj["result"]["company"])
         except:
             return("N/A")
     
