@@ -216,12 +216,12 @@ class Server():
             iptables_rules_manager.create_portal_route(delete=True)
             iptables_rules_manager.create_portal_box(delete=True)
 
-            # Delete Exception IpSet
-            iptables_accounting_manager.create_exception_ipset(delete=True)
-
             logging.info("Clearing accounting chains…")
             self.remove_accounting_chains()
             logging.info("Stopped accounting services")
+
+            # Delete Exception Ipset
+            iptables_accounting_manager.create_exception_ipset(delete=True)
 
             logging.info("Network not managed anymore")
 
@@ -230,7 +230,7 @@ class Server():
             # Setup Shaping
             shaping_manager.setup_shaping()
 
-            # Setup Exception IpSet
+            # Setup Exception Ipset
             iptables_accounting_manager.create_exception_ipset(delete=False)
 
             # Apply Firewall Rules
