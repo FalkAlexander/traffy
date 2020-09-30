@@ -227,7 +227,7 @@ def add_exception_box_ips(reg_key, ip_address):
         "-m",
         "set",
         "--match-set",
-        "exceptions",
+        "TRAFFY-EXC",
         "src"
         ], stdout=subprocess.PIPE, preexec_fn=os.setsid).wait()
 
@@ -239,7 +239,7 @@ def add_exception_box_ips(reg_key, ip_address):
         "-m",
         "set",
         "--match-set",
-        "exceptions",
+        "TRAFFY-EXC",
         "dst",
         "-s",
         ip_address
@@ -263,7 +263,7 @@ def remove_exception_box_ips(reg_key, ip_address):
         "-m",
         "set",
         "--match-set",
-        "exceptions",
+        "TRAFFY-EXC",
         "src"
         ], stdout=subprocess.PIPE, preexec_fn=os.setsid).wait()
 
@@ -275,7 +275,7 @@ def remove_exception_box_ips(reg_key, ip_address):
         "-m",
         "set",
         "--match-set",
-        "exceptions",
+        "TRAFFY-EXC",
         "dst",
         "-s",
         ip_address
@@ -348,8 +348,8 @@ def parse_iptables_output(cmd):
 
 def create_exception_ipset(delete=False):
     if delete is True:
-        ipset_helper.destroy_ipset("exceptions")
+        ipset_helper.destroy_ipset("TRAFFY-EXC")
     else:
-        ipset_helper.create_ipset("exceptions")
+        ipset_helper.create_ipset("TRAFFY-EXC")
         for exc_ip in config.ACCOUNTING_EXCEPTIONS:
-            ipset_helper.add_ipset_ip("exceptions", exc_ip)
+            ipset_helper.add_ipset_ip("TRAFFY-EXC", exc_ip)
