@@ -45,7 +45,6 @@ class ServerAPI:
         self.db = server.db
         self.accounting_srv = server.accounting_srv
         self.dev_mode_test = server.dev_mode_test
-        self.__migration_init_vendor_column()
 
     def get_server_version(self):
         return self.server_version
