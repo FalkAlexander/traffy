@@ -220,12 +220,18 @@ class Server():
             self.remove_accounting_chains()
             logging.info("Stopped accounting services")
 
+            # Delete Exception Ipset
+            iptables_accounting_manager.create_exception_ipset(delete=True)
+
             logging.info("Network not managed anymore")
 
     def startup(self):
         if not config.STATELESS:
-        # Setup Shaping
+            # Setup Shaping
             shaping_manager.setup_shaping()
+
+            # Setup Exception Ipset
+            iptables_accounting_manager.create_exception_ipset(delete=False)
 
             # Apply Firewall Rules
             iptables_rules_manager.create_portal_box(delete=False)
