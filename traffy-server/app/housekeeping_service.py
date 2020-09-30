@@ -103,6 +103,15 @@ class HousekeepingThread(threading.Thread):
                     ip_address = session.query(IpAddress).filter_by(id=device.ip_address).first()
                     self.server_api.deregister_device(ip_address.address_v4)
 
+                identity_query = session.query(Identity).filter(Identity.id == reg_key_query.identity).first()
+                identity_query.room = identity_query.new_room
+                identity_query.new_room = None
+                identity_query.new_dormitory_id = None
+                identity_query.move_date = None
+                session.commit()
+
+                logging.info("Moved user into a new room")
+
     def __remove_orphaned_reg_keys(self, session):
         deletion_keys = session.query(RegistrationKey).filter(RegistrationKey.deletion_date != None).all()
         for row in deletion_keys:
