@@ -611,6 +611,28 @@ class ServerAPI:
 
                 if search_term in identity.first_name.lower() or search_term in identity.last_name.lower() or search_term in identity.room.lower() or search_term in identity.mail.lower():
                     reg_key_query.append(query)
+                else:
+                    added = False
+                    address_pair_query = session.query(AddressPair).filter_by(reg_key=query.id).first()
+
+                    if address_pair_query is None:
+                        continue
+
+                    for ip_address_query in session.query(IpAddress).filter_by(id=address_pair_query.ip_address).all():
+                        if search_term in ip_address_query.address_v4:
+                            reg_key_query.append(query)
+                            added = True
+                            break
+                        elif ip_address_query.address_v6 is not None:
+                            if search_term in ip_address_query.address_v6:
+                                reg_key_query.append(query)
+                                break
+                    
+                    if added is False:
+                        for mac_address_query in session.query(MacAddress).filter_by(id=address_pair_query.mac_address).all():
+                            if search_term in mac_address_query.address:
+                                reg_key_query.append(query)
+                                break
 
         reg_key_query.reverse()
 
