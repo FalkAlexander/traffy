@@ -52,5 +52,5 @@ class MailHelper():
         self.__send_mail(self.shaped_recipients, message)
 
     def __send_mail(self, recipients, message):
-        mail_server.sendmail(self.sender_address, recipients, message)
+        self.mail_server.sendmail(self.sender_address, recipients, message)
 
