@@ -52,7 +52,7 @@ class HousekeepingService():
 
     def restart(self):
         self.stop()
-        self.start(self.interval)
+        self.start(self.interval, self.server_api)
 
 
 class HousekeepingThread(threading.Thread):
