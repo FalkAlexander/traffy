@@ -56,7 +56,7 @@ class HousekeepingService():
 
 
 class HousekeepingThread(threading.Thread):
-    run = True
+    running = True
     db = NotImplemented
     interval = NotImplemented
     housekeeping_srv = NotImplemented
@@ -73,10 +73,10 @@ class HousekeepingThread(threading.Thread):
         self.do_housekeeping()
 
     def stop(self):
-        self.run = False
+        self.running = False
 
     def do_housekeeping(self):
-        while self.run:
+        while self.running:
             try:
                 session = self.db.create_session()
                 self.__remove_orphaned_devices(session)
