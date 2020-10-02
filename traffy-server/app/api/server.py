@@ -727,8 +727,9 @@ class ServerAPI:
         try:
             session = self.db.create_session()
 
-            session.add(Identity(customer_id=person_id, first_name=first_name, last_name=surname, mail=mail, dormitory_id=dormitory_id, room=room))
-            identity = session.query(Identity).filter_by(customer_id=person_id, first_name=first_name, last_name=surname, mail=mail, dormitory_id=dormitory_id, room=room).first()
+            identity = Identity(customer_id=person_id, first_name=first_name, last_name=surname, mail=mail, dormitory_id=dormitory_id, room=room)
+            session.add(identity)
+            session.commit()
 
             reg_key = generate_registration_key.generate()
 
@@ -761,7 +762,7 @@ class ServerAPI:
             if move_date != "" and move_date is not None:
                 move_date = datetime.strptime(move_date, "%Y-%m-%d")
                 identity_query.move_date = move_date
-                identity_query.new_dormitory_id = dormitory_id 
+                identity_query.new_dormitory_id = dormitory_id
                 identity_query.new_room = room
             else:
                 identity_query.move_date = None
