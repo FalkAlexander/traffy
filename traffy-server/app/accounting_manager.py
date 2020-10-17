@@ -43,7 +43,7 @@ class AccountingService():
 
     def start(self, interval):
         self.interval = interval
-        keys_per_thread = 25
+        keys_per_thread = config.USERS_PER_ACCOUNTING_THREAD
 
         session = self.db.create_session()
         threads_needed = int(session.query(RegistrationKey).count() / keys_per_thread) + 1
@@ -366,6 +366,8 @@ class AccountingThread(threading.Thread):
                     if reg_key.active is False or reg_key.enable_accounting is False:
                         continue
 
+                    time.sleep(config.ACCOUNTING_THREAD_SLEEP_INTERVAL)
+
                     if session.query(AddressPair).filter_by(reg_key=reg_key.id).count() != 0:
                         self.update_interval_used_traffic(session,
                                                         reg_key,
@@ -375,8 +377,6 @@ class AccountingThread(threading.Thread):
                                                         iptables_accounting_manager.get_exception_box_egress_bytes(reg_key.id))
                     else:
                         self.update_interval_used_traffic(session, reg_key, 0, 0, 0, 0, inactive=True)
-                    
-                    time.sleep(0.150)
             except:
                 session.rollback()
                 logging.debug("Exception thrown in Accounting Service")
