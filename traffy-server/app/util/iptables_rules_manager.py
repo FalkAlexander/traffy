@@ -17,6 +17,7 @@
  along with this program; if not, see <http://www.gnu.org/licenses/>.
 """
 
+from app.util import ipset_helper
 import config
 import os
 import subprocess
@@ -254,33 +255,39 @@ def apply_block_rule(delete=False):
 
     logging.info("Applied unregistered users ACL")
 
+
 def unlock_registered_device(ip_address):
     if config.STATELESS:
         return
 
-    table = ["nat", "filter"]
-    chain = ["PREROUTING", "PORTAL"]
+    ipset_helper.add_ipset_ip("TRAFFY-UNLOCKED", ip_address)
 
-    for parameter in range(0, 2):
-        subprocess.Popen([
-            "sudo",
-            "iptables",
-            "-t",
-            table[parameter],
-            "-I",
-            chain[parameter],
-            "-s",
-            ip_address,
-            "-j",
-            "RETURN"
-            ], stdout=subprocess.PIPE, preexec_fn=os.setsid).wait()
+    logging.debug("Added registration to ipset TRAFFY-UNLOCKED IP: " + ip_address)
 
-    logging.debug("Added registration rule of " + ip_address)
 
 def relock_registered_device(ip_address):
     if config.STATELESS:
         return
 
+    ipset_helper.remove_ipset_ip("TRAFFY-UNLOCKED", ip_address)
+
+    logging.debug("Cleared registration to ipset TRAFFY-UNLOCKED IP: " + ip_address)
+
+
+def setup_unlock_device_rules(delete=False):
+    if config.STATELESS:
+        return
+
+    if delete is True:
+        ipset_helper.destroy_ipset("TRAFFY-UNLOCKED")
+    else:
+        ipset_helper.create_ipset("TRAFFY-UNLOCKED", "hash:ip")
+
+    action = "-I"
+
+    if delete is True:
+        action = "-D"
+
     table = ["nat", "filter"]
     chain = ["PREROUTING", "PORTAL"]
 
@@ -290,13 +297,13 @@ def relock_registered_device(ip_address):
             "iptables",
             "-t",
             table[parameter],
-            "-D",
+            action,
             chain[parameter],
-            "-s",
-            ip_address,
+            "-m",
+            "set",
+            "--match-set",
+            "TRAFFY-UNLOCKED",
+            "src",
             "-j",
             "RETURN"
-            ], stdout=subprocess.PIPE, preexec_fn=os.setsid).wait()
-
-    logging.debug("Cleared registration rule of " + ip_address)
-
+        ], stdout=subprocess.PIPE, preexec_fn=os.setsid).wait()
