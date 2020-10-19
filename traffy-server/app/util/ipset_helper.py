@@ -21,7 +21,7 @@ import config
 import subprocess
 
 
-def create_ipset(name):
+def create_ipset(name, set_type="hash:net"):
     if config.STATELESS:
         return
 
@@ -30,7 +30,7 @@ def create_ipset(name):
         "ipset",
         "create",
         name,
-        "hash:net"
+        set_type
         ], stdout=subprocess.PIPE)
     cmd.wait()
 
@@ -43,6 +43,20 @@ def add_ipset_ip(name, ip_net):
         "sudo",
         "ipset",
         "add",
+        name,
+        ip_net
+        ], stdout=subprocess.PIPE)
+    cmd.wait()
+
+
+def remove_ipset_ip(name, ip_net):
+    if config.STATELESS:
+        return
+
+    cmd = subprocess.Popen([
+        "sudo",
+        "ipset",
+        "del",
         name,
         ip_net
         ], stdout=subprocess.PIPE)
