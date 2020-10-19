@@ -278,9 +278,7 @@ def setup_unlock_device_rules(delete=False):
     if config.STATELESS:
         return
 
-    if delete is True:
-        ipset_helper.destroy_ipset("TRAFFY-UNLOCKED")
-    else:
+    if delete is False:
         ipset_helper.create_ipset("TRAFFY-UNLOCKED", "hash:ip")
 
     action = "-I"
@@ -307,3 +305,6 @@ def setup_unlock_device_rules(delete=False):
             "-j",
             "RETURN"
         ], stdout=subprocess.PIPE, preexec_fn=os.setsid).wait()
+    
+    if delete is True:
+        ipset_helper.destroy_ipset("TRAFFY-UNLOCKED")
