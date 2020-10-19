@@ -39,6 +39,8 @@ def create_app():
     app.url_map.strict_slashes = False
     app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
     app.config["SQLALCHEMY_DATABASE_URI"] = config.DATABASE_URI
+    app.config["SQLALCHEMY_POOL_SIZE"] = 200
+    app.config["SQLALCHEMY_MAX_OVERFLOW"] = 50
     app.config["SESSION_COOKIE_SECURE"] = True
     app.config["SESSION_COOKIE_HTTPONLY"] = True
 

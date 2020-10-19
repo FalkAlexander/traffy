@@ -37,7 +37,7 @@ class DatabaseManager():
         self.init_database()
 
     def init_database(self):
-        self.engine = db.create_engine(config.DATABASE_URI, pool_size=20, max_overflow=0)
+        self.engine = db.create_engine(config.DATABASE_URI, pool_size=200, max_overflow=50)
         self.session_factory = sessionmaker(bind=self.engine)
         self.connection = self.engine.connect()
         self.session_scoped = scoped_session(self.session_factory)
