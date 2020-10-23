@@ -80,9 +80,17 @@ def add_ips_to_reg_key_set(ip_address_list, reg_key_id):
 # nftables rules
 #
 
-def insert_forward_chain_forwarding_rule():
-    cmd = "insert rule ip traffy forward iifname %s ip saddr != @exceptions jump acc-ingress" % config.WAN_INTERFACE
-    __execute_command(cmd)
+def insert_accounting_chain_forwarding_rules():
+    commands = []
+
+    commands.append("insert rule ip traffy forward iifname %s ip saddr != @exceptions jump acc-ingress" % config.WAN_INTERFACE)
+    commands.append("insert rule ip traffy forward iifname %s ip saddr = @exceptions jump acc-ingress-exc" % config.WAN_INTERFACE)
+
+    commands.append("insert rule ip traffy forward oifname %s ip daddr != @exceptions jump acc-egress" % config.WAN_INTERFACE)
+    commands.append("insert rule ip traffy forward oifname %s ip daddr = @exceptions jump acc-egress-exc" % config.WAN_INTERFACE)
+
+    for cmd in commands:
+        __execute_command(cmd)
 
 #
 # Generic command executor
