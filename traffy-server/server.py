@@ -21,7 +21,7 @@ from app.database_manager import DatabaseManager
 from app.socket_manager import SocketManager
 from app.models import RegistrationKey, IpAddress, MacAddress, AddressPair
 from app.tests.dev_mode import DevModeTest
-from app.util import iptables_rules_manager, iptables_accounting_manager, shaping_manager, arp_manager
+from app.util import iptables_rules_manager, iptables_accounting_manager, shaping_manager, arp_manager, nftables_manager
 from app.util.mail_helper import MailHelper
 from datetime import datetime
 from app.accounting_manager import AccountingService
@@ -207,46 +207,30 @@ class Server():
             # Shutdown Shaping
             shaping_manager.shutdown_shaping()
 
-            # Clear Firewall Rules
-            iptables_rules_manager.apply_block_rule(delete=True)
-            iptables_rules_manager.apply_redirect_rule(delete=True)
-            iptables_rules_manager.apply_dns_rule(delete=True)
-            self.firewall_relock_unregistered_devices()
-            iptables_rules_manager.setup_unlock_device_rules(delete=True)
-            iptables_rules_manager.attach_traffic_to_portal(delete=True)
-            iptables_rules_manager.create_portal_route(delete=True)
-            iptables_rules_manager.create_portal_box(delete=True)
-
-            logging.info("Clearing accounting chains…")
-            self.remove_accounting_chains()
-            logging.info("Stopped accounting services")
-
-            # Delete Exception Ipset
-            iptables_accounting_manager.create_exception_ipset(delete=True)
+            # Clear traffy table
+            nftables_manager.delete_traffy_table()
 
             logging.info("Network not managed anymore")
 
     def startup(self):
         if not config.STATELESS:
-            # Setup Shaping
+            # Setup shaping
             shaping_manager.setup_shaping()
 
-            # Setup Exception Ipset
-            iptables_accounting_manager.create_exception_ipset(delete=False)
+            # Setup basic requirements
+            nftables_manager.setup_base_configuration()
 
-            # Apply Firewall Rules
-            iptables_rules_manager.create_portal_box(delete=False)
-            iptables_rules_manager.create_portal_route(delete=False)
-            iptables_rules_manager.attach_traffic_to_portal(delete=False)
-            iptables_rules_manager.apply_block_rule(delete=False)
-            iptables_rules_manager.apply_redirect_rule(delete=False)
-            iptables_rules_manager.apply_dns_rule(delete=False)
-            iptables_rules_manager.setup_unlock_device_rules(delete=False)
-            self.firewall_unlock_registered_devices()
+            # Setup captive portal routing
+            nftables_manager.setup_captive_portal_configuration()
+            #add_ips_to_unregistered_set / self.firewall_unlock_registered_devices()
 
-            # Start Accounting
-            logging.info("Preparing accounting chains…")
-            self.setup_accounting_chains()
+            # Setup accounting requirements
+            logging.info("Preparing accounting…")
+            nftables_manager.setup_accounting_configuration()
+            #self.setup_accounting_chains()
+            logging.info("Finished preparing accounting")
+
+            # Start accounting manager            
             self.accounting_srv.start(10)
             logging.info("Started accounting services")
 
