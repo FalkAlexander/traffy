@@ -53,8 +53,9 @@ def setup_accounting_configuration():
     add_accounting_chains()
     add_exceptions_set()
 
+    add_ips_to_exceptions_set(config.ACCOUNTING_EXCEPTIONS)
+
     insert_accounting_chain_forwarding_rules()
-    #add_accounting_matching_rules()
 
 #
 # nftables tables
@@ -120,7 +121,11 @@ def delete_ips_from_registered_set(ip_address_list):
 # Accounting
 
 def add_exceptions_set():
-    cmd = "add set ip traffy exceptions { type ipv4_addr; }"
+    cmd = "add set ip traffy exceptions { type ipv4_addr; flags interval; }"
+    __execute_command(cmd)
+
+def add_ips_to_exceptions_set(ip_address_list):
+    cmd = "add element ip traffy exceptions { %s }" % (", ".join(ip_address_list))
     __execute_command(cmd)
 
 def add_reg_key_set(reg_key_id):
