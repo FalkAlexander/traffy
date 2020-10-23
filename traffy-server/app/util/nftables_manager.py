@@ -18,6 +18,7 @@
 """
 
 import config
+import json
 import os
 import subprocess
 import logging
@@ -52,8 +53,10 @@ def add_forward_chain():
 
 def add_accounting_chains():
     commands = []
+
     commands.append("add chain ip traffy acc-ingress")
     commands.append("add chain ip traffy acc-ingress-exc")
+
     commands.append("add chain ip traffy acc-egress")
     commands.append("add chain ip traffy acc-egress-exc")
 
@@ -115,3 +118,62 @@ def __execute_command(args):
 def __execute_commands(commands):
     for cmd in commands:
         __execute_command(cmd)
+
+#
+# nftables counters
+#
+
+def get_ingress_counter_values():
+    cmd = "-j list chain ip traffy acc-ingress"
+    output = __execute_command(cmd).communicate()[0].decode("utf-8")
+    tree = json.loads(output)
+    
+    return __build_counters_array(tree)
+
+def get_ingress_exceptions_counter_values():
+    cmd = "-j list chain ip traffy acc-ingress-exc"
+    output = __execute_command(cmd).communicate()[0].decode("utf-8")
+    tree = json.loads(output)
+    
+    return __build_counters_array(tree)
+
+def get_egress_counter_values():
+    cmd = "-j list chain ip traffy acc-egress"
+    output = __execute_command(cmd).communicate()[0].decode("utf-8")
+    tree = json.loads(output)
+    
+    return __build_counters_array(tree)
+
+def get_egress_exceptions_counter_values():
+    cmd = "-j list chain ip traffy acc-egress-exc"
+    output = __execute_command(cmd).communicate()[0].decode("utf-8")
+    tree = json.loads(output)
+    
+    return __build_counters_array(tree)
+
+#
+# Parsing
+#
+
+def __build_counters_array(tree):
+    counters = []
+
+    for array in tree["nftables"]:
+        if "rule" not in array:
+            continue
+
+        if "expr" not in array["rule"]:
+            continue
+
+        if "match" not in array["rule"]["expr"][0]:
+            continue
+
+        if "counter" not in array["rule"]["expr"][1]:
+            continue
+
+        reg_key_id = int(array["rule"]["expr"][0]["match"]["right"].strip("@key-"))
+        counter_value = int(array["rule"]["expr"][1]["counter"]["bytes"])
+
+        counters.append(reg_key_id, counter_value)
+    
+    return counters
