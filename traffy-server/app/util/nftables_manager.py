@@ -127,8 +127,8 @@ def add_reg_key_set(reg_key_id):
     cmd = "add set ip traffy key-%s { type ipv4_addr; }" % reg_key_id
     __execute_command(cmd)
 
-def add_ips_to_reg_key_set(ip_address_list, reg_key_id):
-    cmd = "add element ip traffy key-%s { %s }" % (reg_key_id, ", ".join(ip_address_list))
+def add_ip_to_reg_key_set(ip_address, reg_key_id):
+    cmd = "add element ip traffy key-%s { %s }" % (reg_key_id, ip_address)
     __execute_command(cmd)
 
 #
@@ -176,11 +176,11 @@ def add_accounting_matching_rules(reg_key_id):
 
     commands = []
 
-    commands.append("add rule ip traffy acc-ingress ip daddr @key-%s counter name %s-ingress" % (reg_key_id, reg_key_id))
-    commands.append("add rule ip traffy acc-ingress-exc ip daddr @key-%s counter name %s-ingress-exc" % (reg_key_id, reg_key_id))
+    commands.append("add rule ip traffy acc-ingress ip daddr @key-%s counter name %s-ingress" % (reg_key_id, digits_to_chars(reg_key_id)))
+    commands.append("add rule ip traffy acc-ingress-exc ip daddr @key-%s counter name %s-ingress-exc" % (reg_key_id, digits_to_chars(reg_key_id)))
 
-    commands.append("add rule ip traffy acc-egress ip saddr @key-%s counter name %s-egress" % (reg_key_id, reg_key_id))
-    commands.append("add rule ip traffy acc-egress-exc ip saddr @key-%s counter name %s-egress-exc" % (reg_key_id, reg_key_id))
+    commands.append("add rule ip traffy acc-egress ip saddr @key-%s counter name %s-egress" % (reg_key_id, digits_to_chars(reg_key_id)))
+    commands.append("add rule ip traffy acc-egress-exc ip saddr @key-%s counter name %s-egress-exc" % (reg_key_id, digits_to_chars(reg_key_id)))
 
     __execute_commands(commands)
 
@@ -205,14 +205,14 @@ def __execute_commands(commands):
 
 def add_ingress_counters(reg_key_id):
     commands = []
-    commands.append("add counter ip traffy %s-ingress packets 0 bytes 0" % reg_key_id)
-    commands.append("add counter ip traffy %s-ingress-exc packets 0 bytes 0" % reg_key_id)
+    commands.append("add counter ip traffy %s-ingress packets 0 bytes 0" % digits_to_chars(reg_key_id))
+    commands.append("add counter ip traffy %s-ingress-exc packets 0 bytes 0" % digits_to_chars(reg_key_id))
     __execute_commands(commands)
 
 def add_egress_counters(reg_key_id):
     commands = []
-    commands.append("add counter ip traffy %s-egress packets 0 bytes 0" % reg_key_id)
-    commands.append("add counter ip traffy %s-egress-exc packets 0 bytes 0" % reg_key_id)
+    commands.append("add counter ip traffy %s-egress packets 0 bytes 0" % digits_to_chars(reg_key_id))
+    commands.append("add counter ip traffy %s-egress-exc packets 0 bytes 0" % digits_to_chars(reg_key_id))
     __execute_commands(commands)
 
 def get_counter_values():
@@ -229,7 +229,8 @@ def get_counter_values():
         if "bytes" not in array["counter"]:
             continue
 
-        reg_key_id = array["counter"]["name"]
+        key_value = array["counter"]["name"]
+        reg_key_id = chars_to_digits(key_value) + "-" + key_value.split("-", 1)[1]
         counter_value = array["counter"]["bytes"]
 
         counters[reg_key_id] = counter_value
@@ -239,3 +240,21 @@ def get_counter_values():
 def reset_counter_values():
     cmd = "reset counters table ip traffy"
     __execute_command(cmd)
+
+#
+# Util
+#
+
+def digits_to_chars(integer):
+    chr_value = ""
+    for digit in list(str(integer)):
+        chr_value += chr(int(digit) + 97)
+
+    return chr_value
+
+def chars_to_digits(string):
+    ord_value = ""
+    for char in list(str(reg_key_id)):
+        ord_value += str(ord(char) - 97)
+    
+    return ord_value
