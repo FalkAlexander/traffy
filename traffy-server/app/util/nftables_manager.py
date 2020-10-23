@@ -21,20 +21,39 @@ import config
 import json
 import os
 import subprocess
-import logging
 import shlex
 import re
 
 
-def setup_traffy_base_configuration():
+def setup_base_configuration():
     if config.STATELESS:
         return
 
     add_traffy_table()
+    add_prerouting_chain()
     add_forward_chain()
+
+def setup_captive_portal_configuration():
+    if config.STATELESS:
+        return
+    
+    add_prerouting_chain()
+    add_captive_portal_chain()
+
+    insert_captive_portal_chain_forwarding_rules()
+    add_unregistered_exception_accept_rules()
+    add_captive_portal_rewrite_rules()
+    add_unregistered_drop_rule()
+
+def setup_accounting_configuration():
+    if config.STATELESS:
+        return
 
     add_exceptions_set()
     add_accounting_chains()
+
+    insert_accounting_chain_forwarding_rules()
+    add_accounting_matching_rules()
 
 #
 # nftables tables
@@ -51,6 +70,18 @@ def delete_traffy_table():
 #
 # nftables chains
 #
+
+# Captive Portal
+
+def add_prerouting_chain():
+    cmd = "add chain ip traffy prerouting { type filter hook prerouting priority 0; }"
+    __execute_command(cmd)
+
+def add_captive_portal_chain():
+    cmd = "add chain ip traffy captive-portal"
+    __execute_command(cmd)
+
+# Accounting
 
 def add_forward_chain():
     cmd = "add chain ip traffy forward { type filter hook forward priority 0; }"
@@ -71,6 +102,22 @@ def add_accounting_chains():
 # nftables sets
 #
 
+# Captive Portal
+
+def add_unregistered_set():
+    cmd = "add set ip traffy unregistered { type ipv4_addr; }"
+    __execute_command(cmd)
+
+def add_ips_to_unregistered_set(ip_address_list):
+    cmd = "add element ip unregistered { %s }" % (", ".join(ip_address_list))
+    __execute_command(cmd)
+
+def delete_ips_from_unregistered_set(ip_address_list):
+    cmd = "delete element ip traffy unregistered { %s }" % (reg_key_id, ", ".join(ip_address_list))
+    __execute_command(cmd)
+
+# Accounting
+
 def add_exceptions_set():
     cmd = "add set ip traffy exceptions { type ipv4_addr; }"
     __execute_command(cmd)
@@ -87,14 +134,37 @@ def add_ips_to_reg_key_set(ip_address_list, reg_key_id):
 # nftables rules
 #
 
+# Captive Portal
+
+def insert_captive_portal_chain_forwarding_rules():
+    commands.append("insert rule ip traffy prerouting ip saddr @unregistered jump captive-portal")
+
+def add_unregistered_exception_accept_rules():
+    commands = []
+    commands.append("add rule ip traffy captive-portal tcp dport 53 accept")
+    commands.append("add rule ip traffy captive-portal udp dport 53 accept")
+    __execute_command(commands)
+
+def add_captive_portal_rewrite_rules():
+    commands = []
+    commands.append("add rule ip traffy captive-portal tcp dport 80 ip daddr set %s accept" % (config.WAN_IP_ADDRESS))
+    commands.append("add rule ip traffy captive-portal tcp dport 443 ip daddr set %s tcp dport set 80 accept" % (config.WAN_IP_ADDRESS))
+    __execute_command(commands)
+
+def add_unregistered_drop_rule():
+    cmd = "add rule ip traffy captive-portal ip daddr != %s drop" % config.WAN_IP_ADDRESS)
+    __execute_command(cmd)
+
+# Accounting
+
 def insert_accounting_chain_forwarding_rules():
     commands = []
 
     commands.append("insert rule ip traffy forward iifname %s ip saddr != @exceptions jump acc-ingress" % config.WAN_INTERFACE)
-    commands.append("insert rule ip traffy forward iifname %s ip saddr = @exceptions jump acc-ingress-exc" % config.WAN_INTERFACE)
+    commands.append("insert rule ip traffy forward iifname %s ip saddr @exceptions jump acc-ingress-exc" % config.WAN_INTERFACE)
 
     commands.append("insert rule ip traffy forward oifname %s ip daddr != @exceptions jump acc-egress" % config.WAN_INTERFACE)
-    commands.append("insert rule ip traffy forward oifname %s ip daddr = @exceptions jump acc-egress-exc" % config.WAN_INTERFACE)
+    commands.append("insert rule ip traffy forward oifname %s ip daddr @exceptions jump acc-egress-exc" % config.WAN_INTERFACE)
 
     __execute_commands(commands)
 
