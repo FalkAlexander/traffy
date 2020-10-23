@@ -23,6 +23,7 @@ import os
 import subprocess
 import logging
 import shlex
+import re
 
 
 def setup_traffy_base_configuration():
@@ -102,11 +103,11 @@ def add_accounting_matching_rules(reg_key_id):
 
     commands = []
 
-    commands.append("add rule ip traffy acc-ingress ip daddr @key-%s counter name %s" % (reg_key_id, reg_key_id))
-    commands.append("add rule ip traffy acc-ingress-exc ip daddr @key-%s counter name %s" % (reg_key_id, reg_key_id))
+    commands.append("add rule ip traffy acc-ingress ip daddr @key-%s counter name %s-ingress" % (reg_key_id, reg_key_id))
+    commands.append("add rule ip traffy acc-ingress-exc ip daddr @key-%s counter name %s-ingress-exc" % (reg_key_id, reg_key_id))
 
-    commands.append("add rule ip traffy acc-egress ip saddr @key-%s counter name %s" % (reg_key_id, reg_key_id))
-    commands.append("add rule ip traffy acc-egress-exc ip saddr @key-%s counter name %s" % (reg_key_id, reg_key_id))
+    commands.append("add rule ip traffy acc-egress ip saddr @key-%s counter name %s-egress" % (reg_key_id, reg_key_id))
+    commands.append("add rule ip traffy acc-egress-exc ip saddr @key-%s counter name %s-egress-exc" % (reg_key_id, reg_key_id))
 
     __execute_commands(commands)
 
@@ -129,65 +130,40 @@ def __execute_commands(commands):
 # nftables counters
 #
 
-def add_counter(reg_key_id):
-    cmd = "add counter ip traffy %s packets 0 bytes 0" % reg_key_id
-    __execute_command(cmd)
+def add_ingress_counters(reg_key_id):
+    commands = []
+    commands.append("add counter ip traffy %s-ingress packets 0 bytes 0" % reg_key_id)
+    commands.append("add counter ip traffy %s-ingress-exc packets 0 bytes 0" % reg_key_id)
+    __execute_commands(commands)
 
-def get_ingress_counter_values():
-    cmd = "-j list chain ip traffy acc-ingress"
+def add_egress_counters(reg_key_id):
+    commands = []
+    commands.append("add counter ip traffy %s-egress packets 0 bytes 0" % reg_key_id)
+    commands.append("add counter ip traffy %s-egress-exc packets 0 bytes 0" % reg_key_id)
+    __execute_commands(commands)
+
+def get_counter_values():
+    cmd = "-j list counters table ip traffy"
     output = __execute_command(cmd).communicate()[0].decode("utf-8")
     tree = json.loads(output)
-    
-    return __build_counters_array(tree)
 
-def get_ingress_exceptions_counter_values():
-    cmd = "-j list chain ip traffy acc-ingress-exc"
-    output = __execute_command(cmd).communicate()[0].decode("utf-8")
-    tree = json.loads(output)
-    
-    return __build_counters_array(tree)
-
-def get_egress_counter_values():
-    cmd = "-j list chain ip traffy acc-egress"
-    output = __execute_command(cmd).communicate()[0].decode("utf-8")
-    tree = json.loads(output)
-    
-    return __build_counters_array(tree)
-
-def get_egress_exceptions_counter_values():
-    cmd = "-j list chain ip traffy acc-egress-exc"
-    output = __execute_command(cmd).communicate()[0].decode("utf-8")
-    tree = json.loads(output)
-    
-    return __build_counters_array(tree)
-
-def reset_counter_values():
-    cmd = "reset counters table ip traffy"
-    __execute_command(cmd)
-
-#
-# Parsing
-#
-
-def __build_counters_array(tree):
     counters = []
+    strip_letters = re.compile(r'\d+(?:\.\d+)?')
 
-    for array in tree["nftables"]:
-        if "rule" not in array:
+    for array in data["nftables"]:
+        if "counter" not in array:
             continue
 
-        if "expr" not in array["rule"]:
+        if "bytes" not in array["counter"]:
             continue
 
-        if "match" not in array["rule"]["expr"][0]:
-            continue
-
-        if "counter" not in array["rule"]["expr"][1]:
-            continue
-
-        reg_key_id = int(array["rule"]["expr"][0]["match"]["right"].strip("@key-"))
-        counter_value = int(array["rule"]["expr"][1]["counter"]["bytes"])
+        reg_key_id = strip_letters.findall(array["counter"]["name"])[0]
+        counter_value = array["counter"]["bytes"]
 
         counters.append(reg_key_id, counter_value)
     
     return counters
+
+def reset_counter_values():
+    cmd = "reset counters table ip traffy"
+    __execute_command(cmd)
