@@ -22,7 +22,6 @@ import json
 import os
 import subprocess
 import shlex
-import re
 
 
 def setup_base_configuration():
@@ -40,6 +39,8 @@ def setup_captive_portal_configuration():
     add_prerouting_chain()
     add_captive_portal_chain()
 
+    add_unregistered_set()
+
     insert_captive_portal_chain_forwarding_rules()
     add_unregistered_exception_accept_rules()
     add_captive_portal_rewrite_rules()
@@ -49,11 +50,11 @@ def setup_accounting_configuration():
     if config.STATELESS:
         return
 
-    add_exceptions_set()
     add_accounting_chains()
+    add_exceptions_set()
 
     insert_accounting_chain_forwarding_rules()
-    add_accounting_matching_rules()
+    #add_accounting_matching_rules()
 
 #
 # nftables tables
@@ -137,22 +138,23 @@ def add_ips_to_reg_key_set(ip_address_list, reg_key_id):
 # Captive Portal
 
 def insert_captive_portal_chain_forwarding_rules():
-    commands.append("insert rule ip traffy prerouting ip saddr @unregistered jump captive-portal")
+    cmd = "insert rule ip traffy prerouting ip saddr @unregistered jump captive-portal"
+    __execute_command(cmd)
 
 def add_unregistered_exception_accept_rules():
     commands = []
     commands.append("add rule ip traffy captive-portal tcp dport 53 accept")
     commands.append("add rule ip traffy captive-portal udp dport 53 accept")
-    __execute_command(commands)
+    __execute_commands(commands)
 
 def add_captive_portal_rewrite_rules():
     commands = []
     commands.append("add rule ip traffy captive-portal tcp dport 80 ip daddr set %s accept" % (config.WAN_IP_ADDRESS))
     commands.append("add rule ip traffy captive-portal tcp dport 443 ip daddr set %s tcp dport set 80 accept" % (config.WAN_IP_ADDRESS))
-    __execute_command(commands)
+    __execute_commands(commands)
 
 def add_unregistered_drop_rule():
-    cmd = "add rule ip traffy captive-portal ip daddr != %s drop" % config.WAN_IP_ADDRESS)
+    cmd = "add rule ip traffy captive-portal ip daddr != %s drop" % config.WAN_IP_ADDRESS
     __execute_command(cmd)
 
 # Accounting
@@ -169,7 +171,8 @@ def insert_accounting_chain_forwarding_rules():
     __execute_commands(commands)
 
 def add_accounting_matching_rules(reg_key_id):
-    add_counter(reg_key_id)
+    add_ingress_counters(reg_key_id)
+    add_egress_counters(reg_key_id)
 
     commands = []
 
@@ -187,7 +190,7 @@ def add_accounting_matching_rules(reg_key_id):
 
 def __execute_command(args):
     cmd = "sudo nft " + args
-    cmd = subprocess.Popen(shlex.split(cmd), stdout=subprocess.PIPE, preexec_fn=os.setsid))
+    cmd = subprocess.Popen(shlex.split(cmd), stdout=subprocess.PIPE, preexec_fn=os.setsid)
     cmd.wait()
 
     return cmd
@@ -218,7 +221,6 @@ def get_counter_values():
     tree = json.loads(output)
 
     counters = {}
-    strip_letters = re.compile(r'\d+(?:\.\d+)?')
 
     for array in data["nftables"]:
         if "counter" not in array:
@@ -227,7 +229,7 @@ def get_counter_values():
         if "bytes" not in array["counter"]:
             continue
 
-        reg_key_id = strip_letters.findall(array["counter"]["name"])[0]
+        reg_key_id = array["counter"]["name"]
         counter_value = array["counter"]["bytes"]
 
         counters[reg_key_id] = counter_value
