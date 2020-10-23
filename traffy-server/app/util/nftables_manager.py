@@ -147,7 +147,7 @@ def get_counter_values():
     output = __execute_command(cmd).communicate()[0].decode("utf-8")
     tree = json.loads(output)
 
-    counters = []
+    counters = {}
     strip_letters = re.compile(r'\d+(?:\.\d+)?')
 
     for array in data["nftables"]:
@@ -160,7 +160,7 @@ def get_counter_values():
         reg_key_id = strip_letters.findall(array["counter"]["name"])[0]
         counter_value = array["counter"]["bytes"]
 
-        counters.append(reg_key_id, counter_value)
+        counters[reg_key_id] = counter_value
     
     return counters
 
