@@ -18,7 +18,7 @@
 """
 
 from app.models import RegistrationKey, IpAddress, AddressPair, Traffic, Identity
-from app.util import iptables_accounting_manager, iptables_rules_manager, shaping_manager, helpers
+from app.util import iptables_rules_manager, shaping_manager, helpers, nftables_manager
 from datetime import datetime, timedelta
 from dateutil import rrule
 import threading, time
@@ -29,9 +29,8 @@ import logging
 class AccountingService():
     db = NotImplemented
     mail_helper = NotImplemented
-    interval = NotImplemented
+    accounting_thread = NotImplemented
     shaped_reg_keys = []
-    threads = []
 
     def __init__(self, db, mail_helper):
         self.db = db
@@ -41,30 +40,17 @@ class AccountingService():
     # Accounting Threads Management
     #
 
-    def start(self, interval):
-        self.interval = interval
-        keys_per_thread = config.USERS_PER_ACCOUNTING_THREAD
-
-        session = self.db.create_session()
-        threads_needed = int(session.query(RegistrationKey).count() / keys_per_thread) + 1
-        session.close()
-
-        start_stop_id = 0
-        for count in range(0, threads_needed):
-            accounting_thread = AccountingThread(self, interval, start_stop_id, start_stop_id + keys_per_thread - 1)
-            accounting_thread.daemon = True
-            accounting_thread.start()
-            self.threads.append(accounting_thread)
-            start_stop_id = start_stop_id + keys_per_thread
-            logging.debug("Started Accounting Thread " + str(count + 1))
+    def start(self):
+        self.accounting_thread = AccountingThread(self)
+        self.accounting_thread.daemon = True
+        self.accounting_thread.start()
 
     def stop(self):
-        for thread in self.threads:
-            thread.stop()
+        self.accounting_thread.stop()
 
     def restart(self):
         self.stop()
-        self.start(self.interval)
+        self.start()
 
     #
     # Out of Interval Traffic Actions
@@ -361,20 +347,22 @@ class AccountingThread(threading.Thread):
         while self.run:
             try:
                 session = self.db.create_session()
-                reg_key_query = session.query(RegistrationKey).offset(self.start_id).limit(self.stop_id - self.start_id + 1).all()
+                reg_key_query = session.query(RegistrationKey).all()
+
                 for reg_key in reg_key_query:
                     if reg_key.active is False or reg_key.enable_accounting is False:
                         continue
 
-                    time.sleep(config.ACCOUNTING_THREAD_SLEEP_INTERVAL)
+                    counters = nftables_manager.get_counter_values()
+                    nftables_manager.reset_counter_values()
 
                     if session.query(AddressPair).filter_by(reg_key=reg_key.id).count() != 0:
                         self.update_interval_used_traffic(session,
                                                         reg_key,
-                                                        iptables_accounting_manager.get_box_ingress_bytes(reg_key.id),
-                                                        iptables_accounting_manager.get_box_egress_bytes(reg_key.id),
-                                                        iptables_accounting_manager.get_exception_box_ingress_bytes(reg_key.id),
-                                                        iptables_accounting_manager.get_exception_box_egress_bytes(reg_key.id))
+                                                        iptables_accounting_manager.get_box_ingress_bytes(counters.get(str(reg_key.id))),
+                                                        iptables_accounting_manager.get_box_egress_bytes(counters.get(str(reg_key.id))),
+                                                        iptables_accounting_manager.get_exception_box_ingress_bytes(counters.get(str(reg_key.id))),
+                                                        iptables_accounting_manager.get_exception_box_egress_bytes(counters.get(str(reg_key.id)))
                     else:
                         self.update_interval_used_traffic(session, reg_key, 0, 0, 0, 0, inactive=True)
             except:
@@ -440,9 +428,6 @@ class AccountingThread(threading.Thread):
                     self.__update_traffic_shaped_values(session, traffic_query, ingress_used, egress_used, ingress_excepted_used, egress_excepted_used)
                     self.accounting_srv.shaped_reg_keys.remove(reg_key_query.id)
 
-            if not inactive:
-                iptables_accounting_manager.reset_box_counter(reg_key_query.id)
-
             return
 
         # New Day Check
@@ -501,9 +486,6 @@ class AccountingThread(threading.Thread):
             except:
                 session.rollback()
 
-            if not inactive:
-                iptables_accounting_manager.reset_box_counter(reg_key_query.id)
-
             return
 
         # First Ever Check
@@ -540,9 +522,6 @@ class AccountingThread(threading.Thread):
                 session.commit()
             except:
                 session.rollback()
-
-            if not inactive:
-                iptables_accounting_manager.reset_box_counter(reg_key_query.id)
 
             return
         else:
@@ -592,9 +571,6 @@ class AccountingThread(threading.Thread):
                 session.commit()
             except:
                 session.rollback()
-
-            if not inactive:
-                iptables_accounting_manager.reset_box_counter(reg_key_query.id)
 
             return
 
