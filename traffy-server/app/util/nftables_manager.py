@@ -100,11 +100,11 @@ def insert_accounting_chain_forwarding_rules():
 def add_accounting_matching_rules(reg_key_id):
     commands = []
 
-    commands.append("add rule ip traffy acc-ingress ip daddr @key-% counter" % reg_key_id)
-    commands.append("add rule ip traffy acc-ingress-exc ip daddr @key-% counter" % reg_key_id)
+    commands.append("add rule ip traffy acc-ingress ip daddr @key-%s counter name %s" % (reg_key_id, reg_key_id))
+    commands.append("add rule ip traffy acc-ingress-exc ip daddr @key-%s counter name %s" % (reg_key_id, reg_key_id))
 
-    commands.append("add rule ip traffy acc-egress ip saddr @key-% counter" % reg_key_id)
-    commands.append("add rule ip traffy acc-egress-exc ip saddr @key-% counter" % reg_key_id)
+    commands.append("add rule ip traffy acc-egress ip saddr @key-%s counter name %s" % (reg_key_id, reg_key_id))
+    commands.append("add rule ip traffy acc-egress-exc ip saddr @key-%s counter name %s" % (reg_key_id, reg_key_id))
 
     __execute_commands(commands)
 
@@ -154,6 +154,18 @@ def get_egress_exceptions_counter_values():
     tree = json.loads(output)
     
     return __build_counters_array(tree)
+
+def reset_ingress_counter_values():
+    pass
+
+def reset_ingress_exceptions_counter_values():
+    pass
+
+def reset_egress_counter_values():
+    pass
+
+def reset_egress_exceptions_counter_values():
+    pass
 
 #
 # Parsing
