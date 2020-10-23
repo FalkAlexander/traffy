@@ -98,6 +98,8 @@ def insert_accounting_chain_forwarding_rules():
     __execute_commands(commands)
 
 def add_accounting_matching_rules(reg_key_id):
+    add_counter(reg_key_id)
+
     commands = []
 
     commands.append("add rule ip traffy acc-ingress ip daddr @key-%s counter name %s" % (reg_key_id, reg_key_id))
@@ -127,6 +129,10 @@ def __execute_commands(commands):
 # nftables counters
 #
 
+def add_counter(reg_key_id):
+    cmd = "add counter ip traffy %s packets 0 bytes 0" % reg_key_id
+    __execute_command(cmd)
+
 def get_ingress_counter_values():
     cmd = "-j list chain ip traffy acc-ingress"
     output = __execute_command(cmd).communicate()[0].decode("utf-8")
@@ -155,17 +161,9 @@ def get_egress_exceptions_counter_values():
     
     return __build_counters_array(tree)
 
-def reset_ingress_counter_values():
-    pass
-
-def reset_ingress_exceptions_counter_values():
-    pass
-
-def reset_egress_counter_values():
-    pass
-
-def reset_egress_exceptions_counter_values():
-    pass
+def reset_counter_values():
+    cmd = "reset counters table ip traffy"
+    __execute_command(cmd)
 
 #
 # Parsing
