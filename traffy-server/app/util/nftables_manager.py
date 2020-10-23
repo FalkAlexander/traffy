@@ -77,7 +77,7 @@ def add_ips_to_reg_key_set(ip_address_list, reg_key_id):
     __execute_command(cmd)
 
 #
-# nftables fules
+# nftables rules
 #
 
 def insert_forward_chain_forwarding_rule():
