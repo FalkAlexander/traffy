@@ -43,6 +43,10 @@ def add_traffy_table():
     cmd = "add table ip traffy"
     __execute_command(cmd)
 
+def delete_traffy_table():
+    cmd = "delete table ip traffy"
+    __execute_command(cmd)
+
 #
 # nftables chains
 #
