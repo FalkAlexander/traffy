@@ -39,7 +39,7 @@ def setup_captive_portal_configuration():
     add_prerouting_chain()
     add_captive_portal_chain()
 
-    add_unregistered_set()
+    add_registered_set()
 
     insert_captive_portal_chain_forwarding_rules()
     add_unregistered_exception_accept_rules()
@@ -105,16 +105,16 @@ def add_accounting_chains():
 
 # Captive Portal
 
-def add_unregistered_set():
-    cmd = "add set ip traffy unregistered { type ipv4_addr; }"
+def add_registered_set():
+    cmd = "add set ip traffy registered { type ipv4_addr; }"
     __execute_command(cmd)
 
-def add_ips_to_unregistered_set(ip_address_list):
-    cmd = "add element ip unregistered { %s }" % (", ".join(ip_address_list))
+def add_ips_to_registered_set(ip_address_list):
+    cmd = "add element ip traffy registered { %s }" % (", ".join(ip_address_list))
     __execute_command(cmd)
 
-def delete_ips_from_unregistered_set(ip_address_list):
-    cmd = "delete element ip traffy unregistered { %s }" % (reg_key_id, ", ".join(ip_address_list))
+def delete_ips_from_registered_set(ip_address_list):
+    cmd = "delete element ip traffy registered { %s }" % (reg_key_id, ", ".join(ip_address_list))
     __execute_command(cmd)
 
 # Accounting
@@ -138,7 +138,7 @@ def add_ips_to_reg_key_set(ip_address_list, reg_key_id):
 # Captive Portal
 
 def insert_captive_portal_chain_forwarding_rules():
-    cmd = "insert rule ip traffy prerouting ip saddr @unregistered jump captive-portal"
+    cmd = "insert rule ip traffy prerouting ip saddr != @registered jump captive-portal"
     __execute_command(cmd)
 
 def add_unregistered_exception_accept_rules():
