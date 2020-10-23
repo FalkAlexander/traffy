@@ -57,8 +57,7 @@ def add_accounting_chains():
     commands.append("add chain ip traffy acc-egress")
     commands.append("add chain ip traffy acc-egress-exc")
 
-    for cmd in commands:
-        __execute_command(cmd)
+    __execute_commands(commands)
 
 #
 # nftables sets
@@ -89,8 +88,18 @@ def insert_accounting_chain_forwarding_rules():
     commands.append("insert rule ip traffy forward oifname %s ip daddr != @exceptions jump acc-egress" % config.WAN_INTERFACE)
     commands.append("insert rule ip traffy forward oifname %s ip daddr = @exceptions jump acc-egress-exc" % config.WAN_INTERFACE)
 
-    for cmd in commands:
-        __execute_command(cmd)
+    __execute_commands(commands)
+
+def add_accounting_matching_rules(reg_key_id):
+    commands = []
+
+    commands.append("add rule ip traffy acc-ingress ip daddr @key-% counter" % reg_key_id)
+    commands.append("add rule ip traffy acc-ingress-exc ip daddr @key-% counter" % reg_key_id)
+
+    commands.append("add rule ip traffy acc-egress ip saddr @key-% counter" % reg_key_id)
+    commands.append("add rule ip traffy acc-egress-exc ip saddr @key-% counter" % reg_key_id)
+
+    __execute_commands(commands)
 
 #
 # Generic command executor
@@ -102,3 +111,7 @@ def __execute_command(args):
     cmd.wait()
 
     return cmd
+
+def __execute_commands(commands):
+    for cmd in commands:
+        __execute_command(cmd)
