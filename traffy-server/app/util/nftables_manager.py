@@ -110,7 +110,7 @@ def add_registered_set():
     __execute_command(cmd)
 
 def add_ip_to_registered_set(ip_address):
-    cmd = "add element ip traffy registered %s" % ip_address)
+    cmd = "add element ip traffy registered %s" % ip_address
     __execute_command(cmd)
 
 def add_ips_to_registered_set(ip_address_list):
@@ -286,11 +286,11 @@ def reset_counter_values():
 
 def delete_accounting_counters(reg_key_id):
     commands = []
-    commands.append("delete counter traffy %s-ingress") % digits_to_chars(reg_key_id))
-    commands.append("delete counter traffy %s-ingress-exc") % digits_to_chars(reg_key_id))
+    commands.append("delete counter traffy %s-ingress") % digits_to_chars(reg_key_id)
+    commands.append("delete counter traffy %s-ingress-exc") % digits_to_chars(reg_key_id)
 
-    commands.append("delete counter traffy %s-egress") % digits_to_chars(reg_key_id))
-    commands.append("delete counter traffy %s-egress-exc") % digits_to_chars(reg_key_id))
+    commands.append("delete counter traffy %s-egress") % digits_to_chars(reg_key_id)
+    commands.append("delete counter traffy %s-egress-exc") % digits_to_chars(reg_key_id)
 
     __execute_commands(commands)
 
