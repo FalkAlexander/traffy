@@ -252,7 +252,7 @@ def get_counter_values():
 
     counters = {}
 
-    for array in data["nftables"]:
+    for array in tree["nftables"]:
         if "counter" not in array:
             continue
 
@@ -260,7 +260,7 @@ def get_counter_values():
             continue
 
         key_value = array["counter"]["name"]
-        reg_key_id = chars_to_digits(key_value) + "-" + key_value.split("-", 1)[1]
+        reg_key_id = __chars_to_digits(key_value.split("-", 1)[0]) + "-" + key_value.split("-", 1)[1]
         counter_value = array["counter"]["bytes"]
 
         counters[reg_key_id] = counter_value
@@ -294,7 +294,7 @@ def __digits_to_chars(integer):
 
 def __chars_to_digits(string):
     ord_value = ""
-    for char in list(str(reg_key_id)):
+    for char in list(str(string)):
         ord_value += str(ord(char) - 97)
     
     return ord_value
