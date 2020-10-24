@@ -109,12 +109,20 @@ def add_registered_set():
     cmd = "add set ip traffy registered { type ipv4_addr; }"
     __execute_command(cmd)
 
+def add_ip_to_registered_set(ip_address):
+    cmd = "add element ip traffy registered %s" % ip_address)
+    __execute_command(cmd)
+
 def add_ips_to_registered_set(ip_address_list):
     cmd = "add element ip traffy registered { %s }" % (", ".join(ip_address_list))
     __execute_command(cmd)
 
+def delete_ip_from_registered_set(ip_address):
+    cmd = "delete element ip traffy registered %s" % ip_address
+    __execute_command(cmd)
+
 def delete_ips_from_registered_set(ip_address_list):
-    cmd = "delete element ip traffy registered { %s }" % (reg_key_id, ", ".join(ip_address_list))
+    cmd = "delete element ip traffy registered { %s }" % (", ".join(ip_address_list))
     __execute_command(cmd)
 
 # Accounting
@@ -218,6 +226,8 @@ def delete_accounting_matching_rules(reg_key_id):
     for handle in handles:
         cmd = "delete rule traffy forward handle %s" % handle
         __execute_command(cmd)
+    
+    delete_accounting_counters(reg_key_id)
 
 #
 # Generic command executor
