@@ -157,8 +157,13 @@ def add_captive_portal_rewrite_rules():
     __execute_commands(commands)
 
 def add_unregistered_drop_rule():
-    cmd = "add rule ip traffy captive-portal ip daddr != %s drop" % config.WAN_IP_ADDRESS
-    __execute_command(cmd)
+    commands = []
+    commands.append("add rule ip traffy captive-portal ip daddr != %s drop" % config.WAN_IP_ADDRESS)
+
+    for gateway in config.IP_RANGES:
+        commands.append("add rule ip traffy captive-portal ip daddr != %s drop" % gateway[1])
+
+    __execute_commands(commands)
 
 # Accounting
 
