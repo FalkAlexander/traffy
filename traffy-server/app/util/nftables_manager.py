@@ -195,37 +195,24 @@ def add_accounting_matching_rules(reg_key_id):
 
     commands = []
 
-    commands.append("add rule ip traffy accounting-ingress ip daddr @key-%s counter name %s-ingress" % (reg_key_id, digits_to_chars(reg_key_id)))
-    commands.append("add rule ip traffy accounting-ingress-exc ip daddr @key-%s counter name %s-ingress-exc" % (reg_key_id, digits_to_chars(reg_key_id)))
+    commands.append("add rule ip traffy accounting-ingress ip daddr @key-%s counter name %s-ingress" % (reg_key_id, __digits_to_chars(reg_key_id)))
+    commands.append("add rule ip traffy accounting-ingress-exc ip daddr @key-%s counter name %s-ingress-exc" % (reg_key_id, __digits_to_chars(reg_key_id)))
 
-    commands.append("add rule ip traffy accounting-egress ip saddr @key-%s counter name %s-egress" % (reg_key_id, digits_to_chars(reg_key_id)))
-    commands.append("add rule ip traffy accounting-egress-exc ip saddr @key-%s counter name %s-egress-exc" % (reg_key_id, digits_to_chars(reg_key_id)))
+    commands.append("add rule ip traffy accounting-egress ip saddr @key-%s counter name %s-egress" % (reg_key_id, __digits_to_chars(reg_key_id)))
+    commands.append("add rule ip traffy accounting-egress-exc ip saddr @key-%s counter name %s-egress-exc" % (reg_key_id, __digits_to_chars(reg_key_id)))
 
     __execute_commands(commands)
 
 def delete_accounting_matching_rules(reg_key_id):
-    nft_cmd = "list ruleset -a"
-    awk_cmd = "awk '/%s/{print $NF}'" % "@key-" + str(reg_key_id)
+    chains = ["accounting-ingress", "accounting-ingress-exc", "accounting-egress", "accounting-egress-exc"]
+    identifier = "@key-" + str(reg_key_id)
 
-    nft_proc = subprocess.Popen(shlex.split(nft_cmd), stdout=subprocess.PIPE)
-    nft_proc.wait()
+    for chain in chains:
+        handles = __search_for_handles_in_chain(chain, identifier)
 
-    awk_proc = subprocess.Popen(shlex.split(awk_cmd), stdin=nft_proc.stdout, stdout=subprocess.PIPE)
-    awk_proc.wait()
-
-    nft_proc.stdout.close()
-    output = awk_proc.communicate()[0].decode("utf-8")
-
-    handles = []
-    for handle in output.split("\n"):
-        if handle == "":
-            continue
-
-        handles.append(handle)
-
-    for handle in handles:
-        cmd = "delete rule traffy forward handle %s" % handle
-        __execute_command(cmd)
+        for handle in handles:
+            cmd = "delete rule traffy %s handle %s" % (chain, handle)
+            __execute_command(cmd)
     
     delete_accounting_counters(reg_key_id)
 
@@ -250,11 +237,11 @@ def __execute_commands(commands):
 
 def add_accounting_counters(reg_key_id):
     commands = []
-    commands.append("add counter ip traffy %s-ingress packets 0 bytes 0" % digits_to_chars(reg_key_id))
-    commands.append("add counter ip traffy %s-ingress-exc packets 0 bytes 0" % digits_to_chars(reg_key_id))
+    commands.append("add counter ip traffy %s-ingress packets 0 bytes 0" % __digits_to_chars(reg_key_id))
+    commands.append("add counter ip traffy %s-ingress-exc packets 0 bytes 0" % __digits_to_chars(reg_key_id))
 
-    commands.append("add counter ip traffy %s-egress packets 0 bytes 0" % digits_to_chars(reg_key_id))
-    commands.append("add counter ip traffy %s-egress-exc packets 0 bytes 0" % digits_to_chars(reg_key_id))
+    commands.append("add counter ip traffy %s-egress packets 0 bytes 0" % __digits_to_chars(reg_key_id))
+    commands.append("add counter ip traffy %s-egress-exc packets 0 bytes 0" % __digits_to_chars(reg_key_id))
 
     __execute_commands(commands)
 
@@ -286,11 +273,11 @@ def reset_counter_values():
 
 def delete_accounting_counters(reg_key_id):
     commands = []
-    commands.append("delete counter traffy %s-ingress") % digits_to_chars(reg_key_id)
-    commands.append("delete counter traffy %s-ingress-exc") % digits_to_chars(reg_key_id)
+    commands.append("delete counter traffy %s-ingress" % __digits_to_chars(reg_key_id))
+    commands.append("delete counter traffy %s-ingress-exc" % __digits_to_chars(reg_key_id))
 
-    commands.append("delete counter traffy %s-egress") % digits_to_chars(reg_key_id)
-    commands.append("delete counter traffy %s-egress-exc") % digits_to_chars(reg_key_id)
+    commands.append("delete counter traffy %s-egress" % __digits_to_chars(reg_key_id))
+    commands.append("delete counter traffy %s-egress-exc" % __digits_to_chars(reg_key_id))
 
     __execute_commands(commands)
 
@@ -298,16 +285,30 @@ def delete_accounting_counters(reg_key_id):
 # Util
 #
 
-def digits_to_chars(integer):
+def __digits_to_chars(integer):
     chr_value = ""
     for digit in list(str(integer)):
         chr_value += chr(int(digit) + 97)
 
     return chr_value
 
-def chars_to_digits(string):
+def __chars_to_digits(string):
     ord_value = ""
     for char in list(str(reg_key_id)):
         ord_value += str(ord(char) - 97)
     
     return ord_value
+
+def __search_for_handles_in_chain(chain_name, identifier):
+    cmd = "list chain traffy %s -a" % chain_name
+    output = __execute_command(cmd).communicate()[0].decode("utf-8")
+
+    handles = []
+    for line in output.splitlines():
+        if not identifier in line:
+            continue
+
+        handle = line.split("handle ", 1)[1]
+        handles.append(handle)
+    
+    return handles

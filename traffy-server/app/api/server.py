@@ -157,7 +157,7 @@ class ServerAPI:
             self.__unlock_registered_device_firewall(ip_address)
 
             # Setup Accounting
-            self.__enable_device_accounting(session, reg_key_query)
+            self.__enable_device_accounting(session, reg_key_query, ip_address)
         except:
             session.rollback()
         finally:
@@ -237,9 +237,10 @@ class ServerAPI:
     def __unlock_registered_device_firewall(self, ip_address):
         nftables_manager.add_ip_to_registered_set(ip_address)
 
-    def __enable_device_accounting(self, session, reg_key_query):
+    def __enable_device_accounting(self, session, reg_key_query, ip_address):
         if session.query(AddressPair).filter_by(reg_key=reg_key_query.id).count() <= 1:
             nftables_manager.add_reg_key_set(str(reg_key_query.id))
+            nftables_manager.add_ip_to_reg_key_set(ip_address, str(reg_key_query.id))
 
         nftables_manager.add_accounting_matching_rules(str(reg_key_query.id))
 
