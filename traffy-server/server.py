@@ -72,7 +72,8 @@ class Server():
             if reg_key_query.active is True:
                 registered_devices.append(address.address_v4)
         
-        nftables_manager.add_ips_to_registered_set(registered_devices)
+        if len(registered_devices) != 0:
+            nftables_manager.add_ips_to_registered_set(registered_devices)
 
         session.close()
 
