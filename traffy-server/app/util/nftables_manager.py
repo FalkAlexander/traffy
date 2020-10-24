@@ -179,11 +179,11 @@ def add_unregistered_drop_rule():
 def insert_accounting_chain_forwarding_rules():
     commands = []
 
-    commands.append("insert rule ip traffy forward iif %s ip saddr != @exceptions jump accounting-ingress" % config.WAN_INTERFACE_ID)
-    commands.append("insert rule ip traffy forward iif %s ip saddr @exceptions jump accounting-ingress-exc" % config.WAN_INTERFACE_ID)
+    commands.append("insert rule ip traffy forward iif %s ip saddr != @exceptions goto accounting-ingress" % config.WAN_INTERFACE_ID)
+    commands.append("insert rule ip traffy forward iif %s ip saddr @exceptions goto accounting-ingress-exc" % config.WAN_INTERFACE_ID)
 
-    commands.append("insert rule ip traffy forward oif %s ip daddr != @exceptions jump accounting-egress" % config.WAN_INTERFACE_ID)
-    commands.append("insert rule ip traffy forward oif %s ip daddr @exceptions jump accounting-egress-exc" % config.WAN_INTERFACE_ID)
+    commands.append("insert rule ip traffy forward oif %s ip daddr != @exceptions goto accounting-egress" % config.WAN_INTERFACE_ID)
+    commands.append("insert rule ip traffy forward oif %s ip daddr @exceptions goto accounting-egress-exc" % config.WAN_INTERFACE_ID)
 
     __execute_commands(commands)
 
