@@ -153,7 +153,7 @@ def add_unregistered_exception_accept_rules():
 
 def add_captive_portal_rewrite_rules():
     commands = []
-    commands.append("add rule ip traffy captive-portal tcp dport { 80, 443 } dnat %s" % (config.WAN_IP_ADDRESS))
+    commands.append("add rule ip traffy captive-portal tcp dport { 80, 443 } dnat %s:80" % (config.WAN_IP_ADDRESS))
     __execute_commands(commands)
 
 def add_unregistered_drop_rule():
@@ -165,11 +165,11 @@ def add_unregistered_drop_rule():
 def insert_accounting_chain_forwarding_rules():
     commands = []
 
-    commands.append("insert rule ip traffy forward iifname %s ip saddr != @exceptions jump accounting-ingress" % config.WAN_INTERFACE)
-    commands.append("insert rule ip traffy forward iifname %s ip saddr @exceptions jump accounting-ingress-exc" % config.WAN_INTERFACE)
+    commands.append("insert rule ip traffy forward iif %s ip saddr != @exceptions jump accounting-ingress" % config.WAN_INTERFACE_ID)
+    commands.append("insert rule ip traffy forward iif %s ip saddr @exceptions jump accounting-ingress-exc" % config.WAN_INTERFACE_ID)
 
-    commands.append("insert rule ip traffy forward oifname %s ip daddr != @exceptions jump accounting-egress" % config.WAN_INTERFACE)
-    commands.append("insert rule ip traffy forward oifname %s ip daddr @exceptions jump accounting-egress-exc" % config.WAN_INTERFACE)
+    commands.append("insert rule ip traffy forward oif %s ip daddr != @exceptions jump accounting-egress" % config.WAN_INTERFACE_ID)
+    commands.append("insert rule ip traffy forward oif %s ip daddr @exceptions jump accounting-egress-exc" % config.WAN_INTERFACE_ID)
 
     __execute_commands(commands)
 
