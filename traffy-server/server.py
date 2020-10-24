@@ -124,7 +124,7 @@ class Server():
 
         if not config.STATELESS:
             # Stop Accounting
-            #self.accounting_srv.stop()
+            self.accounting_srv.stop()
 
             # Shutdown Shaping
             shaping_manager.shutdown_shaping()
@@ -153,7 +153,7 @@ class Server():
             logging.info("Finished preparing accounting")
 
             # Start accounting manager            
-            #self.accounting_srv.start(10)
+            self.accounting_srv.start()
             logging.info("Started accounting services")
 
             self.dev_mode_test = DevModeTest(self.db)
