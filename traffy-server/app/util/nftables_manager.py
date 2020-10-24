@@ -135,6 +135,10 @@ def add_ip_to_reg_key_set(ip_address, reg_key_id):
     cmd = "add element ip traffy key-%s { %s }" % (reg_key_id, ip_address)
     __execute_command(cmd)
 
+def delete_reg_key_set(reg_key_id):
+    cmd = "delete set traffy key-%s" % reg_key_id
+    __execute_command(cmd)
+
 #
 # nftables rules
 #
@@ -179,8 +183,7 @@ def insert_accounting_chain_forwarding_rules():
     __execute_commands(commands)
 
 def add_accounting_matching_rules(reg_key_id):
-    add_ingress_counters(reg_key_id)
-    add_egress_counters(reg_key_id)
+    add_accounting_counters(reg_key_id)
 
     commands = []
 
@@ -191,6 +194,30 @@ def add_accounting_matching_rules(reg_key_id):
     commands.append("add rule ip traffy accounting-egress-exc ip saddr @key-%s counter name %s-egress-exc" % (reg_key_id, digits_to_chars(reg_key_id)))
 
     __execute_commands(commands)
+
+def delete_accounting_matching_rules(reg_key_id):
+    nft_cmd = "list ruleset -a"
+    awk_cmd = "awk '/%s/{print $NF}'" % "@key-" + str(reg_key_id)
+
+    nft_proc = subprocess.Popen(shlex.split(nft_cmd), stdout=subprocess.PIPE)
+    nft_proc.wait()
+
+    awk_proc = subprocess.Popen(shlex.split(awk_cmd), stdin=nft_proc.stdout, stdout=subprocess.PIPE)
+    awk_proc.wait()
+
+    nft_proc.stdout.close()
+    output = awk_proc.communicate()[0].decode("utf-8")
+
+    handles = []
+    for handle in output.split("\n"):
+        if handle == "":
+            continue
+
+        handles.append(handle)
+
+    for handle in handles:
+        cmd = "delete rule traffy forward handle %s" % handle
+        __execute_command(cmd)
 
 #
 # Generic command executor
@@ -211,16 +238,14 @@ def __execute_commands(commands):
 # nftables counters
 #
 
-def add_ingress_counters(reg_key_id):
+def add_accounting_counters(reg_key_id):
     commands = []
     commands.append("add counter ip traffy %s-ingress packets 0 bytes 0" % digits_to_chars(reg_key_id))
     commands.append("add counter ip traffy %s-ingress-exc packets 0 bytes 0" % digits_to_chars(reg_key_id))
-    __execute_commands(commands)
 
-def add_egress_counters(reg_key_id):
-    commands = []
     commands.append("add counter ip traffy %s-egress packets 0 bytes 0" % digits_to_chars(reg_key_id))
     commands.append("add counter ip traffy %s-egress-exc packets 0 bytes 0" % digits_to_chars(reg_key_id))
+
     __execute_commands(commands)
 
 def get_counter_values():
@@ -248,6 +273,16 @@ def get_counter_values():
 def reset_counter_values():
     cmd = "reset counters table ip traffy"
     __execute_command(cmd)
+
+def delete_accounting_counters(reg_key_id):
+    commands = []
+    commands.append("delete counter traffy %s-ingress") % digits_to_chars(reg_key_id))
+    commands.append("delete counter traffy %s-ingress-exc") % digits_to_chars(reg_key_id))
+
+    commands.append("delete counter traffy %s-egress") % digits_to_chars(reg_key_id))
+    commands.append("delete counter traffy %s-egress-exc") % digits_to_chars(reg_key_id))
+
+    __execute_commands(commands)
 
 #
 # Util
