@@ -154,7 +154,7 @@ def delete_reg_key_set(reg_key_id):
 # Captive Portal
 
 def insert_captive_portal_chain_forwarding_rules():
-    cmd = "insert rule ip traffy prerouting ip saddr != @registered jump captive-portal"
+    cmd = "insert rule ip traffy prerouting ip saddr != @registered goto captive-portal"
     __execute_command(cmd)
 
 def add_unregistered_exception_accept_rules():
