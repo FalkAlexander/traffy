@@ -161,6 +161,7 @@ def add_unregistered_exception_accept_rules():
     commands = []
     commands.append("add rule ip traffy captive-portal tcp dport 53 accept")
     commands.append("add rule ip traffy captive-portal udp dport 53 accept")
+    commands.append("add rule ip traffy captive-portal udp dport 67 return")
     __execute_commands(commands)
 
 def add_captive_portal_rewrite_rules():
@@ -170,10 +171,7 @@ def add_captive_portal_rewrite_rules():
 
 def add_unregistered_drop_rule():
     commands = []
-    commands.append("add rule ip traffy captive-portal ip daddr != %s drop" % config.WAN_IP_ADDRESS)
-
-    for gateway in config.IP_RANGES:
-        commands.append("add rule ip traffy captive-portal ip daddr != %s drop" % gateway[1])
+    commands.append("add rule ip traffy captive-portal ip daddr != { %s, %s } drop" % (config.WAN_IP_ADDRESS, ", ".join([ip[1] for ip in config.IP_RANGES])))
 
     __execute_commands(commands)
 
