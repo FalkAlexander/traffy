@@ -172,11 +172,13 @@ class AccountingService():
 
                 # Setup Accounting
                 nftables_manager.add_ip_to_reg_key_set(ip_address_query.address_v4, str(reg_key_query.id))
-                nftables_manager.add_accounting_matching_rules(str(reg_key_query.id))
 
                 # Setup Shaping
                 if self.is_reg_key_shaped(session, reg_key_query):
                     shaping_manager.enable_shaping_for_ip(ip_address_query.id, ip_address_query.address_v4)
+
+            if len(address_pair_query) > 0:
+                nftables_manager.add_accounting_matching_rules(str(reg_key_query.id))
 
             return True
         except:
@@ -186,16 +188,18 @@ class AccountingService():
     def deactivate_registration_key(self, session, reg_key_query, reason):
         try:
             address_pair_query = session.query(AddressPair).filter_by(reg_key=reg_key_query.id).all()
+
+            if len(address_pair_query) > 0:
+                # Disable Accounting
+                nftables_manager.delete_accounting_matching_rules(str(reg_key_query.id))
+                nftables_manager.delete_reg_key_set(str(reg_key_query.id))
+
             for row in address_pair_query:
                 ip_address_query = session.query(IpAddress).filter_by(id=row.ip_address).first()
 
                 # Disable Shaping
                 if self.is_reg_key_shaped(session, reg_key_query):
                     shaping_manager.disable_shaping_for_ip(ip_address_query.id, ip_address_query.address_v4)
-
-                # Disable Accounting
-                nftables_manager.delete_accounting_matching_rules(str(reg_key_query.id))
-                nftables_manager.delete_reg_key_set(str(reg_key_query.id))
 
                 # Setup Firewall
                 nftables_manager.delete_ip_from_registered_set(ip_address_query.address_v4)

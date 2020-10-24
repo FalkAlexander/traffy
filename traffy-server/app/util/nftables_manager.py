@@ -143,6 +143,10 @@ def add_ip_to_reg_key_set(ip_address, reg_key_id):
     cmd = "add element ip traffy key-%s { %s }" % (reg_key_id, ip_address)
     __execute_command(cmd)
 
+def delete_ip_from_reg_key_set(ip_address, reg_key_id):
+    cmd = "delete element ip traffy key-%s { %s }" % (reg_key_id, ip_address)
+    __execute_command(cmd)
+
 def delete_reg_key_set(reg_key_id):
     cmd = "delete set traffy key-%s" % reg_key_id
     __execute_command(cmd)

@@ -240,9 +240,9 @@ class ServerAPI:
     def __enable_device_accounting(self, session, reg_key_query, ip_address):
         if session.query(AddressPair).filter_by(reg_key=reg_key_query.id).count() <= 1:
             nftables_manager.add_reg_key_set(str(reg_key_query.id))
-            nftables_manager.add_ip_to_reg_key_set(ip_address, str(reg_key_query.id))
-
-        nftables_manager.add_accounting_matching_rules(str(reg_key_query.id))
+            nftables_manager.add_accounting_matching_rules(str(reg_key_query.id))
+        
+        nftables_manager.add_ip_to_reg_key_set(ip_address, str(reg_key_query.id))
 
     def __enable_spoofing_protection(self, ip_address, mac_address):
         arp_manager.add_static_arp_entry(ip_address, mac_address)
@@ -285,7 +285,7 @@ class ServerAPI:
             self.database_commit(session)
 
             # Disable Accounting
-            self.__disable_device_accounting(session, reg_key_query)
+            self.__disable_device_accounting(session, reg_key_query, ip_address)
         except:
             session.rollback()
         finally:
@@ -302,10 +302,11 @@ class ServerAPI:
         if reg_key_query.id in self.accounting_srv.shaped_reg_keys:
             shaping_manager.disable_shaping_for_ip(ip_address_query.id, ip_address_query.address_v4)
 
-    def __disable_device_accounting(self, session, reg_key_query):
-        nftables_manager.delete_accounting_matching_rules(str(reg_key_query.id))
+    def __disable_device_accounting(self, session, reg_key_query, ip_address):
+        nftables_manager.delete_ip_from_reg_key_set(ip_address, str(reg_key_query.id))
 
         if session.query(AddressPair).filter_by(reg_key=reg_key_query.id).count() == 0:
+            nftables_manager.delete_accounting_matching_rules(str(reg_key_query.id))
             nftables_manager.delete_reg_key_set(str(reg_key_query.id))
 
     def __disable_spoofing_protection(self, ip_address):
