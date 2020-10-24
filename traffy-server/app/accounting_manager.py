@@ -18,7 +18,7 @@
 """
 
 from app.models import RegistrationKey, IpAddress, AddressPair, Traffic, Identity
-from app.util import iptables_accounting_manager, iptables_rules_manager, shaping_manager, helpers
+from app.util import shaping_manager, helpers, nftables_manager
 from datetime import datetime, timedelta
 from dateutil import rrule
 import threading, time
@@ -29,9 +29,8 @@ import logging
 class AccountingService():
     db = NotImplemented
     mail_helper = NotImplemented
-    interval = NotImplemented
+    accounting_thread = NotImplemented
     shaped_reg_keys = []
-    threads = []
 
     def __init__(self, db, mail_helper):
         self.db = db
@@ -41,30 +40,17 @@ class AccountingService():
     # Accounting Threads Management
     #
 
-    def start(self, interval):
-        self.interval = interval
-        keys_per_thread = config.USERS_PER_ACCOUNTING_THREAD
-
-        session = self.db.create_session()
-        threads_needed = int(session.query(RegistrationKey).count() / keys_per_thread) + 1
-        session.close()
-
-        start_stop_id = 0
-        for count in range(0, threads_needed):
-            accounting_thread = AccountingThread(self, interval, start_stop_id, start_stop_id + keys_per_thread - 1)
-            accounting_thread.daemon = True
-            accounting_thread.start()
-            self.threads.append(accounting_thread)
-            start_stop_id = start_stop_id + keys_per_thread
-            logging.debug("Started Accounting Thread " + str(count + 1))
+    def start(self):
+        self.accounting_thread = AccountingThread(self)
+        self.accounting_thread.daemon = True
+        self.accounting_thread.start()
 
     def stop(self):
-        for thread in self.threads:
-            thread.stop()
+        self.accounting_thread.stop()
 
     def restart(self):
         self.stop()
-        self.start(self.interval)
+        self.start()
 
     #
     # Out of Interval Traffic Actions
@@ -174,22 +160,25 @@ class AccountingService():
             session.commit()
 
             address_pair_query = session.query(AddressPair).filter_by(reg_key=reg_key_query.id).all()
+
+            if len(address_pair_query) > 0:
+                nftables_manager.add_reg_key_set(str(reg_key_query.id))
+
             for row in address_pair_query:
                 ip_address_query = session.query(IpAddress).filter_by(id=row.ip_address).first()
 
                 # Setup Firewall
-                iptables_rules_manager.unlock_registered_device(ip_address_query.address_v4)
+                nftables_manager.add_ip_to_registered_set(ip_address_query.address_v4)
+
+                # Setup Accounting
+                nftables_manager.add_ip_to_reg_key_set(ip_address_query.address_v4, str(reg_key_query.id))
 
                 # Setup Shaping
                 if self.is_reg_key_shaped(session, reg_key_query):
                     shaping_manager.enable_shaping_for_ip(ip_address_query.id, ip_address_query.address_v4)
 
-            iptables_accounting_manager.add_accounter_chain(reg_key_query.id)
-            for row in address_pair_query:
-                ip_address_query = session.query(IpAddress).filter_by(id=row.ip_address).first()
-
-                # Setup Accounting
-                iptables_accounting_manager.add_ip_to_box(reg_key_query.id, ip_address_query.address_v4)
+            if len(address_pair_query) > 0:
+                nftables_manager.add_accounting_matching_rules(str(reg_key_query.id))
 
             return True
         except:
@@ -199,6 +188,12 @@ class AccountingService():
     def deactivate_registration_key(self, session, reg_key_query, reason):
         try:
             address_pair_query = session.query(AddressPair).filter_by(reg_key=reg_key_query.id).all()
+
+            if len(address_pair_query) > 0:
+                # Disable Accounting
+                nftables_manager.delete_accounting_matching_rules(str(reg_key_query.id))
+                nftables_manager.delete_reg_key_set(str(reg_key_query.id))
+
             for row in address_pair_query:
                 ip_address_query = session.query(IpAddress).filter_by(id=row.ip_address).first()
 
@@ -206,12 +201,8 @@ class AccountingService():
                 if self.is_reg_key_shaped(session, reg_key_query):
                     shaping_manager.disable_shaping_for_ip(ip_address_query.id, ip_address_query.address_v4)
 
-                # Disable Accounting
-                iptables_accounting_manager.remove_ip_from_box(reg_key_query.id, ip_address_query.address_v4)
-
                 # Setup Firewall
-                iptables_rules_manager.relock_registered_device(ip_address_query.address_v4)
-            iptables_accounting_manager.remove_accounter_chain(reg_key_query.id)
+                nftables_manager.delete_ip_from_registered_set(ip_address_query.address_v4)
 
             if reason is not None:
                 if len(reason) <= 250:
@@ -338,18 +329,12 @@ class AccountingService():
 class AccountingThread(threading.Thread):
     run = True
     db = NotImplemented
-    interval = NotImplemented
     accounting_srv = NotImplemented
-    start_id = NotImplemented
-    stop_id = NotImplemented
 
-    def __init__(self, accounting_srv, interval, start_id, stop_id):
+    def __init__(self, accounting_srv):
         super(AccountingThread, self).__init__()
         self.accounting_srv = accounting_srv
-        self.interval = interval
         self.db = accounting_srv.db
-        self.start_id = start_id
-        self.stop_id = stop_id
 
     def run(self):
         self.query_active_boxes()
@@ -360,30 +345,32 @@ class AccountingThread(threading.Thread):
     def query_active_boxes(self):
         while self.run:
             try:
+                time.sleep(config.ACCOUNTING_INTERVAL)
+
                 session = self.db.create_session()
-                reg_key_query = session.query(RegistrationKey).offset(self.start_id).limit(self.stop_id - self.start_id + 1).all()
+                reg_key_query = session.query(RegistrationKey).all()
+
+                counters = nftables_manager.get_counter_values()
+                nftables_manager.reset_counter_values()
+
                 for reg_key in reg_key_query:
                     if reg_key.active is False or reg_key.enable_accounting is False:
                         continue
 
-                    time.sleep(config.ACCOUNTING_THREAD_SLEEP_INTERVAL)
-
                     if session.query(AddressPair).filter_by(reg_key=reg_key.id).count() != 0:
                         self.update_interval_used_traffic(session,
                                                         reg_key,
-                                                        iptables_accounting_manager.get_box_ingress_bytes(reg_key.id),
-                                                        iptables_accounting_manager.get_box_egress_bytes(reg_key.id),
-                                                        iptables_accounting_manager.get_exception_box_ingress_bytes(reg_key.id),
-                                                        iptables_accounting_manager.get_exception_box_egress_bytes(reg_key.id))
+                                                        counters.get(str(reg_key.id) + "-ingress"),
+                                                        counters.get(str(reg_key.id) + "-egress"),
+                                                        counters.get(str(reg_key.id) + "-ingress-exc"),
+                                                        counters.get(str(reg_key.id) + "-egress-exc"))
                     else:
                         self.update_interval_used_traffic(session, reg_key, 0, 0, 0, 0, inactive=True)
-            except:
+            except Exception:
                 session.rollback()
                 logging.debug("Exception thrown in Accounting Service")
             finally:
                 session.close()
-
-            time.sleep(self.interval)
 
     #
     # Calculate User Credit and Ingress / Egress
@@ -439,9 +426,6 @@ class AccountingThread(threading.Thread):
                     self.__disable_traffic_shaping_for_reg_key(session, reg_key_query)
                     self.__update_traffic_shaped_values(session, traffic_query, ingress_used, egress_used, ingress_excepted_used, egress_excepted_used)
                     self.accounting_srv.shaped_reg_keys.remove(reg_key_query.id)
-
-            if not inactive:
-                iptables_accounting_manager.reset_box_counter(reg_key_query.id)
 
             return
 
@@ -501,9 +485,6 @@ class AccountingThread(threading.Thread):
             except:
                 session.rollback()
 
-            if not inactive:
-                iptables_accounting_manager.reset_box_counter(reg_key_query.id)
-
             return
 
         # First Ever Check
@@ -540,9 +521,6 @@ class AccountingThread(threading.Thread):
                 session.commit()
             except:
                 session.rollback()
-
-            if not inactive:
-                iptables_accounting_manager.reset_box_counter(reg_key_query.id)
 
             return
         else:
@@ -592,9 +570,6 @@ class AccountingThread(threading.Thread):
                 session.commit()
             except:
                 session.rollback()
-
-            if not inactive:
-                iptables_accounting_manager.reset_box_counter(reg_key_query.id)
 
             return
 

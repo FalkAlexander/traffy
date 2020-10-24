@@ -19,7 +19,7 @@
 
 from app.exceptions.user_exceptions import RegistrationError, DatabaseError, DeregistrationError
 from ..models import RegistrationKey, IpAddress, MacAddress, AddressPair, Traffic, Identity, Dormitory
-from ..util import arp_manager, generate_registration_key, lease_parser, iptables_rules_manager, iptables_accounting_manager, shaping_manager
+from ..util import arp_manager, generate_registration_key, lease_parser, shaping_manager, nftables_manager
 from datetime import datetime, timedelta
 from dateutil import rrule
 from user_agents import parse
@@ -235,13 +235,14 @@ class ServerAPI:
         return ip_address_query
 
     def __unlock_registered_device_firewall(self, ip_address):
-        iptables_rules_manager.unlock_registered_device(ip_address)
+        nftables_manager.add_ip_to_registered_set(ip_address)
 
     def __enable_device_accounting(self, session, reg_key_query, ip_address):
         if session.query(AddressPair).filter_by(reg_key=reg_key_query.id).count() <= 1:
-            iptables_accounting_manager.add_accounter_chain(reg_key_query.id)
-
-        iptables_accounting_manager.add_ip_to_box(reg_key_query.id, ip_address)
+            nftables_manager.add_reg_key_set(str(reg_key_query.id))
+            nftables_manager.add_accounting_matching_rules(str(reg_key_query.id))
+        
+        nftables_manager.add_ip_to_reg_key_set(ip_address, str(reg_key_query.id))
 
     def __enable_spoofing_protection(self, ip_address, mac_address):
         arp_manager.add_static_arp_entry(ip_address, mac_address)
@@ -302,16 +303,17 @@ class ServerAPI:
             shaping_manager.disable_shaping_for_ip(ip_address_query.id, ip_address_query.address_v4)
 
     def __disable_device_accounting(self, session, reg_key_query, ip_address):
-        iptables_accounting_manager.remove_ip_from_box(reg_key_query.id, ip_address)
+        nftables_manager.delete_ip_from_reg_key_set(ip_address, str(reg_key_query.id))
 
         if session.query(AddressPair).filter_by(reg_key=reg_key_query.id).count() == 0:
-            iptables_accounting_manager.remove_accounter_chain(reg_key_query.id)
+            nftables_manager.delete_accounting_matching_rules(str(reg_key_query.id))
+            nftables_manager.delete_reg_key_set(str(reg_key_query.id))
 
     def __disable_spoofing_protection(self, ip_address):
         arp_manager.remove_static_arp_entry(ip_address)
 
     def __relock_registered_device_firewall(self, ip_address):
-        iptables_rules_manager.relock_registered_device(ip_address)
+        nftables_manager.delete_ip_from_registered_set(ip_address)
 
     #
     # Registration Key Deletion
