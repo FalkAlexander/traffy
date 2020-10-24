@@ -45,12 +45,13 @@ def remove_static_arp_entry(ip_address):
     if config.STATELESS:
         return
     
-    subprocess.Popen([
+    cmd = subprocess.Popen([
         "sudo",
         "arp",
         "-d",
         ip_address
         ], stdout=subprocess.PIPE, preexec_fn=os.setsid)
+    cmd.wait()
 
     logging.debug("Stopped IP spoofing protection for " + ip_address)
 
