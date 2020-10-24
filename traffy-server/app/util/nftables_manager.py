@@ -91,11 +91,11 @@ def add_forward_chain():
 def add_accounting_chains():
     commands = []
 
-    commands.append("add chain ip traffy acc-ingress")
-    commands.append("add chain ip traffy acc-ingress-exc")
+    commands.append("add chain ip traffy accounting-ingress")
+    commands.append("add chain ip traffy accounting-ingress-exc")
 
-    commands.append("add chain ip traffy acc-egress")
-    commands.append("add chain ip traffy acc-egress-exc")
+    commands.append("add chain ip traffy accounting-egress")
+    commands.append("add chain ip traffy accounting-egress-exc")
 
     __execute_commands(commands)
 
@@ -165,11 +165,11 @@ def add_unregistered_drop_rule():
 def insert_accounting_chain_forwarding_rules():
     commands = []
 
-    commands.append("insert rule ip traffy forward iifname %s ip saddr != @exceptions jump acc-ingress" % config.WAN_INTERFACE)
-    commands.append("insert rule ip traffy forward iifname %s ip saddr @exceptions jump acc-ingress-exc" % config.WAN_INTERFACE)
+    commands.append("insert rule ip traffy forward iifname %s ip saddr != @exceptions jump accounting-ingress" % config.WAN_INTERFACE)
+    commands.append("insert rule ip traffy forward iifname %s ip saddr @exceptions jump accounting-ingress-exc" % config.WAN_INTERFACE)
 
-    commands.append("insert rule ip traffy forward oifname %s ip daddr != @exceptions jump acc-egress" % config.WAN_INTERFACE)
-    commands.append("insert rule ip traffy forward oifname %s ip daddr @exceptions jump acc-egress-exc" % config.WAN_INTERFACE)
+    commands.append("insert rule ip traffy forward oifname %s ip daddr != @exceptions jump accounting-egress" % config.WAN_INTERFACE)
+    commands.append("insert rule ip traffy forward oifname %s ip daddr @exceptions jump accounting-egress-exc" % config.WAN_INTERFACE)
 
     __execute_commands(commands)
 
@@ -179,11 +179,11 @@ def add_accounting_matching_rules(reg_key_id):
 
     commands = []
 
-    commands.append("add rule ip traffy acc-ingress ip daddr @key-%s counter name %s-ingress" % (reg_key_id, digits_to_chars(reg_key_id)))
-    commands.append("add rule ip traffy acc-ingress-exc ip daddr @key-%s counter name %s-ingress-exc" % (reg_key_id, digits_to_chars(reg_key_id)))
+    commands.append("add rule ip traffy accounting-ingress ip daddr @key-%s counter name %s-ingress" % (reg_key_id, digits_to_chars(reg_key_id)))
+    commands.append("add rule ip traffy accounting-ingress-exc ip daddr @key-%s counter name %s-ingress-exc" % (reg_key_id, digits_to_chars(reg_key_id)))
 
-    commands.append("add rule ip traffy acc-egress ip saddr @key-%s counter name %s-egress" % (reg_key_id, digits_to_chars(reg_key_id)))
-    commands.append("add rule ip traffy acc-egress-exc ip saddr @key-%s counter name %s-egress-exc" % (reg_key_id, digits_to_chars(reg_key_id)))
+    commands.append("add rule ip traffy accounting-egress ip saddr @key-%s counter name %s-egress" % (reg_key_id, digits_to_chars(reg_key_id)))
+    commands.append("add rule ip traffy accounting-egress-exc ip saddr @key-%s counter name %s-egress-exc" % (reg_key_id, digits_to_chars(reg_key_id)))
 
     __execute_commands(commands)
 
