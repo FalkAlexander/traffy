@@ -165,7 +165,7 @@ def add_unregistered_exception_accept_rules():
 
 def add_captive_portal_rewrite_rules():
     commands = []
-    commands.append("add rule ip traffy captive-portal tcp dport { 80, 443 } dnat %s:80" % (config.WAN_IP_ADDRESS))
+    commands.append("add rule ip traffy captive-portal tcp dport { 80, 443 } dnat %s" % (config.WAN_IP_ADDRESS))
     __execute_commands(commands)
 
 def add_unregistered_drop_rule():
