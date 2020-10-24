@@ -221,10 +221,12 @@ def delete_accounting_matching_rules(reg_key_id):
 # Generic command executor
 #
 
-def __execute_command(args):
+def __execute_command(args, wait=True):
     cmd = "sudo nft " + args
     cmd = subprocess.Popen(shlex.split(cmd), stdout=subprocess.PIPE, preexec_fn=os.setsid)
-    cmd.wait()
+
+    if wait is True:
+        cmd.wait()
 
     return cmd
 
@@ -248,7 +250,7 @@ def add_accounting_counters(reg_key_id):
 
 def get_counter_values():
     cmd = "-j list counters table ip traffy"
-    output = __execute_command(cmd).communicate()[0].decode("utf-8")
+    output = __execute_command(cmd, wait=False).communicate()[0].decode("utf-8")
     tree = json.loads(output)
 
     counters = {}
