@@ -110,7 +110,7 @@ def add_registered_set():
     __execute_command(cmd)
 
 def add_ip_to_registered_set(ip_address):
-    cmd = "add element ip traffy registered %s" % ip_address
+    cmd = "add element ip traffy registered { %s }" % ip_address
     __execute_command(cmd)
 
 def add_ips_to_registered_set(ip_address_list):
@@ -118,7 +118,7 @@ def add_ips_to_registered_set(ip_address_list):
     __execute_command(cmd)
 
 def delete_ip_from_registered_set(ip_address):
-    cmd = "delete element ip traffy registered %s" % ip_address
+    cmd = "delete element ip traffy registered { %s }" % ip_address
     __execute_command(cmd)
 
 def delete_ips_from_registered_set(ip_address_list):
