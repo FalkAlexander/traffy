@@ -272,7 +272,7 @@ def get_counter_values():
 
 def reset_counter_values():
     cmd = "reset counters table ip traffy"
-    __execute_command(cmd)
+    __execute_command(cmd, wait=False)
 
 def delete_accounting_counters(reg_key_id):
     commands = []
