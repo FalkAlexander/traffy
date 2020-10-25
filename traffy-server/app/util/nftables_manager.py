@@ -221,14 +221,15 @@ def delete_accounting_matching_rules(reg_key_id):
 # Generic command executor
 #
 
-def __execute_command(args, wait=True):
+def __execute_command(args, output=False):
     cmd = "sudo nft " + args
-    cmd = subprocess.Popen(shlex.split(cmd), stdout=subprocess.PIPE, preexec_fn=os.setsid)
 
-    if wait is True:
-        cmd.wait()
-
-    return cmd
+    if output is True:
+        proc = subprocess.run(shlex.split(cmd), capture_output=True, text=True, encoding="utf-8")
+        return proc.stdout
+    else:
+        proc = subprocess.run(shlex.split(cmd), stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+        return proc
 
 def __execute_commands(commands):
     for cmd in commands:
@@ -250,7 +251,7 @@ def add_accounting_counters(reg_key_id):
 
 def get_counter_values():
     cmd = "-j list counters table ip traffy"
-    output = __execute_command(cmd, wait=False).communicate()[0].decode("utf-8")
+    output = __execute_command(cmd, output=True)
     tree = json.loads(output)
 
     counters = {}
@@ -272,7 +273,7 @@ def get_counter_values():
 
 def reset_counter_values():
     cmd = "reset counters table ip traffy"
-    __execute_command(cmd, wait=False)
+    __execute_command(cmd)
 
 def delete_accounting_counters(reg_key_id):
     commands = []
@@ -304,7 +305,7 @@ def __chars_to_digits(string):
 
 def __search_for_handles_in_chain(chain_name, identifier):
     cmd = "list chain traffy %s -a" % chain_name
-    output = __execute_command(cmd, wait=False).communicate()[0].decode("utf-8")
+    output = __execute_command(cmd, output=True)
 
     handles = []
     for line in output.splitlines():
