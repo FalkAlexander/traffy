@@ -304,7 +304,7 @@ def __chars_to_digits(string):
 
 def __search_for_handles_in_chain(chain_name, identifier):
     cmd = "list chain traffy %s -a" % chain_name
-    output = __execute_command(cmd).communicate()[0].decode("utf-8")
+    output = __execute_command(cmd, wait=False).communicate()[0].decode("utf-8")
 
     handles = []
     for line in output.splitlines():
