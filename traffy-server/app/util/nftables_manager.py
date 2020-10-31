@@ -185,8 +185,7 @@ def add_captive_portal_chain_forwarding_rules():
 def add_unregistered_exception_accept_rules():
     commands = []
     commands.append("add rule ip traffy captive-portal tcp dport 53 accept")
-    commands.append("add rule ip traffy captive-portal udp dport 53 accept")
-    commands.append("add rule ip traffy captive-portal udp dport 67 return")
+    commands.append("add rule ip traffy captive-portal udp dport vmap { 53 : accept, 67 : return }")
     __execute_commands(commands)
 
 def add_captive_portal_rewrite_rules():
