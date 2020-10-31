@@ -19,7 +19,7 @@
 
 from app.exceptions.user_exceptions import RegistrationError, DatabaseError, DeregistrationError
 from ..models import RegistrationKey, IpAddress, MacAddress, AddressPair, Traffic, Identity, Dormitory
-from ..util import arp_manager, generate_registration_key, lease_parser, shaping_manager, nftables_manager
+from ..util import generate_registration_key, lease_parser, shaping_manager, nftables_manager
 from datetime import datetime, timedelta
 from dateutil import rrule
 from user_agents import parse
@@ -245,7 +245,7 @@ class ServerAPI:
         nftables_manager.add_ip_to_reg_key_set(ip_address, str(reg_key_query.id))
 
     def __enable_spoofing_protection(self, ip_address, mac_address):
-        arp_manager.add_static_arp_entry(ip_address, mac_address)
+        nftables_manager.add_allocation_to_mac_ip_pairs_set(mac_address, ip_address)
 
     def __enable_shaping(self, reg_key_query, ip_address_query):
         if reg_key_query.id in self.accounting_srv.shaped_reg_keys:
@@ -293,7 +293,7 @@ class ServerAPI:
                 session.close()
 
         # Spoofing Protection
-        self.__disable_spoofing_protection(ip_address)
+        self.__disable_spoofing_protection(mac_address, ip_address)
 
         # Setup Firewall
         self.__relock_registered_device_firewall(ip_address)
@@ -309,8 +309,8 @@ class ServerAPI:
             nftables_manager.delete_accounting_matching_rules(str(reg_key_query.id))
             nftables_manager.delete_reg_key_set(str(reg_key_query.id))
 
-    def __disable_spoofing_protection(self, ip_address):
-        arp_manager.remove_static_arp_entry(ip_address)
+    def __disable_spoofing_protection(self, mac_address, ip_address):
+        nftables_manager.delete_allocation_from_mac_ip_pairs_set(mac_address, ip_address)
 
     def __relock_registered_device_firewall(self, ip_address):
         nftables_manager.delete_ip_from_registered_set(ip_address)
@@ -396,7 +396,7 @@ class ServerAPI:
 
         if self.__is_ip_in_range(ip_address) is False:
             session.close()
-            return UserStatus(registered=False, deactivated=False, ip_stolen=True, external=True)
+            return UserStatus(registered=False, deactivated=False, ip_stolen=False, external=True)
 
         if ip_address_query is None and mac_address_query is None:
             session.close()
