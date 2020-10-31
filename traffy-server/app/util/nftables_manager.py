@@ -136,7 +136,6 @@ def add_mac_ip_pairs_set():
 
 def add_allocation_to_mac_ip_pairs_set(mac_address, ip_address):
     cmd = "add element ip traffy mac-ip-pairs { %s }" % (mac_address + " . " + ip_address)
-    print(cmd)
     __execute_command(cmd)
 
 def add_allocations_to_mac_ip_pairs_set(pairs_dict):
@@ -145,7 +144,6 @@ def add_allocations_to_mac_ip_pairs_set(pairs_dict):
 
 def delete_allocation_from_mac_ip_pairs_set(mac_address, ip_address):
     cmd = "delete element ip traffy mac-ip-pairs { %s }" % (mac_address + " . " + ip_address)
-    print(cmd)
     __execute_command(cmd)
 
 # Accounting
