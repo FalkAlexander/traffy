@@ -93,6 +93,7 @@ class Server():
 
                 query = session.query(AddressPair.ip_address).filter_by(reg_key=reg_key_fk.reg_key).distinct()
 
+                pairs_dict = {}
                 for ip_address_fk in query:
                     if ip_address_fk is None:
                         return
@@ -108,37 +109,13 @@ class Server():
 
                     # Spoofing Protection
                     mac_address_query = session.query(MacAddress).filter_by(id=address_pair_query.mac_address).first()
-                    arp_manager.add_static_arp_entry(ip_address_query.address_v4, mac_address_query.address)
+                    pairs_dict[mac_address_query.address] = ip_address_query.address_v4
+                
+                if len(pairs_dict) != 0:
+                    nftables_manager.add_allocations_to_mac_ip_pairs_set(pairs_dict)
+
 
                 nftables_manager.add_accounting_matching_rules(reg_key_query.id)
-
-        session.close()
-    
-    def remove_static_arp_entries(self):
-        session = self.db.create_session()
-        address_pair_query = session.query(AddressPair.reg_key).filter(AddressPair.reg_key).distinct()
-        for reg_key_fk in address_pair_query:
-            if reg_key_fk is None:
-                return
-            
-            reg_key_query = session.query(RegistrationKey).filter_by(id=reg_key_fk.reg_key).first()
-            if reg_key_query is None:
-                return
-            
-            if reg_key_query.active is True:
-                query = session.query(AddressPair.ip_address).filter_by(reg_key=reg_key_fk.reg_key).distinct()
-                for ip_address_fk in query:
-                    if ip_address_fk is None:
-                        return
-
-                    ip_address_query = session.query(IpAddress).filter_by(id=ip_address_fk.ip_address).first()
-                    if ip_address_query is None:
-                        return
-                    
-                    address_pair_query = session.query(AddressPair).filter_by(ip_address=ip_address_fk.ip_address).first()
-                    ip_address_query = session.query(IpAddress).filter_by(id=address_pair_query.ip_address).first()
-    
-                    arp_manager.remove_static_arp_entry(ip_address_query.address_v4)
 
         session.close()
 
@@ -159,9 +136,6 @@ class Server():
 
             # Clear traffy table
             nftables_manager.delete_traffy_table()
-
-            # Remove static arp entries
-            self.remove_static_arp_entries()
 
             logging.info("Network not managed anymore")
 
