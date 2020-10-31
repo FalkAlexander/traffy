@@ -40,7 +40,7 @@ def setup_captive_portal_configuration():
 
     add_registered_set()
 
-    insert_captive_portal_chain_forwarding_rules()
+    add_captive_portal_chain_forwarding_rules()
     add_unregistered_exception_accept_rules()
     add_captive_portal_rewrite_rules()
     add_unregistered_drop_rule()
@@ -57,7 +57,7 @@ def setup_accounting_configuration():
 
     add_ips_to_exceptions_set(config.ACCOUNTING_EXCEPTIONS)
 
-    insert_accounting_chain_forwarding_rules()
+    add_accounting_chain_forwarding_rules()
 
 #
 # nftables tables
@@ -178,8 +178,8 @@ def delete_reg_key_set(reg_key_id):
 
 # Captive Portal
 
-def insert_captive_portal_chain_forwarding_rules():
-    cmd = "insert rule ip traffy prerouting iif { %s } ip saddr != @registered goto captive-portal" % ", ".join([ip[4] for ip in config.IP_RANGES])
+def add_captive_portal_chain_forwarding_rules():
+    cmd = "add rule ip traffy prerouting iif { %s } ip saddr != @registered goto captive-portal" % ", ".join([ip[4] for ip in config.IP_RANGES])
     __execute_command(cmd)
 
 def add_unregistered_exception_accept_rules():
@@ -207,14 +207,14 @@ def add_spoofing_redirect_rule():
 
 # Accounting
 
-def insert_accounting_chain_forwarding_rules():
+def add_accounting_chain_forwarding_rules():
     commands = []
 
-    commands.append("insert rule ip traffy forward iif %s ip saddr != @exceptions goto accounting-ingress" % config.WAN_INTERFACE_ID)
-    commands.append("insert rule ip traffy forward iif %s ip saddr @exceptions goto accounting-ingress-exc" % config.WAN_INTERFACE_ID)
+    commands.append("add rule ip traffy forward iif %s ip saddr != @exceptions goto accounting-ingress" % config.WAN_INTERFACE_ID)
+    commands.append("add rule ip traffy forward iif %s ip saddr @exceptions goto accounting-ingress-exc" % config.WAN_INTERFACE_ID)
 
-    commands.append("insert rule ip traffy forward oif %s ip daddr != @exceptions goto accounting-egress" % config.WAN_INTERFACE_ID)
-    commands.append("insert rule ip traffy forward oif %s ip daddr @exceptions goto accounting-egress-exc" % config.WAN_INTERFACE_ID)
+    commands.append("add rule ip traffy forward oif %s ip daddr != @exceptions goto accounting-egress" % config.WAN_INTERFACE_ID)
+    commands.append("add rule ip traffy forward oif %s ip daddr @exceptions goto accounting-egress-exc" % config.WAN_INTERFACE_ID)
 
     __execute_commands(commands)
 
