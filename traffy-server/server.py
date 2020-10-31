@@ -21,7 +21,7 @@ from app.database_manager import DatabaseManager
 from app.socket_manager import SocketManager
 from app.models import RegistrationKey, IpAddress, MacAddress, AddressPair
 from app.tests.dev_mode import DevModeTest
-from app.util import shaping_manager, arp_manager, nftables_manager
+from app.util import shaping_manager, nftables_manager
 from app.util.mail_helper import MailHelper
 from datetime import datetime
 from app.accounting_manager import AccountingService
@@ -113,7 +113,6 @@ class Server():
                 
                 if len(pairs_dict) != 0:
                     nftables_manager.add_allocations_to_mac_ip_pairs_set(pairs_dict)
-
 
                 nftables_manager.add_accounting_matching_rules(reg_key_query.id)
 

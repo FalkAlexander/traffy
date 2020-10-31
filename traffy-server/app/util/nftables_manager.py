@@ -46,7 +46,7 @@ def setup_captive_portal_configuration():
     add_unregistered_drop_rule()
 
     add_mac_ip_pairs_set()
-    add_spoofing_rule()
+    add_spoofing_redirect_rule()
 
 def setup_accounting_configuration():
     if config.STATELESS:
@@ -134,8 +134,18 @@ def add_mac_ip_pairs_set():
     cmd = "add set ip traffy mac-ip-pairs { type ether_addr . ipv4_addr; }"
     __execute_command(cmd)
 
+def add_allocation_to_mac_ip_pairs_set(mac_address, ip_address):
+    cmd = "add element ip traffy mac-ip-pairs { %s }" % (mac_address + " . " + ip_address)
+    print(cmd)
+    __execute_command(cmd)
+
 def add_allocations_to_mac_ip_pairs_set(pairs_dict):
     cmd = "add element traffy mac-ip-pairs { %s }" % ", ".join([mac + " . " + ip for mac, ip in pairs_dict.items()])
+    __execute_command(cmd)
+
+def delete_allocation_from_mac_ip_pairs_set(mac_address, ip_address):
+    cmd = "delete element ip traffy mac-ip-pairs { %s }" % (mac_address + " . " + ip_address)
+    print(cmd)
     __execute_command(cmd)
 
 # Accounting
@@ -193,7 +203,7 @@ def add_unregistered_drop_rule():
 
 # Spoofing Protection
 
-def add_spoofing_rule():
+def add_spoofing_redirect_rule():
     cmd = "add rule ip traffy prerouting ether saddr . ip saddr != @mac-ip-pairs goto captive-portal"
     __execute_command(cmd)
 
