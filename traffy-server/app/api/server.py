@@ -18,6 +18,7 @@
 """
 
 from app.exceptions.user_exceptions import RegistrationError, DatabaseError, DeregistrationError
+from enum import Enum
 from ..models import RegistrationKey, IpAddress, MacAddress, AddressPair, Traffic, Identity, Dormitory
 from ..util import shaping_manager, nftables_manager
 from datetime import datetime, timedelta
@@ -372,46 +373,54 @@ class ServerAPI:
     def access_check(self, ip_address):
         session = self.db.create_session()
 
-        try:
-            mac_address = self.__get_mac_from_ip(ip_address)
+        mac_address = self.__get_mac_from_ip(ip_address)
 
-            ip_address_query = self.get_ip_address_query_by_ip(session, ip_address)
-            mac_address_query = self.get_mac_address_query_by_mac(session, mac_address)
-        except:
-            session.rollback()
-
+        # Check if request came from inside the network
         if self.__is_ip_in_range(ip_address) is False:
             session.close()
-            return UserStatus(registered=False, deactivated=False, ip_stolen=False, external=True)
+            return AccessMode(outside_lan=True)
 
-        if ip_address_query is None and mac_address_query is None:
+        # The corresponding MAC to the IP address could not be found, assuming that there is no lease
+        if mac_address is None:
             session.close()
-            return UserStatus(registered=False, deactivated=False, ip_stolen=False, external=False)
-
-        if ip_address_query is None and mac_address_query is not None:
-            session.close()
-            return UserStatus(registered=False, deactivated=False, ip_stolen=True, external=False)
-
-        if ip_address_query is not None and mac_address_query is None:
-            session.close()
-            return UserStatus(registered=False, deactivated=False, ip_stolen=True, external=False)
+            return AccessMode(no_lease=True)
 
         try:
-            address_pair_query = self.get_address_pair_query_by_mac_ip(session, mac_address_query, ip_address_query)
+            ip_address_query = session.query(IpAddress).filter_by(address_v4=ip_address).first()
+            mac_address_query = session.query(MacAddress).filter_by(address=mac_address).first()
         except:
             session.rollback()
+            return AccessMode(error=True)
 
-        if address_pair_query is None:
-            session.close()
-            return UserStatus(registered=False, deactivated=False, ip_stolen=False, external=False)
-        else:
-            reg_key_query = self.get_reg_key_query_by_id(session, address_pair_query.reg_key)
-            if reg_key_query.active is False:
+        # Both MAC and IP are known to the system...
+        if ip_address_query is not None and mac_address_query is not None:
+            try:
+                address_pair_query = session.query(AddressPair).filter_by(mac_address=mac_address_query.id, ip_address=ip_address_query.id).first()
+            except:
+                session.rollback()
+                return AccessMode(error=True)
+            
+            # Is there a device with both the exact same MAC and IP?
+            if address_pair_query is not None:
+                reg_key_query = self.get_reg_key_query_by_id(session, address_pair_query.reg_key)
+
+                if reg_key_query.active is False:
+                    session.close()
+                    return AccessMode(deactivated=True)
+    
                 session.close()
-                return UserStatus(registered=False, deactivated=True, ip_stolen=False, external=False)
+                return AccessMode(registered=True)
             else:
                 session.close()
-                return UserStatus(registered=True, deactivated=False, ip_stolen=False, external=False)
+                return AccessMode(device_registered_with_different_port=True)
+        
+        # Only the MAC is known to the system...
+        if mac_address_query is not None and ip_address_query is None:
+            session.close()
+            return AccessMode(device_registered_with_different_port=True)
+
+        session.close()
+        return AccessMode(unregistered=True)
 
     #
     # Dashboard
@@ -1171,17 +1180,17 @@ class ServerAPI:
         else:
             return None
 
-class UserStatus():
-    registered = False
-    deactivated = False
-    ip_stolen = False
-    external = False
 
-    def __init__(self, registered, deactivated, ip_stolen, external):
+class AccessMode():
+    def __init__(self, unregistered=None, registered=None, outside_lan=None, no_lease=None, device_registered_with_different_port=None, deactivated=None, error=None):
+        self.unregistered = unregistered
         self.registered = registered
+        self.outside_lan = outside_lan
+        self.no_lease = no_lease
+        self.device_registered_with_different_port = device_registered_with_different_port
         self.deactivated = deactivated
-        self.ip_stolen = ip_stolen
-        self.external = external
+        self.error = error
+
 
 class KeyRow():
     reg_key = ""
@@ -1284,4 +1293,3 @@ class DeviceRow():
             device_string = "Unknown"
 
         return device_string
-

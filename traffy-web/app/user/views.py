@@ -50,18 +50,10 @@ def index():
         user = server.access_check(ip_address)
     except ConnectionRefusedError:
         return render_template("errors/backend_lost.html")
-
-    if user.get("external") is True:
-        branch_name, commits = __get_developer_infos()
-        return render_template("user/about.html", branch_name=branch_name, commits=commits, external=True)
-    elif user.get("registered") is False:
-        return redirect("/register", code=307)
-    elif user.get("registered") is True:
-        return redirect("/dashboard", code=307)
-    elif user.get("deactivated") is True:
-        return render_template("errors/deactivated.html")
-    elif user.get("ip_stolen") is True:
-        return render_template("errors/ip_stolen.html")
+    
+    redirect_value = __route_manager(user)
+    if redirect_value is not None:
+        return redirect_value
 
 @user.route("/register", methods=["GET", "POST"])
 def register():
@@ -76,16 +68,9 @@ def register():
     except ConnectionRefusedError:
         return render_template("errors/backend_lost.html")
 
-    if user.get("external") is True:
-        branch_name, commits = __get_developer_infos()
-        return render_template("user/about.html", branch_name=branch_name, commits=commits, external=True)
-    elif user.get("registered") is True:
-        return redirect("/dashboard", code=307)
-    elif user.get("deactivated") is True:
-        deactivation_reason = server.get_reg_key_deactivation_reason_by_ip(ip_address)
-        return render_template("errors/deactivated.html", reason=deactivation_reason)
-    elif user.get("ip_stolen") is True:
-        return render_template("errors/ip_stolen.html")
+    redirect_value = __route_manager(user, restricted_area=False)
+    if redirect_value is not None:
+        return redirect_value
 
     __init_session_variables()
 
@@ -122,16 +107,9 @@ def conditions():
     except ConnectionRefusedError:
         return render_template("errors/backend_lost.html")
 
-    if user.get("external") is True:
-        branch_name, commits = __get_developer_infos()
-        return render_template("user/about.html", branch_name=branch_name, commits=commits, external=True)
-    elif user.get("registered") is True:
-        return redirect("/dashboard", code=307)
-    elif user.get("deactivated") is True:
-        deactivation_reason = server.get_reg_key_deactivation_reason_by_ip(ip_address)
-        return render_template("errors/deactivated.html", reason=deactivation_reason)
-    elif user.get("ip_stolen") is True:
-        return render_template("errors/ip_stolen.html")
+    redirect_value = __route_manager(user, restricted_area=False)
+    if redirect_value is not None:
+        return redirect_value
 
     reg_key = session.get("reg_key")
     if __reg_key_check(reg_key) is False:
@@ -162,16 +140,9 @@ def privacy_policy():
     except ConnectionRefusedError:
         return render_template("errors/backend_lost.html")
 
-    if user.get("external") is True:
-        branch_name, commits = __get_developer_infos()
-        return render_template("user/about.html", branch_name=branch_name, commits=commits, external=True)
-    elif user.get("registered") is True:
-        return redirect("/dashboard", code=307)
-    elif user.get("deactivated") is True:
-        deactivation_reason = server.get_reg_key_deactivation_reason_by_ip(ip_address)
-        return render_template("errors/deactivated.html", reason=deactivation_reason)
-    elif user.get("ip_stolen") is True:
-        return render_template("errors/ip_stolen.html")
+    redirect_value = __route_manager(user, restricted_area=False)
+    if redirect_value is not None:
+        return redirect_value
 
     reg_key = session.get("reg_key")
     if __reg_key_check(reg_key) is False:
@@ -204,16 +175,9 @@ def dashboard():
     except ConnectionRefusedError:
         return render_template("errors/backend_lost.html")
 
-    if user.get("external") is True:
-        branch_name, commits = __get_developer_infos()
-        return render_template("user/about.html", branch_name=branch_name, commits=commits, external=True)
-    elif user.get("registered") is False:
-        return redirect("/register", code=307)
-    elif user.get("deactivated") is True:
-        deactivation_reason = server.get_reg_key_deactivation_reason_by_ip(ip_address)
-        return render_template("errors/deactivated.html", reason=deactivation_reason)
-    elif user.get("ip_stolen") is True:
-        return render_template("errors/ip_stolen.html")
+    redirect_value = __route_manager(user, restricted_area=True)
+    if redirect_value is not None:
+        return redirect_value
 
     __init_session_variables()
 
@@ -221,9 +185,6 @@ def dashboard():
 
     volume_left, max_volume = server.get_reg_key_credit_by_ip(ip_address)
     in_unlimited_time_range = server.get_in_unlimited_time_range()
-
-    user_agent = request.headers.get("User-Agent")
-    #server.set_device_user_agent(ip_address, user_agent)
 
     notifications = notification_functions.get_display_notifications()
     if "hidden_notifications" in request.cookies:
@@ -318,16 +279,9 @@ def reedem():
     except ConnectionRefusedError:
         return render_template("errors/backend_lost.html")
 
-    if user.get("external") is True:
-        branch_name, commits = __get_developer_infos()
-        return render_template("user/about.html", branch_name=branch_name, commits=commits, external=True)
-    elif user.get("registered") is False:
-        return redirect("/register", code=307)
-    elif user.get("deactivated") is True:
-        deactivation_reason = server.get_reg_key_deactivation_reason_by_ip(ip_address)
-        return render_template("errors/deactivated.html", reason=deactivation_reason)
-    elif user.get("ip_stolen") is True:
-        return render_template("errors/ip_stolen.html")
+    redirect_value = __route_manager(user, restricted_area=True)
+    if redirect_value is not None:
+        return redirect_value
 
     if "reedem_btn" in request.form:
         raw_voucher = request.form["voucher"]
@@ -349,16 +303,9 @@ def deregister():
     except ConnectionRefusedError:
         return render_template("errors/backend_lost.html")
 
-    if user.get("external") is True:
-        branch_name, commits = __get_developer_infos()
-        return render_template("user/about.html", branch_name=branch_name, commits=commits, external=True)
-    elif user.get("registered") is False:
-        return redirect("/register", code=307)
-    elif user.get("deactivated") is True:
-        deactivation_reason = server.get_reg_key_deactivation_reason_by_ip(ip_address)
-        return render_template("errors/deactivated.html", reason=deactivation_reason)
-    elif user.get("ip_stolen") is True:
-        return render_template("errors/ip_stolen.html")
+    redirect_value = __route_manager(user, restricted_area=True)
+    if redirect_value is not None:
+        return redirect_value
 
     if "deregister_btn" in request.form:
         ip_address = session.get("ip_address")
@@ -394,3 +341,35 @@ def __get_developer_infos():
     commits = repo.iter_commits('--all', max_count=15)
 
     return branch_name, commits
+
+def __route_manager(user_access, restricted_area=None):
+    if restricted_area is None:
+        if user_access.get("unregistered") is True:
+            return redirect("/register", code=307)
+
+        if user_access.get("registered") is True:
+            return redirect("/dashboard", code=307)
+    else:
+        if restricted_area is True:
+            if user_access.get("unregistered") is True:
+                return redirect("/register", code=307)
+        else:
+            if user_access.get("registered") is True:
+                return redirect("/dashboard", code=307)
+
+    if user_access.get("outside_lan") is True:
+        branch_name, commits = __get_developer_infos()
+        return render_template("user/about.html", branch_name=branch_name, commits=commits, external=True)
+    
+    if user_access.get("no_lease") is True:
+        return render_template("errors/no_lease.html")
+    
+    if user_access.get("error") is True:
+        return render_template("errors/500.html")
+    
+    if user_access.get("deactivated") is True:
+        deactivation_reason = server.get_reg_key_deactivation_reason_by_ip(ip_address)
+        return render_template("errors/deactivated.html", reason=deactivation_reason)
+
+    if user_access.get("device_registered_with_different_port") is True:
+        return render_template("errors/device_registered_with_different_port.html")
