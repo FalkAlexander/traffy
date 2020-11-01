@@ -1,0 +1,25 @@
+{% block page_content %}
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8"/>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}"/>
+    <title>{{ _("Access Manipulation") }}</title>
+  </head>
+  <body>
+    <div class="center-box">
+      <div class="dialog-box dialog-box-small">
+        <form method="POST">
+          <div class="padding-box">
+            <h1>{{ _("Access Manipulation") }}</h1>
+            <h2>{{ _("A device with the same access identifiers is already registered in the network. This is most likely not the network port you initially registered your device with. You have to deregister your device first to switch the network port, or ask an network administrator to do so for you.") }}</h2>
+          </div>
+        </form>
+      </div>
+    </div>
+    {% include 'includes/sidebar.html' %}
+    {% include 'includes/footer.html' %}
+  </body>
+</html>
+{% endblock %}
+

@@ -123,19 +123,15 @@ def reg_codes():
         if current_page >= 0 and current_page <= page_count:
             offset = current_page * limit
             rows = server.construct_reg_code_list(limit, offset)
-            return render_template("/admin/regcodes.html", rows=rows, page_count=page_count, dev_mode=config.DEV_MODE, current_page=current_page+1)
+            return render_template("/admin/regcodes.html", rows=rows, page_count=page_count, current_page=current_page+1)
 
     if "clear_btn" in request.form:
-        return render_template("/admin/regcodes.html", rows=rows, dev_mode=config.DEV_MODE, page_count=page_count, current_page=current_page+1)
+        return render_template("/admin/regcodes.html", rows=rows, page_count=page_count, current_page=current_page+1)
 
     if "add_key_btn" in request.form:
         return redirect("/admin/add-regcode")
 
-    if "add_test_btn" in request.form:
-        server.create_reg_key_test()
-        return redirect("/admin/regcodes")
-
-    return render_template("/admin/regcodes.html", rows=rows, page_count=page_count, dev_mode=config.DEV_MODE, current_page=current_page+1)
+    return render_template("/admin/regcodes.html", rows=rows, page_count=page_count, current_page=current_page+1)
 
 @admin.route("/admin/add-regcode", methods=["GET", "POST"])
 @login_required
@@ -329,11 +325,6 @@ def reg_code(reg_key):
 
     # User Settings Post Processing
     if request.method == "POST":
-        # Dev Mode
-        if "fake_device_btn" in request.form:
-            server.register_device_test(reg_key, request.headers.get("User-Agent"))
-            return redirect("/admin/regcodes/" + reg_key)
-
         # Instruction Download
         if "download_btn" in request.form:
             max_saved_volume, initial_volume, daily_topup_volume, shaping_speed, traffy_ip, traffy_domain, max_devices = server.get_instruction_pdf_values()
@@ -503,7 +494,6 @@ def reg_code(reg_key):
     room = server.get_reg_code_room(reg_key)
 
     return render_template("/admin/key-page.html",
-                           dev_mode=config.DEV_MODE,
                            reg_key=reg_key,
                            stat_volume_left=stat_volume_left,
                            stat_created_on=stat_created_on,
@@ -672,16 +662,12 @@ def infrastructure():
     rows = server.construct_reg_code_list()
 
     if "clear_btn" in request.form:
-        return render_template("/admin/infrastructure.html", rows=rows, dev_mode=config.DEV_MODE)
+        return render_template("/admin/infrastructure.html", rows=rows)
 
     if "add_key_btn" in request.form:
         return redirect("/admin/add-regcode")
 
-    if "add_test_btn" in request.form:
-        server.create_reg_key_test()
-        return redirect("/admin/infrastructure")
-
-    return render_template("/admin/infrastructure.html", rows=rows, dev_mode=config.DEV_MODE)
+    return render_template("/admin/infrastructure.html", rows=rows)
 
 @admin.route("/admin/notifications", methods=["GET", "POST"])
 @login_required

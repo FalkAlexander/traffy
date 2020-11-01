@@ -18,7 +18,7 @@
 """
 
 from app.models import RegistrationKey, IpAddress, AddressPair, Traffic, Identity
-from app.util import shaping_manager, helpers, nftables_manager
+from app.util import shaping_manager, nftables_manager
 from datetime import datetime, timedelta
 from dateutil import rrule
 import threading, time
@@ -28,13 +28,11 @@ import logging
 
 class AccountingService():
     db = NotImplemented
-    mail_helper = NotImplemented
     accounting_thread = NotImplemented
     shaped_reg_keys = []
 
-    def __init__(self, db, mail_helper):
+    def __init__(self, db):
         self.db = db
-        self.mail_helper = mail_helper
 
     #
     # Accounting Threads Management
@@ -60,7 +58,7 @@ class AccountingService():
         traffic_query = self.__verify_todays_traffic_query(session, reg_key_query)
 
         try:
-            amount_gib = helpers.string_to_float(amount_gib)
+            amount_gib = __string_to_float(amount_gib)
             if not amount_gib > 0 or amount_gib > 999:
                 return False
 
@@ -80,7 +78,7 @@ class AccountingService():
         traffic_query = self.__verify_todays_traffic_query(session, reg_key_query)
 
         try:
-            amount_gib = helpers.string_to_float(amount_gib)
+            amount_gib = __string_to_float(amount_gib)
             if not amount_gib > 0 or amount_gib > 999:
                 return False
 
@@ -93,7 +91,7 @@ class AccountingService():
 
     def set_custom_topup(self, session, reg_key_query, amount_gib):
         try:
-            amount_gib = helpers.string_to_float(amount_gib)
+            amount_gib = __string_to_float(amount_gib)
             if not amount_gib > 0 or amount_gib > 999:
                 return False
 
@@ -106,7 +104,7 @@ class AccountingService():
 
     def set_custom_max_volume(self, session, reg_key_query, amount_gib):
         try:
-            amount_gib = helpers.string_to_float(amount_gib)
+            amount_gib = _string_to_float(amount_gib)
             if not amount_gib > 0 or amount_gib > 999:
                 return False
 
@@ -325,6 +323,14 @@ class AccountingService():
     def __to_bytes(self, gib):
         return int(gib * 1073741824)
 
+    def __string_to_float(self, value):
+        if value == "":
+            raise ValueError("String given was empty")
+        try:
+            return float(value)
+        except:
+            raise ValueError("String given can not be transformed")
+
 
 class AccountingThread(threading.Thread):
     run = True
@@ -412,7 +418,6 @@ class AccountingThread(threading.Thread):
                     self.__enable_traffic_shaping_for_reg_key(session, reg_key_query)
 
                     identity_query = session.query(Identity).filter_by(id=reg_key_query.identity).first()
-                    #self.mail_helper.send_shaped_notification(identity_query.first_name, identity_query.last_name, identity_query.room)
             else:
                 if inactive:
                     return

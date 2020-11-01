@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2020-09-11 00:35+0200\n"
+"POT-Creation-Date: 2020-11-01 14:35+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -21,163 +21,163 @@ msgstr ""
 msgid "Wrong credentials. This attempt got reported."
 msgstr ""
 
-#: app/admin/views.py:63 app/admin/views.py:67 app/admin/views.py:467
-#: app/admin/views.py:471 app/user/views.py:241 app/user/views.py:245
+#: app/admin/views.py:63 app/admin/views.py:67 app/admin/views.py:458
+#: app/admin/views.py:462 app/user/views.py:202 app/user/views.py:206
 msgid "Accounted"
 msgstr ""
 
-#: app/admin/views.py:64 app/admin/views.py:68 app/admin/views.py:468
-#: app/admin/views.py:472 app/user/views.py:242 app/user/views.py:246
+#: app/admin/views.py:64 app/admin/views.py:68 app/admin/views.py:459
+#: app/admin/views.py:463 app/user/views.py:203 app/user/views.py:207
 msgid "Timerule"
 msgstr ""
 
-#: app/admin/views.py:65 app/admin/views.py:69 app/admin/views.py:469
-#: app/admin/views.py:473 app/templates/admin/key-page.html:61
-#: app/templates/user/dashboard_advanced.html:91 app/user/views.py:243
-#: app/user/views.py:247
+#: app/admin/views.py:65 app/admin/views.py:69 app/admin/views.py:460
+#: app/admin/views.py:464 app/templates/admin/key-page.html:56
+#: app/templates/user/dashboard_advanced.html:91 app/user/views.py:204
+#: app/user/views.py:208
 msgid "Shaped"
 msgstr ""
 
-#: app/admin/views.py:66 app/admin/views.py:70 app/admin/views.py:470
-#: app/admin/views.py:474 app/user/views.py:244 app/user/views.py:248
+#: app/admin/views.py:66 app/admin/views.py:70 app/admin/views.py:461
+#: app/admin/views.py:465 app/user/views.py:205 app/user/views.py:209
 msgid "Exceptions"
 msgstr ""
 
-#: app/admin/views.py:157 app/admin/views.py:216 app/admin/views.py:649
-#: app/admin/views.py:718 app/admin/views.py:747
+#: app/admin/views.py:153 app/admin/views.py:212 app/admin/views.py:639
+#: app/admin/views.py:704 app/admin/views.py:733
 msgid "Please fill out all input forms."
 msgstr ""
 
-#: app/admin/views.py:165
+#: app/admin/views.py:161
 msgid "An error occured while adding the registration code."
 msgstr ""
 
-#: app/admin/views.py:208
+#: app/admin/views.py:204
 msgid "Move date must be in the future."
 msgstr ""
 
-#: app/admin/views.py:223
+#: app/admin/views.py:219
 msgid "You can not schedule a move if the room and dormitory will stay the same."
 msgstr ""
 
-#: app/admin/views.py:239
+#: app/admin/views.py:235
 msgid "Identity could not get changed."
 msgstr ""
 
-#: app/admin/views.py:258
+#: app/admin/views.py:254
 msgid "Error: Maximum number of characters exceeded."
 msgstr ""
 
-#: app/admin/views.py:267 app/admin/views.py:385 app/admin/views.py:403
-#: app/admin/views.py:412 app/admin/views.py:421 app/admin/views.py:430
-#: app/admin/views.py:443 app/admin/views.py:460 app/admin/views.py:578
+#: app/admin/views.py:263 app/admin/views.py:376 app/admin/views.py:394
+#: app/admin/views.py:403 app/admin/views.py:412 app/admin/views.py:421
+#: app/admin/views.py:434 app/admin/views.py:451 app/admin/views.py:568
 msgid "An error occured."
 msgstr ""
 
-#: app/admin/views.py:280
+#: app/admin/views.py:276
 msgid "Device unregistered"
 msgstr ""
 
-#: app/admin/views.py:327 app/user/views.py:97 app/user/views.py:138
-#: app/user/views.py:178
+#: app/admin/views.py:323 app/user/views.py:82 app/user/views.py:116
+#: app/user/views.py:149
 msgid "Invalid registration key."
 msgstr ""
 
-#: app/admin/views.py:367 app/admin/views.py:376 app/admin/views.py:394
+#: app/admin/views.py:358 app/admin/views.py:367 app/admin/views.py:385
 msgid "Input entered is invalid."
 msgstr ""
 
-#: app/admin/views.py:446
+#: app/admin/views.py:437
 msgid "Registration key successfully deleted."
 msgstr ""
 
-#: app/admin/views.py:448
+#: app/admin/views.py:439
 msgid "Registration key deletion scheduled successfully."
 msgstr ""
 
-#: app/admin/views.py:462
+#: app/admin/views.py:453
 msgid "Canceled pending registration key deletion."
 msgstr ""
 
-#: app/admin/views.py:478 app/templates/user/dashboard_advanced.html:93
+#: app/admin/views.py:469 app/templates/user/dashboard_advanced.html:93
 msgid "Yes"
 msgstr ""
 
-#: app/admin/views.py:480 app/templates/user/dashboard_advanced.html:95
+#: app/admin/views.py:471 app/templates/user/dashboard_advanced.html:95
 msgid "No"
 msgstr ""
 
-#: app/admin/views.py:483 app/templates/admin/key-page.html:173
-#: app/templates/admin/key-page.html:197
+#: app/admin/views.py:474 app/templates/admin/key-page.html:168
+#: app/templates/admin/key-page.html:192
 msgid "Enabled"
 msgstr ""
 
-#: app/admin/views.py:485 app/templates/admin/key-page.html:176
-#: app/templates/admin/key-page.html:200
+#: app/admin/views.py:476 app/templates/admin/key-page.html:171
+#: app/templates/admin/key-page.html:195
 msgid "Disabled"
 msgstr ""
 
-#: app/admin/views.py:566
+#: app/admin/views.py:556
 msgid "Invalid supervisor account."
 msgstr ""
 
-#: app/admin/views.py:587
+#: app/admin/views.py:577
 msgid "Password requirements not met."
 msgstr ""
 
-#: app/admin/views.py:589
+#: app/admin/views.py:579
 msgid "Password changed."
 msgstr ""
 
-#: app/admin/views.py:598
+#: app/admin/views.py:588
 msgid "Mail address entered is invalid."
 msgstr ""
 
-#: app/admin/views.py:600
+#: app/admin/views.py:590
 msgid "Mail address changed."
 msgstr ""
 
-#: app/admin/views.py:607
+#: app/admin/views.py:597
 msgid "No other supervisor account left, cannot delete this one."
 msgstr ""
 
-#: app/admin/views.py:612
+#: app/admin/views.py:602
 msgid "Error deleting account."
 msgstr ""
 
-#: app/admin/views.py:615
+#: app/admin/views.py:605
 msgid "Account deleted."
 msgstr ""
 
-#: app/admin/views.py:654
+#: app/admin/views.py:644
 msgid "Account could not get created."
 msgstr ""
 
-#: app/admin/views.py:714 app/admin/views.py:743
+#: app/admin/views.py:700 app/admin/views.py:729
 msgid "The notification cant be invalid before its valid time."
 msgstr ""
 
-#: app/admin/views.py:723
+#: app/admin/views.py:709
 msgid "Notification could not get created."
 msgstr ""
 
-#: app/admin/views.py:752
+#: app/admin/views.py:738
 msgid "Notification could not get edited."
 msgstr ""
 
-#: app/admin/views.py:758
+#: app/admin/views.py:744
 msgid "Notification does not exist."
 msgstr ""
 
-#: app/admin/views.py:770
+#: app/admin/views.py:756
 msgid "Notification deleted"
 msgstr ""
 
-#: app/admin/views.py:772
+#: app/admin/views.py:758
 msgid "An error occured while deleting the notification"
 msgstr ""
 
-#: app/admin/views.py:791
+#: app/admin/views.py:777
 msgid "Login to access that resource."
 msgstr ""
 
@@ -193,7 +193,6 @@ msgstr ""
 #: app/templates/admin/deactivate-regcode.html:14
 #: app/templates/admin/edit-identity.html:15
 #: app/templates/admin/edit-notification.html:14
-#: app/templates/admin/infrastructure.html:14
 #: app/templates/admin/key-page.html:15
 #: app/templates/admin/notifications.html:14
 #: app/templates/admin/regcodes.html:15
@@ -208,7 +207,6 @@ msgstr ""
 #: app/templates/admin/deactivate-regcode.html:15
 #: app/templates/admin/edit-identity.html:16
 #: app/templates/admin/edit-notification.html:15
-#: app/templates/admin/infrastructure.html:15
 #: app/templates/admin/key-page.html:16
 #: app/templates/admin/notifications.html:15
 #: app/templates/admin/regcodes.html:16
@@ -238,7 +236,6 @@ msgstr ""
 #: app/templates/admin/deactivate-regcode.html:18
 #: app/templates/admin/edit-identity.html:19
 #: app/templates/admin/edit-notification.html:18
-#: app/templates/admin/infrastructure.html:18
 #: app/templates/admin/key-page.html:19
 #: app/templates/admin/notifications.html:18
 #: app/templates/admin/regcodes.html:19
@@ -253,7 +250,6 @@ msgstr ""
 #: app/templates/admin/deactivate-regcode.html:20
 #: app/templates/admin/edit-identity.html:21
 #: app/templates/admin/edit-notification.html:20
-#: app/templates/admin/infrastructure.html:20
 #: app/templates/admin/key-page.html:21
 #: app/templates/admin/notifications.html:20
 #: app/templates/admin/regcodes.html:21
@@ -268,17 +264,9 @@ msgstr ""
 #: app/templates/admin/account-page.html:71
 #: app/templates/admin/account-page.html:83
 #: app/templates/admin/account-page.html:96
-#: app/templates/admin/infrastructure.html:42
-#: app/templates/admin/infrastructure.html:55
-#: app/templates/admin/infrastructure.html:68
-#: app/templates/admin/infrastructure.html:78
-#: app/templates/admin/infrastructure.html:91
-#: app/templates/admin/infrastructure.html:105
-#: app/templates/admin/infrastructure.html:119
-#: app/templates/admin/infrastructure.html:133
-#: app/templates/admin/key-page.html:156 app/templates/admin/key-page.html:169
-#: app/templates/admin/key-page.html:193 app/templates/admin/key-page.html:217
-#: app/templates/admin/key-page.html:237 app/templates/admin/key-page.html:257
+#: app/templates/admin/key-page.html:151 app/templates/admin/key-page.html:164
+#: app/templates/admin/key-page.html:188 app/templates/admin/key-page.html:212
+#: app/templates/admin/key-page.html:232 app/templates/admin/key-page.html:252
 msgid "Description:"
 msgstr ""
 
@@ -327,7 +315,7 @@ msgid "Change Password"
 msgstr ""
 
 #: app/templates/admin/account-page.html:82
-#: app/templates/admin/key-page.html:81
+#: app/templates/admin/key-page.html:76
 #: app/templates/user/dashboard_advanced.html:133
 msgid "Mail Address"
 msgstr ""
@@ -337,14 +325,8 @@ msgid "Changes the mail address."
 msgstr ""
 
 #: app/templates/admin/account-page.html:84
-#: app/templates/admin/infrastructure.html:43
-#: app/templates/admin/infrastructure.html:56
-#: app/templates/admin/infrastructure.html:92
-#: app/templates/admin/infrastructure.html:106
-#: app/templates/admin/infrastructure.html:120
-#: app/templates/admin/infrastructure.html:134
-#: app/templates/admin/key-page.html:157 app/templates/admin/key-page.html:170
-#: app/templates/admin/key-page.html:194
+#: app/templates/admin/key-page.html:152 app/templates/admin/key-page.html:165
+#: app/templates/admin/key-page.html:189
 msgid "Allowed Values:"
 msgstr ""
 
@@ -389,7 +371,7 @@ msgstr ""
 #: app/templates/admin/accounts.html:52 app/templates/admin/add-account.html:48
 #: app/templates/admin/add-regcode.html:49
 #: app/templates/admin/edit-identity.html:49
-#: app/templates/admin/key-page.html:79 app/templates/admin/regcodes.html:64
+#: app/templates/admin/key-page.html:74 app/templates/admin/regcodes.html:59
 #: app/templates/user/dashboard_advanced.html:131
 msgid "Surname"
 msgstr ""
@@ -397,7 +379,7 @@ msgstr ""
 #: app/templates/admin/accounts.html:53 app/templates/admin/add-account.html:46
 #: app/templates/admin/add-regcode.html:47
 #: app/templates/admin/edit-identity.html:47
-#: app/templates/admin/regcodes.html:65
+#: app/templates/admin/regcodes.html:60
 msgid "First name"
 msgstr ""
 
@@ -448,13 +430,13 @@ msgstr ""
 
 #: app/templates/admin/add-regcode.html:53
 #: app/templates/admin/edit-identity.html:53
-#: app/templates/admin/regcodes.html:66
+#: app/templates/admin/regcodes.html:61
 msgid "Dormitory"
 msgstr ""
 
 #: app/templates/admin/add-regcode.html:59
 #: app/templates/admin/edit-identity.html:64
-#: app/templates/admin/key-page.html:82 app/templates/admin/regcodes.html:67
+#: app/templates/admin/key-page.html:77 app/templates/admin/regcodes.html:62
 #: app/templates/user/dashboard_advanced.html:134
 msgid "Room"
 msgstr ""
@@ -527,7 +509,7 @@ msgstr ""
 msgid "Master data synchronization"
 msgstr ""
 
-#: app/templates/admin/dashboard.html:200 app/templates/admin/key-page.html:373
+#: app/templates/admin/dashboard.html:200 app/templates/admin/key-page.html:368
 #: app/templates/user/dashboard_advanced.html:249
 msgid "Total"
 msgstr ""
@@ -537,7 +519,7 @@ msgid "Supervisor Registration Code Deactivation"
 msgstr ""
 
 #: app/templates/admin/deactivate-regcode.html:36
-#: app/templates/admin/key-page.html:236 app/templates/admin/key-page.html:246
+#: app/templates/admin/key-page.html:231 app/templates/admin/key-page.html:241
 msgid "Deactivate Registration Code"
 msgstr ""
 
@@ -590,118 +572,6 @@ msgstr ""
 msgid "Edit Notification"
 msgstr ""
 
-#: app/templates/admin/infrastructure.html:6
-msgid "Supervisor Infrastructure"
-msgstr ""
-
-#: app/templates/admin/infrastructure.html:16
-msgid "Infrastructure"
-msgstr ""
-
-#: app/templates/admin/infrastructure.html:36
-msgid "Bulk Management"
-msgstr ""
-
-#: app/templates/admin/infrastructure.html:41
-msgid "Bulk Custom Credit"
-msgstr ""
-
-#: app/templates/admin/infrastructure.html:42
-msgid "Set credit counter of all users in the database."
-msgstr ""
-
-#: app/templates/admin/infrastructure.html:44
-#: app/templates/admin/infrastructure.html:57
-#: app/templates/admin/infrastructure.html:93
-#: app/templates/admin/infrastructure.html:107
-#: app/templates/admin/infrastructure.html:121
-#: app/templates/admin/infrastructure.html:135
-#: app/templates/admin/key-page.html:158 app/templates/admin/key-page.html:171
-#: app/templates/admin/key-page.html:195
-msgid "Unit:"
-msgstr ""
-
-#: app/templates/admin/infrastructure.html:47
-#: app/templates/admin/infrastructure.html:60
-#: app/templates/admin/infrastructure.html:97
-#: app/templates/admin/infrastructure.html:111
-#: app/templates/admin/infrastructure.html:125
-#: app/templates/admin/infrastructure.html:139
-msgid "Apply"
-msgstr ""
-
-#: app/templates/admin/infrastructure.html:54
-msgid "Bulk Add Credit"
-msgstr ""
-
-#: app/templates/admin/infrastructure.html:55
-msgid "Grant custom amount of credit to all users in the database."
-msgstr ""
-
-#: app/templates/admin/infrastructure.html:67
-#: app/templates/admin/infrastructure.html:70
-msgid "Disable Accounting Globally"
-msgstr ""
-
-#: app/templates/admin/infrastructure.html:68
-msgid ""
-"Disable traffic accounting for all users in the database. Does not apply "
-"for newly created users."
-msgstr ""
-
-#: app/templates/admin/infrastructure.html:77
-#: app/templates/admin/infrastructure.html:80
-msgid "Enable Accounting Globally"
-msgstr ""
-
-#: app/templates/admin/infrastructure.html:78
-msgid "Enable traffic accounting for all users in the database."
-msgstr ""
-
-#: app/templates/admin/infrastructure.html:85
-msgid "Traffic Rules"
-msgstr ""
-
-#: app/templates/admin/infrastructure.html:90
-msgid "Daily Top-Up Volume"
-msgstr ""
-
-#: app/templates/admin/infrastructure.html:91
-msgid "Amount of credit an user gets granted once every day."
-msgstr ""
-
-#: app/templates/admin/infrastructure.html:94
-#: app/templates/admin/infrastructure.html:108
-#: app/templates/admin/infrastructure.html:122
-#: app/templates/admin/infrastructure.html:136
-#: app/templates/admin/key-page.html:174 app/templates/admin/key-page.html:198
-msgid "Value:"
-msgstr ""
-
-#: app/templates/admin/infrastructure.html:104
-msgid "Maximum Saved Volume"
-msgstr ""
-
-#: app/templates/admin/infrastructure.html:105
-msgid "Maximum amount of credit an user can save up."
-msgstr ""
-
-#: app/templates/admin/infrastructure.html:118
-msgid "Initial Volume"
-msgstr ""
-
-#: app/templates/admin/infrastructure.html:119
-msgid "Initial credit a newly created user receives."
-msgstr ""
-
-#: app/templates/admin/infrastructure.html:132
-msgid "Time-based Unlimited Rule"
-msgstr ""
-
-#: app/templates/admin/infrastructure.html:133
-msgid "Daily time period where traffic accounting is suspended."
-msgstr ""
-
 #: app/templates/admin/key-page.html:6
 msgid "Supervisor Registration Key Page"
 msgstr ""
@@ -710,193 +580,198 @@ msgstr ""
 msgid "Download Instruction"
 msgstr ""
 
-#: app/templates/admin/key-page.html:44
-msgid "Add Fake Device"
-msgstr ""
-
-#: app/templates/admin/key-page.html:47
+#: app/templates/admin/key-page.html:42
 msgid "Registration Code:"
 msgstr ""
 
-#: app/templates/admin/key-page.html:57 app/templates/admin/regcodes.html:68
+#: app/templates/admin/key-page.html:52 app/templates/admin/regcodes.html:63
 #: app/templates/user/dashboard_advanced.html:83
 msgid "Credit"
 msgstr ""
 
-#: app/templates/admin/key-page.html:65
+#: app/templates/admin/key-page.html:60
 msgid "Status"
 msgstr ""
 
-#: app/templates/admin/key-page.html:69
+#: app/templates/admin/key-page.html:64
 msgid "Created On"
 msgstr ""
 
-#: app/templates/admin/key-page.html:74
+#: app/templates/admin/key-page.html:69
 msgid "Identity"
 msgstr ""
 
-#: app/templates/admin/key-page.html:80
+#: app/templates/admin/key-page.html:75
 #: app/templates/user/dashboard_advanced.html:132
 msgid "First Name"
 msgstr ""
 
-#: app/templates/admin/key-page.html:92
+#: app/templates/admin/key-page.html:87
 #: app/templates/user/dashboard_advanced.html:143
 msgid "as of"
 msgstr ""
 
-#: app/templates/admin/key-page.html:106
+#: app/templates/admin/key-page.html:101
 #: app/templates/user/dashboard_advanced.html:100
 msgid "Devices"
 msgstr ""
 
-#: app/templates/admin/key-page.html:112
+#: app/templates/admin/key-page.html:107
 #: app/templates/user/dashboard_advanced.html:105
 msgid "IP Address"
 msgstr ""
 
-#: app/templates/admin/key-page.html:113
+#: app/templates/admin/key-page.html:108
 #: app/templates/user/dashboard_advanced.html:106
 msgid "Mac Address"
 msgstr ""
 
-#: app/templates/admin/key-page.html:114
+#: app/templates/admin/key-page.html:109
 #: app/templates/user/dashboard_advanced.html:107
 msgid "Vendor"
 msgstr ""
 
-#: app/templates/admin/key-page.html:115
+#: app/templates/admin/key-page.html:110
 #: app/templates/user/dashboard_advanced.html:108
 msgid "Registered Since"
 msgstr ""
 
-#: app/templates/admin/key-page.html:145
+#: app/templates/admin/key-page.html:140
 msgid "No devices registered yet"
 msgstr ""
 
-#: app/templates/admin/key-page.html:149
+#: app/templates/admin/key-page.html:144
 msgid "User Settings"
 msgstr ""
 
-#: app/templates/admin/key-page.html:155
+#: app/templates/admin/key-page.html:150
 msgid "Custom Credit"
 msgstr ""
 
-#: app/templates/admin/key-page.html:156
+#: app/templates/admin/key-page.html:151
 msgid "Sets this users credit to a custom value."
 msgstr ""
 
-#: app/templates/admin/key-page.html:161 app/templates/admin/key-page.html:180
-#: app/templates/admin/key-page.html:204
+#: app/templates/admin/key-page.html:153 app/templates/admin/key-page.html:166
+#: app/templates/admin/key-page.html:190
+msgid "Unit:"
+msgstr ""
+
+#: app/templates/admin/key-page.html:156 app/templates/admin/key-page.html:175
+#: app/templates/admin/key-page.html:199
 msgid "Set"
 msgstr ""
 
-#: app/templates/admin/key-page.html:168
+#: app/templates/admin/key-page.html:163
 msgid "Custom Daily Top-Up Volume"
 msgstr ""
 
-#: app/templates/admin/key-page.html:169
+#: app/templates/admin/key-page.html:164
 msgid "Grants this user a custom daily top-up volume."
 msgstr ""
 
-#: app/templates/admin/key-page.html:173 app/templates/admin/key-page.html:176
-#: app/templates/admin/key-page.html:197 app/templates/admin/key-page.html:200
-#: app/templates/admin/key-page.html:219 app/templates/admin/key-page.html:221
-#: app/templates/admin/key-page.html:239 app/templates/admin/key-page.html:241
+#: app/templates/admin/key-page.html:168 app/templates/admin/key-page.html:171
+#: app/templates/admin/key-page.html:192 app/templates/admin/key-page.html:195
+#: app/templates/admin/key-page.html:214 app/templates/admin/key-page.html:216
+#: app/templates/admin/key-page.html:234 app/templates/admin/key-page.html:236
 msgid "Status:"
 msgstr ""
 
-#: app/templates/admin/key-page.html:184
+#: app/templates/admin/key-page.html:169 app/templates/admin/key-page.html:193
+msgid "Value:"
+msgstr ""
+
+#: app/templates/admin/key-page.html:179
 msgid "Disable Custom Top-Up Volume"
 msgstr ""
 
-#: app/templates/admin/key-page.html:192
+#: app/templates/admin/key-page.html:187
 msgid "Custom Maximum Volume"
 msgstr ""
 
-#: app/templates/admin/key-page.html:193
+#: app/templates/admin/key-page.html:188
 msgid "Grants this user a custom maximum volume."
 msgstr ""
 
-#: app/templates/admin/key-page.html:208
+#: app/templates/admin/key-page.html:203
 msgid "Disable Custom Max Volume"
 msgstr ""
 
-#: app/templates/admin/key-page.html:216 app/templates/admin/key-page.html:225
+#: app/templates/admin/key-page.html:211 app/templates/admin/key-page.html:220
 msgid "Disable Accounting"
 msgstr ""
 
-#: app/templates/admin/key-page.html:217
+#: app/templates/admin/key-page.html:212
 msgid ""
 "Disables traffic accounting for this user. Use this to grant unlimited "
 "traffic to this user."
 msgstr ""
 
-#: app/templates/admin/key-page.html:219
+#: app/templates/admin/key-page.html:214
 msgid "Accounting Enabled"
 msgstr ""
 
-#: app/templates/admin/key-page.html:221
+#: app/templates/admin/key-page.html:216
 msgid "Accounting Disabled"
 msgstr ""
 
-#: app/templates/admin/key-page.html:227
+#: app/templates/admin/key-page.html:222
 msgid "Enable Accounting"
 msgstr ""
 
-#: app/templates/admin/key-page.html:237
+#: app/templates/admin/key-page.html:232
 msgid ""
 "Use this if an user temporarily moved out of his apartment or violated "
 "the terms of use. All devices which have registered with this code will "
 "not be able to go online until activated again."
 msgstr ""
 
-#: app/templates/admin/key-page.html:239
+#: app/templates/admin/key-page.html:234
 msgid "Registration Code Active"
 msgstr ""
 
-#: app/templates/admin/key-page.html:241
+#: app/templates/admin/key-page.html:236
 msgid "Registration Code Deactivated"
 msgstr ""
 
-#: app/templates/admin/key-page.html:242
+#: app/templates/admin/key-page.html:237
 msgid "Reason:"
 msgstr ""
 
-#: app/templates/admin/key-page.html:248
+#: app/templates/admin/key-page.html:243
 msgid "Activate Registration Code"
 msgstr ""
 
-#: app/templates/admin/key-page.html:256 app/templates/admin/key-page.html:262
+#: app/templates/admin/key-page.html:251 app/templates/admin/key-page.html:257
 msgid "Delete Registration Code"
 msgstr ""
 
-#: app/templates/admin/key-page.html:257
+#: app/templates/admin/key-page.html:252
 msgid ""
 "Use this if an user moved out of his apartment permanently. All user data"
 " will get deleted and all devices registered with this code will go "
 "offline on deletion date."
 msgstr ""
 
-#: app/templates/admin/key-page.html:258
+#: app/templates/admin/key-page.html:253
 msgid "Important:"
 msgstr ""
 
-#: app/templates/admin/key-page.html:258
+#: app/templates/admin/key-page.html:253
 msgid ""
 "If no move-out date / date of deletion is specified, then the deletion "
 "will happen immediately! Be careful!"
 msgstr ""
 
-#: app/templates/admin/key-page.html:261
+#: app/templates/admin/key-page.html:256
 msgid "Move-Out Date / Date of deletion (optional):"
 msgstr ""
 
-#: app/templates/admin/key-page.html:264
+#: app/templates/admin/key-page.html:259
 msgid "Move-Out / Date of deletion planned for "
 msgstr ""
 
-#: app/templates/admin/key-page.html:265
+#: app/templates/admin/key-page.html:260
 msgid "Cancel Pending Deletion"
 msgstr ""
 
@@ -937,38 +812,34 @@ msgid "Search…"
 msgstr ""
 
 #: app/templates/admin/regcodes.html:51
-msgid "Add Test Code"
-msgstr ""
-
-#: app/templates/admin/regcodes.html:56
 msgid "Clear Results"
 msgstr ""
 
-#: app/templates/admin/regcodes.html:69
+#: app/templates/admin/regcodes.html:64
 msgid "Flags"
 msgstr ""
 
-#: app/templates/admin/regcodes.html:83
+#: app/templates/admin/regcodes.html:78
 msgid "Scheduled for deletion"
 msgstr ""
 
-#: app/templates/admin/regcodes.html:89
+#: app/templates/admin/regcodes.html:84
 msgid "Deactivated"
 msgstr ""
 
-#: app/templates/admin/regcodes.html:95
+#: app/templates/admin/regcodes.html:90
 msgid "Traffic shaping active"
 msgstr ""
 
-#: app/templates/admin/regcodes.html:101
+#: app/templates/admin/regcodes.html:96
 msgid "Custom credit settings activated"
 msgstr ""
 
-#: app/templates/admin/regcodes.html:107
+#: app/templates/admin/regcodes.html:102
 msgid "Accounting disabled"
 msgstr ""
 
-#: app/templates/admin/regcodes.html:113
+#: app/templates/admin/regcodes.html:108
 msgid "Scheduled for move"
 msgstr ""
 
@@ -1031,16 +902,28 @@ msgstr ""
 msgid "Code: 995"
 msgstr ""
 
-#: app/templates/errors/ip_stolen.html:7 app/templates/errors/ip_stolen.html:14
+#: app/templates/errors/device_registered_with_different_port.html:7
+#: app/templates/errors/device_registered_with_different_port.html:14
 msgid "Access Manipulation"
 msgstr ""
 
-#: app/templates/errors/ip_stolen.html:15
+#: app/templates/errors/device_registered_with_different_port.html:15
 msgid ""
-"A misconfigured device has attempted to gain access to the network using "
-"forged credentials that match yours. For security reasons, your access "
-"has been temporarily blocked. Please contact the network administrator. "
-"Code: 950"
+"A device with the same access identifiers is already registered in the "
+"network. This is most likely not the network port you initially "
+"registered your device with. You have to deregister your device first to "
+"switch the network port, or ask an network administrator to do so for "
+"you."
+msgstr ""
+
+#: app/templates/errors/no_lease.html:7 app/templates/errors/no_lease.html:14
+msgid "Misconfigured Endpoint"
+msgstr ""
+
+#: app/templates/errors/no_lease.html:15
+msgid ""
+"Static IP configuration is retarded. Access to this network will not be "
+"granted. Switch to Dynamic Host Configuration Protocol for re-evaluation."
 msgstr ""
 
 #: app/templates/includes/footer.html:2 app/templates/user/about.html:18
@@ -1258,19 +1141,19 @@ msgstr ""
 msgid "Register"
 msgstr ""
 
-#: app/user/views.py:103 app/user/views.py:144 app/user/views.py:184
+#: app/user/views.py:88 app/user/views.py:122 app/user/views.py:155
 msgid "Your registration key got deactivated. Please contact the administrator."
 msgstr ""
 
-#: app/user/views.py:105 app/user/views.py:146 app/user/views.py:186
+#: app/user/views.py:90 app/user/views.py:124 app/user/views.py:157
 msgid "Your registration key got deactivated. Reason: "
 msgstr ""
 
-#: app/user/views.py:110
+#: app/user/views.py:95
 msgid "Maximum number of devices already registered."
 msgstr ""
 
-#: app/user/views.py:336
+#: app/user/views.py:290
 msgid "Invalid voucher"
 msgstr ""
 
