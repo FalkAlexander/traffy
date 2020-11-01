@@ -1,0 +1,25 @@
+{% block page_content %}
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8"/>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}"/>
+    <title>{{ _("Misconfigured Endpoint") }}</title>
+  </head>
+  <body>
+    <div class="center-box">
+      <div class="dialog-box dialog-box-small">
+        <form method="POST">
+          <div class="padding-box">
+            <h1>{{ _("Misconfigured Endpoint") }}</h1>
+            <h2>{{ _("Static IP configuration is retarded. Access to this network will not be granted. Switch to Dynamic Host Configuration Protocol for re-evaluation.") }}</h2>
+          </div>
+        </form>
+      </div>
+    </div>
+    {% include 'includes/sidebar.html' %}
+    {% include 'includes/footer.html' %}
+  </body>
+</html>
+{% endblock %}
+
