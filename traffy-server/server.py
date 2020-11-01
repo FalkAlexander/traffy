@@ -20,9 +20,7 @@
 from app.database_manager import DatabaseManager
 from app.socket_manager import SocketManager
 from app.models import RegistrationKey, IpAddress, MacAddress, AddressPair
-from app.tests.dev_mode import DevModeTest
 from app.util import shaping_manager, nftables_manager
-from app.util.mail_helper import MailHelper
 from datetime import datetime
 from app.accounting_manager import AccountingService
 from app.housekeeping_service import HousekeepingService
@@ -37,7 +35,6 @@ import sys
 class Server():
     boot_timestamp = NotImplemented
     db = NotImplemented
-    mail_helper = NotImplemented
     accounting_srv = NotImplemented
     sm = NotImplemented
     dev_mode_test = NotImplemented
@@ -48,8 +45,7 @@ class Server():
         self.setup_logging()
         self.db = DatabaseManager()
 
-        self.mail_helper = MailHelper()
-        self.accounting_srv = AccountingService(self.db, self.mail_helper)
+        self.accounting_srv = AccountingService(self.db)
         self.housekeeping_srv = HousekeepingService(self.db)
         self.sm = SocketManager(self)
 
@@ -159,8 +155,6 @@ class Server():
             # Start accounting manager            
             self.accounting_srv.start()
             logging.info("Started accounting services")
-
-            self.dev_mode_test = DevModeTest(self.db)
 
         # Enable Socket
         self.sm.start()

@@ -18,7 +18,7 @@
 """
 
 from app.models import RegistrationKey, IpAddress, AddressPair, Traffic, Identity
-from app.util import shaping_manager, helpers
+from app.util import shaping_manager
 from datetime import datetime, timedelta
 from dateutil import rrule
 import threading, time

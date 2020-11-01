@@ -46,11 +46,6 @@
             <form method="POST">
               <input name="add_key_btn" type="submit" value="{{ _('Add Registration Code') }}"/>
             </form>
-            {% if dev_mode %}
-            <form method="POST">
-              <input name="add_test_btn" type="submit" value="{{ _('Add Test Code') }}"/>
-            </form>
-            {% endif %}
             <form method="POST">
               {% if clear_button is defined %}
               <input name="clear_btn" type="submit" value="{{ _('Clear Results') }}"/>
