@@ -323,7 +323,7 @@ class AccountingService():
     def __to_bytes(self, gib):
         return int(gib * 1073741824)
 
-    def __string_to_float(value):
+    def __string_to_float(self, value):
         if value == "":
             raise ValueError("String given was empty")
         try:
