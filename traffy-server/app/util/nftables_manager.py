@@ -201,7 +201,7 @@ def add_unregistered_drop_rule():
 # Spoofing Protection
 
 def add_spoofing_redirect_rule():
-    cmd = "add rule ip traffy prerouting ether saddr . ip saddr != @mac-ip-pairs goto captive-portal"
+    cmd = "add rule ip traffy prerouting iif { %s } ether saddr . ip saddr != @mac-ip-pairs goto captive-portal" % ", ".join([ip[4] for ip in config.IP_RANGES])
     __execute_command(cmd)
 
 # Accounting
