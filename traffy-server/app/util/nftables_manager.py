@@ -37,12 +37,15 @@ def setup_captive_portal_configuration():
         return
     
     add_captive_portal_chain()
-
     add_registered_set()
 
-    add_captive_portal_chain_forwarding_rules()
+def setup_advanced_captive_portal_configuration():
+    if config.STATELESS:
+        return
+
+    add_captive_portal_chain_forwarding_rule()
     add_unregistered_exception_accept_rules()
-    add_captive_portal_rewrite_rules()
+    add_captive_portal_rewrite_rule()
     add_unregistered_drop_rule()
 
 def setup_accounting_configuration():
@@ -157,7 +160,7 @@ def delete_reg_key_set(reg_key_id):
 
 # Captive Portal
 
-def add_captive_portal_chain_forwarding_rules():
+def add_captive_portal_chain_forwarding_rule():
     cmd = "add rule ip traffy prerouting iif { %s } ether saddr . ip saddr != @registered goto captive-portal" % ", ".join([ip[4] for ip in config.IP_RANGES])
     __execute_command(cmd)
 
@@ -167,7 +170,7 @@ def add_unregistered_exception_accept_rules():
     commands.append("add rule ip traffy captive-portal udp dport vmap { 53 : accept, 67 : return }")
     __execute_commands(commands)
 
-def add_captive_portal_rewrite_rules():
+def add_captive_portal_rewrite_rule():
     commands = []
     commands.append("add rule ip traffy captive-portal tcp dport { 80, 443 } dnat %s" % (config.WAN_IP_ADDRESS))
     __execute_commands(commands)

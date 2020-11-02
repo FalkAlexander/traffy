@@ -143,6 +143,7 @@ class Server():
             logging.info("Preparing accounting…")
             nftables_manager.setup_accounting_configuration()
             self.setup_accounting_rules()
+            nftables_manager.setup_advanced_captive_portal_configuration()
             logging.info("Finished preparing accounting")
 
             # Start accounting manager            
