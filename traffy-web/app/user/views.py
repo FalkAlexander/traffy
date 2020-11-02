@@ -51,7 +51,7 @@ def index():
     except ConnectionRefusedError:
         return render_template("errors/backend_lost.html")
     
-    redirect_value = __route_manager(user)
+    redirect_value = __route_manager(user, ip_address)
     if redirect_value is not None:
         return redirect_value
 
@@ -68,7 +68,7 @@ def register():
     except ConnectionRefusedError:
         return render_template("errors/backend_lost.html")
 
-    redirect_value = __route_manager(user, restricted_area=False)
+    redirect_value = __route_manager(user, ip_address, restricted_area=False)
     if redirect_value is not None:
         return redirect_value
 
@@ -107,7 +107,7 @@ def conditions():
     except ConnectionRefusedError:
         return render_template("errors/backend_lost.html")
 
-    redirect_value = __route_manager(user, restricted_area=False)
+    redirect_value = __route_manager(user, ip_address, restricted_area=False)
     if redirect_value is not None:
         return redirect_value
 
@@ -140,7 +140,7 @@ def privacy_policy():
     except ConnectionRefusedError:
         return render_template("errors/backend_lost.html")
 
-    redirect_value = __route_manager(user, restricted_area=False)
+    redirect_value = __route_manager(user, ip_address, restricted_area=False)
     if redirect_value is not None:
         return redirect_value
 
@@ -175,7 +175,7 @@ def dashboard():
     except ConnectionRefusedError:
         return render_template("errors/backend_lost.html")
 
-    redirect_value = __route_manager(user, restricted_area=True)
+    redirect_value = __route_manager(user, ip_address, restricted_area=True)
     if redirect_value is not None:
         return redirect_value
 
@@ -279,7 +279,7 @@ def reedem():
     except ConnectionRefusedError:
         return render_template("errors/backend_lost.html")
 
-    redirect_value = __route_manager(user, restricted_area=True)
+    redirect_value = __route_manager(user, ip_address, restricted_area=True)
     if redirect_value is not None:
         return redirect_value
 
@@ -303,7 +303,7 @@ def deregister():
     except ConnectionRefusedError:
         return render_template("errors/backend_lost.html")
 
-    redirect_value = __route_manager(user, restricted_area=True)
+    redirect_value = __route_manager(user, ip_address, restricted_area=True)
     if redirect_value is not None:
         return redirect_value
 
@@ -342,7 +342,7 @@ def __get_developer_infos():
 
     return branch_name, commits
 
-def __route_manager(user_access, restricted_area=None):
+def __route_manager(user_access, ip_address, restricted_area=None):
     if restricted_area is None:
         if user_access.get("unregistered") is True:
             return redirect("/register", code=307)
