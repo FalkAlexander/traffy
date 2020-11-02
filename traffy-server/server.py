@@ -37,7 +37,6 @@ class Server():
     db = NotImplemented
     accounting_srv = NotImplemented
     sm = NotImplemented
-    dev_mode_test = NotImplemented
     housekeeping_srv = NotImplemented
 
     def __init__(self):
