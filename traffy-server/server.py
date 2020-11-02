@@ -61,15 +61,16 @@ class Server():
         session = self.db.create_session()
         ip_address_query = session.query(IpAddress).all()
 
-        registered_devices = []
+        registered_devices = {}
         for address in ip_address_query:
             address_pair_query = session.query(AddressPair).filter_by(ip_address=address.id).first()
             reg_key_query = session.query(RegistrationKey).filter_by(id=address_pair_query.reg_key).first()
+            mac_address_query = session.query(MacAddress).filter_by(id=address_pair_query.mac_address).first()
             if reg_key_query.active is True:
-                registered_devices.append(address.address_v4)
+                registered_devices[mac_address_query.address] = address.address_v4
         
         if len(registered_devices) != 0:
-            nftables_manager.add_ips_to_registered_set(registered_devices)
+            nftables_manager.add_allocations_to_registered_set(registered_devices)
 
         session.close()
 
@@ -89,7 +90,6 @@ class Server():
 
                 query = session.query(AddressPair.ip_address).filter_by(reg_key=reg_key_fk.reg_key).distinct()
 
-                pairs_dict = {}
                 for ip_address_fk in query:
                     if ip_address_fk is None:
                         return
@@ -102,13 +102,6 @@ class Server():
                     ip_address_query = session.query(IpAddress).filter_by(id=address_pair_query.ip_address).first()
 
                     nftables_manager.add_ip_to_reg_key_set(ip_address_query.address_v4, reg_key_query.id)
-
-                    # Spoofing Protection
-                    mac_address_query = session.query(MacAddress).filter_by(id=address_pair_query.mac_address).first()
-                    pairs_dict[mac_address_query.address] = ip_address_query.address_v4
-                
-                if len(pairs_dict) != 0:
-                    nftables_manager.add_allocations_to_mac_ip_pairs_set(pairs_dict)
 
                 nftables_manager.add_accounting_matching_rules(reg_key_query.id)
 

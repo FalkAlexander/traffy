@@ -17,7 +17,7 @@
  along with this program; if not, see <http://www.gnu.org/licenses/>.
 """
 
-from app.models import RegistrationKey, IpAddress, AddressPair, Traffic, Identity
+from app.models import RegistrationKey, IpAddress, MacAddress, AddressPair, Traffic, Identity
 from app.util import shaping_manager, nftables_manager
 from datetime import datetime, timedelta
 from dateutil import rrule
@@ -164,9 +164,10 @@ class AccountingService():
 
             for row in address_pair_query:
                 ip_address_query = session.query(IpAddress).filter_by(id=row.ip_address).first()
+                mac_address_query = session.query(MacAddress).filter_by(id=row.mac_address).first()
 
                 # Setup Firewall
-                nftables_manager.add_ip_to_registered_set(ip_address_query.address_v4)
+                nftables_manager.add_allocation_to_registered_set(mac_address_query.address, ip_address_query.address_v4)
 
                 # Setup Accounting
                 nftables_manager.add_ip_to_reg_key_set(ip_address_query.address_v4, str(reg_key_query.id))
@@ -194,13 +195,14 @@ class AccountingService():
 
             for row in address_pair_query:
                 ip_address_query = session.query(IpAddress).filter_by(id=row.ip_address).first()
+                mac_address_query = session.query(MacAddress).filter_by(id=row.mac_address).first()
 
                 # Disable Shaping
                 if self.is_reg_key_shaped(session, reg_key_query):
                     shaping_manager.disable_shaping_for_ip(ip_address_query.id, ip_address_query.address_v4)
 
                 # Setup Firewall
-                nftables_manager.delete_ip_from_registered_set(ip_address_query.address_v4)
+                nftables_manager.delete_allocation_from_registered_set(mac_address_query.address, ip_address_query.address_v4)
 
             if reason is not None:
                 if len(reason) <= 250:

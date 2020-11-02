@@ -144,7 +144,7 @@ class ServerAPI:
             self.database_commit(session)
 
             # Setup Firewall
-            self.__unlock_registered_device_firewall(ip_address)
+            self.__unlock_registered_device_firewall(mac_address, ip_address)
 
             # Setup Accounting
             self.__enable_device_accounting(session, reg_key_query, ip_address)
@@ -152,9 +152,6 @@ class ServerAPI:
             session.rollback()
         finally:
             session.close()
-
-        # Spoofing Protection
-        self.__enable_spoofing_protection(ip_address, mac_address)
 
         # Setup Shaping
         self.__enable_shaping(reg_key_query, ip_address_query)
@@ -221,8 +218,8 @@ class ServerAPI:
         session.add(AddressPair(reg_key=reg_key_query.id, mac_address=mac_address_query.id, ip_address=ip_address_query.id))
         return ip_address_query
 
-    def __unlock_registered_device_firewall(self, ip_address):
-        nftables_manager.add_ip_to_registered_set(ip_address)
+    def __unlock_registered_device_firewall(self, mac_address, ip_address):
+        nftables_manager.add_allocation_to_registered_set(mac_address, ip_address)
 
     def __enable_device_accounting(self, session, reg_key_query, ip_address):
         if session.query(AddressPair).filter_by(reg_key=reg_key_query.id).count() <= 1:
@@ -230,9 +227,6 @@ class ServerAPI:
             nftables_manager.add_accounting_matching_rules(str(reg_key_query.id))
         
         nftables_manager.add_ip_to_reg_key_set(ip_address, str(reg_key_query.id))
-
-    def __enable_spoofing_protection(self, ip_address, mac_address):
-        nftables_manager.add_allocation_to_mac_ip_pairs_set(mac_address, ip_address)
 
     def __enable_shaping(self, reg_key_query, ip_address_query):
         if reg_key_query.id in self.accounting_srv.shaped_reg_keys:
@@ -279,11 +273,8 @@ class ServerAPI:
             if close_session is True:
                 session.close()
 
-        # Spoofing Protection
-        self.__disable_spoofing_protection(mac_address, ip_address)
-
         # Setup Firewall
-        self.__relock_registered_device_firewall(ip_address)
+        self.__relock_registered_device_firewall(mac_address, ip_address)
 
     def __disable_shaping(self, reg_key_query, ip_address_query):
         if reg_key_query.id in self.accounting_srv.shaped_reg_keys:
@@ -296,11 +287,8 @@ class ServerAPI:
             nftables_manager.delete_accounting_matching_rules(str(reg_key_query.id))
             nftables_manager.delete_reg_key_set(str(reg_key_query.id))
 
-    def __disable_spoofing_protection(self, mac_address, ip_address):
-        nftables_manager.delete_allocation_from_mac_ip_pairs_set(mac_address, ip_address)
-
-    def __relock_registered_device_firewall(self, ip_address):
-        nftables_manager.delete_ip_from_registered_set(ip_address)
+    def __relock_registered_device_firewall(self, mac_address, ip_address):
+        nftables_manager.delete_allocation_from_registered_set(mac_address, ip_address)
 
     #
     # Registration Key Deletion

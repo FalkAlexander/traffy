@@ -45,9 +45,6 @@ def setup_captive_portal_configuration():
     add_captive_portal_rewrite_rules()
     add_unregistered_drop_rule()
 
-    add_mac_ip_pairs_set()
-    add_spoofing_redirect_rule()
-
 def setup_accounting_configuration():
     if config.STATELESS:
         return
@@ -109,41 +106,23 @@ def add_accounting_chains():
 # Captive Portal
 
 def add_registered_set():
-    cmd = "add set ip traffy registered { type ipv4_addr; }"
+    cmd = "add set ip traffy registered { type ether_addr . ipv4_addr; }"
     __execute_command(cmd)
 
-def add_ip_to_registered_set(ip_address):
-    cmd = "add element ip traffy registered { %s }" % ip_address
+def add_allocation_to_registered_set(mac_address, ip_address):
+    cmd = "add element ip traffy registered { %s }" % (mac_address + " . " + ip_address)
     __execute_command(cmd)
 
-def add_ips_to_registered_set(ip_address_list):
-    cmd = "add element ip traffy registered { %s }" % (", ".join(ip_address_list))
+def add_allocations_to_registered_set(allocation_list):
+    cmd = "add element ip traffy registered { %s }" % ", ".join([mac + " . " + ip for mac, ip in allocation_list.items()])
     __execute_command(cmd)
 
-def delete_ip_from_registered_set(ip_address):
-    cmd = "delete element ip traffy registered { %s }" % ip_address
+def delete_allocation_from_registered_set(mac_address, ip_address):
+    cmd = "delete element ip traffy registered { %s }" % (mac_address + " . " + ip_address)
     __execute_command(cmd)
 
-def delete_ips_from_registered_set(ip_address_list):
-    cmd = "delete element ip traffy registered { %s }" % (", ".join(ip_address_list))
-    __execute_command(cmd)
-
-# Spoofing Protection
-
-def add_mac_ip_pairs_set():
-    cmd = "add set ip traffy mac-ip-pairs { type ether_addr . ipv4_addr; }"
-    __execute_command(cmd)
-
-def add_allocation_to_mac_ip_pairs_set(mac_address, ip_address):
-    cmd = "add element ip traffy mac-ip-pairs { %s }" % (mac_address + " . " + ip_address)
-    __execute_command(cmd)
-
-def add_allocations_to_mac_ip_pairs_set(pairs_dict):
-    cmd = "add element traffy mac-ip-pairs { %s }" % ", ".join([mac + " . " + ip for mac, ip in pairs_dict.items()])
-    __execute_command(cmd)
-
-def delete_allocation_from_mac_ip_pairs_set(mac_address, ip_address):
-    cmd = "delete element ip traffy mac-ip-pairs { %s }" % (mac_address + " . " + ip_address)
+def delete_allocations_from_registered_set(allocation_list):
+    cmd = "delete element ip traffy registered { %s }" % ", ".join([mac + " . " + ip for mac, ip in allocation_list.items()])
     __execute_command(cmd)
 
 # Accounting
@@ -179,7 +158,7 @@ def delete_reg_key_set(reg_key_id):
 # Captive Portal
 
 def add_captive_portal_chain_forwarding_rules():
-    cmd = "add rule ip traffy prerouting iif { %s } ip saddr != @registered goto captive-portal" % ", ".join([ip[4] for ip in config.IP_RANGES])
+    cmd = "add rule ip traffy prerouting iif { %s } ether saddr . ip saddr != @registered goto captive-portal" % ", ".join([ip[4] for ip in config.IP_RANGES])
     __execute_command(cmd)
 
 def add_unregistered_exception_accept_rules():
@@ -195,13 +174,6 @@ def add_captive_portal_rewrite_rules():
 
 def add_unregistered_drop_rule():
     cmd = "add rule ip traffy captive-portal ip daddr != { %s, %s } drop" % (config.WAN_IP_ADDRESS, ", ".join([ip[1] for ip in config.IP_RANGES]))
-
-    __execute_command(cmd)
-
-# Spoofing Protection
-
-def add_spoofing_redirect_rule():
-    cmd = "add rule ip traffy prerouting iif { %s } ether saddr . ip saddr != @mac-ip-pairs goto captive-portal" % ", ".join([ip[4] for ip in config.IP_RANGES])
     __execute_command(cmd)
 
 # Accounting
