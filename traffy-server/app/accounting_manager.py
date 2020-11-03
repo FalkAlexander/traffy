@@ -374,7 +374,7 @@ class AccountingThread(threading.Thread):
                                                         counters.get(str(reg_key.id) + "-egress-exc"))
                     else:
                         self.update_interval_used_traffic(session, reg_key, 0, 0, 0, 0, inactive=True)
-            except Exception:
+            except:
                 session.rollback()
                 logging.debug("Exception thrown in Accounting Service")
             finally:
