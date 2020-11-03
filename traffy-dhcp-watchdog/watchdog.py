@@ -32,9 +32,12 @@ def response_check(ip_address, mac_address):
     else:
         if util.arping(ip_address) is True:
             return
-        
-    util.release(interface, ip_address)
-    print("Released " + ip_address + " / " + mac_address)
+
+    if ip_address not in config.EXCLUDED_IPS:
+        util.release(interface, ip_address)
+        print("Released " + ip_address + " / " + mac_address)
+    else:
+        print("Excluded Release Event: " + ip_address + " / " + mac_address)
 
 if config.ENABLE_SNMP and config.ENABLE_TRAP:
     trap_listener.run_trap_listener()

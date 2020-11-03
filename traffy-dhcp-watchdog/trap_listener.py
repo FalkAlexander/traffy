@@ -89,5 +89,9 @@ def trap_callback(snmp_engine, state_reference, context_engine_id, context_name,
 
     if result_line != "":
         ip_address = result_line.split(",")[1]
-        util.release(interface, ip_address)
-        print("Released " + ip_address + " (" + switch_name + " / " + interface_name + ")")
+
+        if ip_address not in traffy_config.EXCLUDED_IPS:
+            util.release(interface, ip_address)
+            print("Released " + ip_address + " (" + switch_name + " / " + interface_name + ")")
+        else:
+            print("Excluded Release Event: " + ip_address + " (" + switch_name + " / " + interface_name + ")")

@@ -8,3 +8,5 @@ if ENABLE_SNMP:
         TRAP_PORT = 1212
 else:
     PING_TRIES = 10
+
+EXCLUDED_IPS = []
