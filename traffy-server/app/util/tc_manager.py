@@ -18,9 +18,10 @@
 """
 
 import config
-import os
-import subprocess
 import logging
+import os
+import shlex
+import subprocess
 
 
 #
@@ -60,9 +61,10 @@ def enable_shaping_for_ip(ip_id, ip_address):
 
 def disable_shaping_for_ip(ip_id, ip_address):
     for interface in config.LAN_INTERFACES:
-        __execute_command(
-            "filter del dev %s protocol ip parent 1: handle %s prio 5 u32" % (interface, handle)
-        )
+        for handle in __get_rule_handles(interface, ip_address):
+            __execute_command(
+                "filter del dev %s protocol ip parent 1: handle %s prio 5 u32" % (interface, handle)
+            )
 
         __execute_command(
             "class del dev %s parent 1:1 classid 1:%s" % (interface, str(ip_id + 1))
