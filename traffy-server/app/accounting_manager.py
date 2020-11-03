@@ -18,7 +18,7 @@
 """
 
 from app.models import RegistrationKey, IpAddress, MacAddress, AddressPair, Traffic, Identity
-from app.util import shaping_manager, nftables_manager
+from app.util import tc_manager, nftables_manager
 from datetime import datetime, timedelta
 from dateutil import rrule
 import threading, time
@@ -174,7 +174,7 @@ class AccountingService():
 
                 # Setup Shaping
                 if self.is_reg_key_shaped(session, reg_key_query):
-                    shaping_manager.enable_shaping_for_ip(ip_address_query.id, ip_address_query.address_v4)
+                    tc_manager.enable_shaping_for_ip(ip_address_query.id, ip_address_query.address_v4)
 
             if len(address_pair_query) > 0:
                 nftables_manager.add_accounting_matching_rules(str(reg_key_query.id))
@@ -199,7 +199,7 @@ class AccountingService():
 
                 # Disable Shaping
                 if self.is_reg_key_shaped(session, reg_key_query):
-                    shaping_manager.disable_shaping_for_ip(ip_address_query.id, ip_address_query.address_v4)
+                    tc_manager.disable_shaping_for_ip(ip_address_query.id, ip_address_query.address_v4)
 
                 # Setup Firewall
                 nftables_manager.delete_allocation_from_registered_set(mac_address_query.address, ip_address_query.address_v4)
@@ -614,11 +614,11 @@ class AccountingThread(threading.Thread):
         address_pair_query = session.query(AddressPair).filter_by(reg_key=reg_key_query.id).distinct()
         for query in address_pair_query:
             ip_address_query = session.query(IpAddress).filter_by(id=query.ip_address).first()
-            shaping_manager.enable_shaping_for_ip(ip_address_query.id, ip_address_query.address_v4)
+            tc_manager.enable_shaping_for_ip(ip_address_query.id, ip_address_query.address_v4)
 
     def __disable_traffic_shaping_for_reg_key(self, session, reg_key_query):
         address_pair_query = session.query(AddressPair).filter_by(reg_key=reg_key_query.id).distinct()
         for query in address_pair_query:
             ip_address_query = session.query(IpAddress).filter_by(id=query.ip_address).first()
-            shaping_manager.disable_shaping_for_ip(ip_address_query.id, ip_address_query.address_v4)
+            tc_manager.disable_shaping_for_ip(ip_address_query.id, ip_address_query.address_v4)
 

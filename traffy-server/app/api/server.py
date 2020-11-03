@@ -20,7 +20,7 @@
 from app.exceptions.user_exceptions import RegistrationError, DatabaseError, DeregistrationError
 from enum import Enum
 from ..models import RegistrationKey, IpAddress, MacAddress, AddressPair, Traffic, Identity, Dormitory
-from ..util import shaping_manager, nftables_manager
+from ..util import tc_manager, nftables_manager
 from datetime import datetime, timedelta
 from dateutil import rrule
 from user_agents import parse
@@ -230,7 +230,7 @@ class ServerAPI:
 
     def __enable_shaping(self, reg_key_query, ip_address_query):
         if reg_key_query.id in self.accounting_srv.shaped_reg_keys:
-            shaping_manager.enable_shaping_for_ip(ip_address_query.id, ip_address_query.address_v4)
+            tc_manager.enable_shaping_for_ip(ip_address_query.id, ip_address_query.address_v4)
 
     #
     # Deregistration
@@ -278,7 +278,7 @@ class ServerAPI:
 
     def __disable_shaping(self, reg_key_query, ip_address_query):
         if reg_key_query.id in self.accounting_srv.shaped_reg_keys:
-            shaping_manager.disable_shaping_for_ip(ip_address_query.id, ip_address_query.address_v4)
+            tc_manager.disable_shaping_for_ip(ip_address_query.id, ip_address_query.address_v4)
 
     def __disable_device_accounting(self, session, reg_key_query, ip_address):
         nftables_manager.delete_ip_from_reg_key_set(ip_address, str(reg_key_query.id))
