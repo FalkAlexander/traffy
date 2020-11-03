@@ -20,7 +20,7 @@
 from app.database_manager import DatabaseManager
 from app.socket_manager import SocketManager
 from app.models import RegistrationKey, IpAddress, MacAddress, AddressPair
-from app.util import shaping_manager, nftables_manager
+from app.util import tc_manager, nftables_manager
 from datetime import datetime
 from app.accounting_manager import AccountingService
 from app.housekeeping_service import HousekeepingService
@@ -119,7 +119,7 @@ class Server():
             self.accounting_srv.stop()
 
             # Shutdown Shaping
-            shaping_manager.shutdown_shaping()
+            tc_manager.shutdown_shaping()
 
             # Clear traffy table
             nftables_manager.delete_traffy_table()
@@ -129,7 +129,7 @@ class Server():
     def startup(self):
         if not config.STATELESS:
             # Setup shaping
-            shaping_manager.setup_shaping()
+            tc_manager.setup_shaping()
 
             # Setup basic requirements
             nftables_manager.setup_base_configuration()
