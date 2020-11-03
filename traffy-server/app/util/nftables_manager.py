@@ -29,7 +29,7 @@ def setup_base_configuration():
     add_prerouting_chain()
     add_forward_chain()
 
-def setup_captive_portal_configuration():    
+def setup_captive_portal_configuration():
     add_captive_portal_chain()
     add_registered_set()
 

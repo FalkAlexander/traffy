@@ -18,8 +18,10 @@
 """
 
 from app.api.server import ServerAPI
+from xmlrpc.client import ServerProxy
 from xmlrpc.server import SimpleXMLRPCServer
 from random import randint
+import socket
 import threading
 
 
@@ -28,9 +30,11 @@ class SocketManager():
     server = NotImplemented
     rpc = NotImplemented
     server_api = NotImplemented
+    commander = NotImplemented
 
     def __init__(self, server):
         self.server = server
+        self.__connect_commander()
 
     def start(self):
         self.server_api = ServerAPI(self.server)
@@ -49,3 +53,6 @@ class SocketManager():
             self.rpc.register_instance(self.server_api)
             self.rpc.serve_forever()
 
+    def __connect_commander(self):
+        socket.setdefaulttimeout(30)
+        self.commander = ServerProxy(uri="http://127.0.0.1:40405/", allow_none=True)

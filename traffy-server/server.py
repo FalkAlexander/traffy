@@ -20,7 +20,6 @@
 from app.database_manager import DatabaseManager
 from app.socket_manager import SocketManager
 from app.models import RegistrationKey, IpAddress, MacAddress, AddressPair
-from app.util import tc_manager, nftables_manager
 from datetime import datetime
 from app.accounting_manager import AccountingService
 from app.housekeeping_service import HousekeepingService
@@ -37,6 +36,7 @@ class Server():
     db = NotImplemented
     accounting_srv = NotImplemented
     sm = NotImplemented
+    commander = NotImplemented
     housekeeping_srv = NotImplemented
 
     def __init__(self):
@@ -44,9 +44,11 @@ class Server():
         self.setup_logging()
         self.db = DatabaseManager()
 
-        self.accounting_srv = AccountingService(self.db)
-        self.housekeeping_srv = HousekeepingService(self.db)
         self.sm = SocketManager(self)
+        self.commander = self.sm.commander
+
+        self.accounting_srv = AccountingService(self.db, self.commander)
+        self.housekeeping_srv = HousekeepingService(self.db)
 
         signal.signal(signal.SIGINT, self.shutdown)
         signal.signal(signal.SIGTERM, self.shutdown)
@@ -69,7 +71,7 @@ class Server():
                 registered_devices[mac_address_query.address] = address.address_v4
         
         if len(registered_devices) != 0:
-            nftables_manager.add_allocations_to_registered_set(registered_devices)
+            self.commander.add_allocations_to_registered_set(registered_devices)
 
         session.close()
 
@@ -85,7 +87,7 @@ class Server():
                 return
 
             if reg_key_query.active is True:
-                nftables_manager.add_reg_key_set(reg_key_query.id)
+                self.commander.add_reg_key_set(reg_key_query.id)
 
                 query = session.query(AddressPair.ip_address).filter_by(reg_key=reg_key_fk.reg_key).distinct()
 
@@ -100,54 +102,36 @@ class Server():
                     address_pair_query = session.query(AddressPair).filter_by(ip_address=ip_address_fk.ip_address).first()
                     ip_address_query = session.query(IpAddress).filter_by(id=address_pair_query.ip_address).first()
 
-                    nftables_manager.add_ip_to_reg_key_set(ip_address_query.address_v4, reg_key_query.id)
+                    self.commander.add_ip_to_reg_key_set(ip_address_query.address_v4, reg_key_query.id)
 
-                nftables_manager.add_accounting_matching_rules(reg_key_query.id)
+                self.commander.add_accounting_matching_rules(reg_key_query.id)
 
         session.close()
 
     def shutdown(self, signal, frame):
         # Stop Housekeeping
-        if not config.STATELESS:
-            self.housekeeping_srv.stop()
+        self.housekeeping_srv.stop()
 
         # Disable Socket
         self.sm.stop()
 
-        if not config.STATELESS:
-            # Stop Accounting
-            self.accounting_srv.stop()
+        # Stop Accounting
+        self.accounting_srv.stop()
 
-            # Shutdown Shaping
-            tc_manager.shutdown_shaping()
+        # Clear traffy table nevertheless
 
-            # Clear traffy table
-            nftables_manager.delete_traffy_table()
-
-            logging.info("Network not managed anymore")
+        logging.info("Network not managed anymore")
 
     def startup(self):
-        if not config.STATELESS:
-            # Setup shaping
-            tc_manager.setup_shaping()
+        logging.info("Preparing accounting")
+        self.unlock_registered_devices()
+        self.setup_accounting_rules()
+        self.commander.setup_advanced_captive_portal_configuration()
+        logging.info("Finished preparing accounting")
 
-            # Setup basic requirements
-            nftables_manager.setup_base_configuration()
-
-            # Setup captive portal routing
-            nftables_manager.setup_captive_portal_configuration()
-            self.unlock_registered_devices()
-
-            # Setup accounting requirements
-            logging.info("Preparing accounting…")
-            nftables_manager.setup_accounting_configuration()
-            self.setup_accounting_rules()
-            nftables_manager.setup_advanced_captive_portal_configuration()
-            logging.info("Finished preparing accounting")
-
-            # Start accounting manager            
-            self.accounting_srv.start()
-            logging.info("Started accounting services")
+        # Start accounting manager            
+        self.accounting_srv.start()
+        logging.info("Started accounting services")
 
         # Enable Socket
         self.sm.start()

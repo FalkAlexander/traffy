@@ -20,7 +20,6 @@
 from app.exceptions.user_exceptions import RegistrationError, DatabaseError, DeregistrationError
 from enum import Enum
 from ..models import RegistrationKey, IpAddress, MacAddress, AddressPair, Traffic, Identity, Dormitory
-from ..util import tc_manager, nftables_manager
 from datetime import datetime, timedelta
 from dateutil import rrule
 from user_agents import parse
@@ -36,10 +35,12 @@ import uuid
 
 class ServerAPI:
     db = NotImplemented
+    commander = NotImplemented
     accounting_srv = NotImplemented
 
     def __init__(self, server):
         self.db = server.db
+        self.commander = server.commander
         self.accounting_srv = server.accounting_srv
 
     #
@@ -219,18 +220,18 @@ class ServerAPI:
         return ip_address_query
 
     def __unlock_registered_device_firewall(self, mac_address, ip_address):
-        nftables_manager.add_allocation_to_registered_set(mac_address, ip_address)
+        self.commander.add_allocation_to_registered_set(mac_address, ip_address)
 
     def __enable_device_accounting(self, session, reg_key_query, ip_address):
         if session.query(AddressPair).filter_by(reg_key=reg_key_query.id).count() <= 1:
-            nftables_manager.add_reg_key_set(str(reg_key_query.id))
-            nftables_manager.add_accounting_matching_rules(str(reg_key_query.id))
+            self.commander.add_reg_key_set(str(reg_key_query.id))
+            self.commander.add_accounting_matching_rules(str(reg_key_query.id))
         
-        nftables_manager.add_ip_to_reg_key_set(ip_address, str(reg_key_query.id))
+        self.commander.add_ip_to_reg_key_set(ip_address, str(reg_key_query.id))
 
     def __enable_shaping(self, reg_key_query, ip_address_query):
         if reg_key_query.id in self.accounting_srv.shaped_reg_keys:
-            tc_manager.enable_shaping_for_ip(ip_address_query.id, ip_address_query.address_v4)
+            self.commander.enable_shaping_for_ip(ip_address_query.id, ip_address_query.address_v4)
 
     #
     # Deregistration
@@ -278,17 +279,17 @@ class ServerAPI:
 
     def __disable_shaping(self, reg_key_query, ip_address_query):
         if reg_key_query.id in self.accounting_srv.shaped_reg_keys:
-            tc_manager.disable_shaping_for_ip(ip_address_query.id, ip_address_query.address_v4)
+            self.commander.disable_shaping_for_ip(ip_address_query.id, ip_address_query.address_v4)
 
     def __disable_device_accounting(self, session, reg_key_query, ip_address):
-        nftables_manager.delete_ip_from_reg_key_set(ip_address, str(reg_key_query.id))
+        self.commander.delete_ip_from_reg_key_set(ip_address, str(reg_key_query.id))
 
         if session.query(AddressPair).filter_by(reg_key=reg_key_query.id).count() == 0:
-            nftables_manager.delete_accounting_matching_rules(str(reg_key_query.id))
-            nftables_manager.delete_reg_key_set(str(reg_key_query.id))
+            self.commander.delete_accounting_matching_rules(str(reg_key_query.id))
+            self.commander.delete_reg_key_set(str(reg_key_query.id))
 
     def __relock_registered_device_firewall(self, mac_address, ip_address):
-        nftables_manager.delete_allocation_from_registered_set(mac_address, ip_address)
+        self.commander.delete_allocation_from_registered_set(mac_address, ip_address)
 
     #
     # Registration Key Deletion

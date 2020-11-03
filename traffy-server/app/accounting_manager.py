@@ -18,7 +18,6 @@
 """
 
 from app.models import RegistrationKey, IpAddress, MacAddress, AddressPair, Traffic, Identity
-from app.util import tc_manager, nftables_manager
 from datetime import datetime, timedelta
 from dateutil import rrule
 import threading, time
@@ -28,11 +27,13 @@ import logging
 
 class AccountingService():
     db = NotImplemented
+    commander = NotImplemented
     accounting_thread = NotImplemented
     shaped_reg_keys = []
 
-    def __init__(self, db):
+    def __init__(self, db, commander):
         self.db = db
+        self.commander = commander
 
     #
     # Accounting Threads Management
@@ -160,24 +161,24 @@ class AccountingService():
             address_pair_query = session.query(AddressPair).filter_by(reg_key=reg_key_query.id).all()
 
             if len(address_pair_query) > 0:
-                nftables_manager.add_reg_key_set(str(reg_key_query.id))
+                self.commander.add_reg_key_set(str(reg_key_query.id))
 
             for row in address_pair_query:
                 ip_address_query = session.query(IpAddress).filter_by(id=row.ip_address).first()
                 mac_address_query = session.query(MacAddress).filter_by(id=row.mac_address).first()
 
                 # Setup Firewall
-                nftables_manager.add_allocation_to_registered_set(mac_address_query.address, ip_address_query.address_v4)
+                self.commander.add_allocation_to_registered_set(mac_address_query.address, ip_address_query.address_v4)
 
                 # Setup Accounting
-                nftables_manager.add_ip_to_reg_key_set(ip_address_query.address_v4, str(reg_key_query.id))
+                self.commander.add_ip_to_reg_key_set(ip_address_query.address_v4, str(reg_key_query.id))
 
                 # Setup Shaping
                 if self.is_reg_key_shaped(session, reg_key_query):
-                    tc_manager.enable_shaping_for_ip(ip_address_query.id, ip_address_query.address_v4)
+                    self.commander.enable_shaping_for_ip(ip_address_query.id, ip_address_query.address_v4)
 
             if len(address_pair_query) > 0:
-                nftables_manager.add_accounting_matching_rules(str(reg_key_query.id))
+                self.commander.add_accounting_matching_rules(str(reg_key_query.id))
 
             return True
         except:
@@ -190,8 +191,8 @@ class AccountingService():
 
             if len(address_pair_query) > 0:
                 # Disable Accounting
-                nftables_manager.delete_accounting_matching_rules(str(reg_key_query.id))
-                nftables_manager.delete_reg_key_set(str(reg_key_query.id))
+                self.commander.delete_accounting_matching_rules(str(reg_key_query.id))
+                self.commander.delete_reg_key_set(str(reg_key_query.id))
 
             for row in address_pair_query:
                 ip_address_query = session.query(IpAddress).filter_by(id=row.ip_address).first()
@@ -199,10 +200,10 @@ class AccountingService():
 
                 # Disable Shaping
                 if self.is_reg_key_shaped(session, reg_key_query):
-                    tc_manager.disable_shaping_for_ip(ip_address_query.id, ip_address_query.address_v4)
+                    self.commander.disable_shaping_for_ip(ip_address_query.id, ip_address_query.address_v4)
 
                 # Setup Firewall
-                nftables_manager.delete_allocation_from_registered_set(mac_address_query.address, ip_address_query.address_v4)
+                self.commander.delete_allocation_from_registered_set(mac_address_query.address, ip_address_query.address_v4)
 
             if reason is not None:
                 if len(reason) <= 250:
@@ -337,12 +338,14 @@ class AccountingService():
 class AccountingThread(threading.Thread):
     run = True
     db = NotImplemented
+    commander = NotImplemented
     accounting_srv = NotImplemented
 
     def __init__(self, accounting_srv):
         super(AccountingThread, self).__init__()
         self.accounting_srv = accounting_srv
         self.db = accounting_srv.db
+        self.commander = accounting_srv.commander
 
     def run(self):
         self.query_active_boxes()
@@ -358,8 +361,8 @@ class AccountingThread(threading.Thread):
                 session = self.db.create_session()
                 reg_key_query = session.query(RegistrationKey).all()
 
-                counters = nftables_manager.get_counter_values()
-                nftables_manager.reset_counter_values()
+                counters = self.commander.get_counter_values()
+                self.commander.reset_counter_values()
 
                 for reg_key in reg_key_query:
                     if reg_key.active is False or reg_key.enable_accounting is False:
@@ -614,11 +617,11 @@ class AccountingThread(threading.Thread):
         address_pair_query = session.query(AddressPair).filter_by(reg_key=reg_key_query.id).distinct()
         for query in address_pair_query:
             ip_address_query = session.query(IpAddress).filter_by(id=query.ip_address).first()
-            tc_manager.enable_shaping_for_ip(ip_address_query.id, ip_address_query.address_v4)
+            self.commander.enable_shaping_for_ip(ip_address_query.id, ip_address_query.address_v4)
 
     def __disable_traffic_shaping_for_reg_key(self, session, reg_key_query):
         address_pair_query = session.query(AddressPair).filter_by(reg_key=reg_key_query.id).distinct()
         for query in address_pair_query:
             ip_address_query = session.query(IpAddress).filter_by(id=query.ip_address).first()
-            tc_manager.disable_shaping_for_ip(ip_address_query.id, ip_address_query.address_v4)
+            self.commander.disable_shaping_for_ip(ip_address_query.id, ip_address_query.address_v4)
 
