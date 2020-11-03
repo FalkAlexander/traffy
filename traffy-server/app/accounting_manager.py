@@ -58,7 +58,7 @@ class AccountingService():
         traffic_query = self.__verify_todays_traffic_query(session, reg_key_query)
 
         try:
-            amount_gib = __string_to_float(amount_gib)
+            amount_gib = self.__string_to_float(amount_gib)
             if not amount_gib > 0 or amount_gib > 999:
                 return False
 
@@ -78,7 +78,7 @@ class AccountingService():
         traffic_query = self.__verify_todays_traffic_query(session, reg_key_query)
 
         try:
-            amount_gib = __string_to_float(amount_gib)
+            amount_gib = self.__string_to_float(amount_gib)
             if not amount_gib > 0 or amount_gib > 999:
                 return False
 
@@ -91,7 +91,7 @@ class AccountingService():
 
     def set_custom_topup(self, session, reg_key_query, amount_gib):
         try:
-            amount_gib = __string_to_float(amount_gib)
+            amount_gib = self.__string_to_float(amount_gib)
             if not amount_gib > 0 or amount_gib > 999:
                 return False
 
@@ -104,7 +104,7 @@ class AccountingService():
 
     def set_custom_max_volume(self, session, reg_key_query, amount_gib):
         try:
-            amount_gib = _string_to_float(amount_gib)
+            amount_gib = self._string_to_float(amount_gib)
             if not amount_gib > 0 or amount_gib > 999:
                 return False
 
