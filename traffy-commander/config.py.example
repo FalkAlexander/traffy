@@ -1,0 +1,48 @@
+DNSMASQ_LEASE_FILE = "/var/lib/misc/dnsmasq.leases"
+LAN_INTERFACES = ["ens8s0"]
+WAN_INTERFACE = "enp7s0"
+WAN_INTERFACE_ID = "2"
+BRIDGE_INGRESS_INTERFACE = "ifb0"
+DAILY_TOPUP_VOLUME = 10737418240 # 5 GiB / in bytes
+MAX_SAVED_VOLUME = 107374182400 # 35 GiB / in bytes
+INITIAL_VOLUME = 107374182400 # 10 GiB / in bytes
+# Ranges: [["HH:MM:SS", "HH:MM:SS"], ["HH:MM:SS", "HH:MM:SS"]]
+TIME_RANGES_UNLIMITED_DATA = [["08:00:00", "18:00:00"]]
+MAX_MAC_ADDRESSES_PER_REG_KEY = 1
+# Ranges: [["INTERFACE_NAME", "DEFAULT_GATEWAY", "IP_RANGE_START", "IP_RANGE_END", "INTERFACE_INDEX"], ["INTERFACE_NAME", "DEFAULT_GATEWAY", "IP_RANGE_START", "IP_RANGE_END", "INTERFACE_INDEX"]]
+IP_RANGES = [["enp7s0", "10.90.0.1", "10.90.0.2", "10.90.0.254", "2"]]
+WAN_IP_ADDRESS = "141.46.254.234"
+DOMAIN = "gr-wh.studentenwerk-dresden.de"
+SMTP_SERVER = "smtp.hszg.de"
+SMTP_PORT = "25"
+ACCOUNTING_INTERVAL = 5
+SHAPING_SPEED = "256kbit"
+SHAPING_EXCEPTIONS = [WAN_IP_ADDRESS,
+                    "192.168.100.201",          # Test
+                    "141.46.0.0/16",            # HSZG
+                    "134.109.0.0/16",           # TU Chemnitz / OPAL
+                    "141.0.22.231",             # SWDD web
+                    "141.30.0.0/16",            # TUD (public)
+                    "141.76.0.0/16",            # TUD (public)
+                    "193.174.102.0/23",         # GR-NET
+                    "193.174.8.0/24",           # GR-NET
+                    "195.37.50.0/24",           # GR-NET
+                    "195.37.162.0/24",          # GR-NET
+                    "141.56.0.0/16",            # HTW
+                    "141.43.0.0/16"]            # B-TU
+ACCOUNTING_EXCEPTIONS = [WAN_IP_ADDRESS,
+                    "192.168.100.201",          # Test
+                    "141.46.0.0/16",            # HSZG
+                    "134.109.0.0/16",           # TU Chemnitz / OPAL
+                    "141.0.22.231",             # SWDD web
+                    "141.30.0.0/16",            # TUD (public)
+                    "141.76.0.0/16",            # TUD (public)
+                    "193.174.102.0/23",         # GR-NET
+                    "193.174.8.0/24",           # GR-NET
+                    "195.37.50.0/24",           # GR-NET
+                    "195.37.162.0/24",          # GR-NET
+                    "141.56.0.0/16",            # HTW
+                    "141.43.0.0/16"]            # B-TU
+ENABLE_ERP_INTEGRATION = False
+
+STATELESS = False
