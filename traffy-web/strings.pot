@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2020-11-01 14:35+0100\n"
+"POT-Creation-Date: 2020-11-03 18:55+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -847,6 +847,14 @@ msgstr ""
 msgid "Görlitz Student Dormitory"
 msgstr ""
 
+#: app/templates/errors/400.html:7 app/templates/errors/400.html:14
+msgid "Bad Request"
+msgstr ""
+
+#: app/templates/errors/400.html:15
+msgid "The request could not be processed. Leave this page in order to progress."
+msgstr ""
+
 #: app/templates/errors/403.html:7 app/templates/errors/403.html:14
 #: app/templates/errors/404.html:7 app/templates/errors/404.html:14
 #: app/templates/errors/405.html:7 app/templates/errors/405.html:14
@@ -1095,12 +1103,6 @@ msgid ""
 msgstr ""
 
 #: app/templates/user/deregister.html:23
-msgid ""
-"It can take up to 10 minutes for a newly plugged in device to gain access"
-" to the network. PLEASE REFRAIN FROM WRITING IMMEDIATE SUPPORT TICKETS!"
-msgstr ""
-
-#: app/templates/user/deregister.html:26
 msgid "Deregister"
 msgstr ""
 

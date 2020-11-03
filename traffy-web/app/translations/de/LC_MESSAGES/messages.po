@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2020-11-01 14:35+0100\n"
-"PO-Revision-Date: 2020-11-01 14:38+0100\n"
+"POT-Creation-Date: 2020-11-03 18:55+0100\n"
+"PO-Revision-Date: 2020-11-03 18:59+0100\n"
 "Last-Translator: Falk Seidl <hi@falsei.de>\n"
 "Language: de\n"
 "Language-Team: German < >\n"
@@ -877,6 +877,17 @@ msgstr "Mieterumzug geplant"
 msgid "Görlitz Student Dormitory"
 msgstr "Studentenwohnheim Görlitz"
 
+#: app/templates/errors/400.html:7 app/templates/errors/400.html:14
+msgid "Bad Request"
+msgstr "Veraltete/ungültige Anfrage"
+
+#: app/templates/errors/400.html:15
+msgid ""
+"The request could not be processed. Leave this page in order to progress."
+msgstr ""
+"Die Anfrage konnte nicht bearbeitet werden. Verlasse diese Seite um "
+"fortzufahren."
+
 #: app/templates/errors/403.html:7 app/templates/errors/403.html:14
 #: app/templates/errors/404.html:7 app/templates/errors/404.html:14
 #: app/templates/errors/405.html:7 app/templates/errors/405.html:14
@@ -951,9 +962,9 @@ msgid ""
 msgstr ""
 "Ein Gerät mit identischer Zugangskennung ist bereits im Netzwerk "
 "registriert. Dies ist höchstwahrscheinlich nicht der Netzwerkanschluss, an "
-"dem Du dein Gerät ursprünglich registriert hast. Du musst dein Gerät zuerst "
-"deregistrieren, oder einen Netzwerkadministrator bitten, dies für Sie zu tun "
-"- um den Netzwerkanschluss wechseln zu können."
+"dem Du dieses Gerät ursprünglich registriert hast. Du musst dieses Gerät "
+"zuerst deregistrieren oder einen Netzwerkadministrator bitten, dies für dich "
+"zu tun, um den Netzwerkanschluss wechseln zu können."
 
 #: app/templates/errors/no_lease.html:7 app/templates/errors/no_lease.html:14
 msgid "Misconfigured Endpoint"
@@ -965,7 +976,7 @@ msgid ""
 "granted. Switch to Dynamic Host Configuration Protocol for re-evaluation."
 msgstr ""
 "Statische IP-Konfiguration ist nicht erlaubt. Zugang zu diesem Netzwerk wird "
-"nicht gewährt. Wechsele zum Dynamic Host Configuration Protocol für eine "
+"nicht gewährt. Wechsle zum Dynamic Host Configuration Protocol für eine "
 "erneute Evaluierung."
 
 #: app/templates/includes/footer.html:2 app/templates/user/about.html:18
@@ -1158,15 +1169,6 @@ msgstr ""
 "Registrierungsmaske weitergeleitet."
 
 #: app/templates/user/deregister.html:23
-msgid ""
-"It can take up to 10 minutes for a newly plugged in device to gain access to "
-"the network. PLEASE REFRAIN FROM WRITING IMMEDIATE SUPPORT TICKETS!"
-msgstr ""
-"Es können bis zu 10 Minuten vergehen bis ein neu eingestecktes Gerät Zugriff "
-"auf das Netzwerk erhält. BITTE SEHEN SIE DAVON AB WÄHRENDDESSEN EIN SUPPORT "
-"TICKET ZU ERÖFFNEN!"
-
-#: app/templates/user/deregister.html:26
 msgid "Deregister"
 msgstr "Abmelden"
 
@@ -1366,3 +1368,11 @@ msgstr "Ungültiger Aktionscode"
 #~ "Zugangsdaten - welchen deinen entsprechen, Zugriff auf das Netzwerk zu "
 #~ "erhalten. Aus Sicherheitsgründen wirde dein Zugang daher vorübergehend "
 #~ "gesperrt. Bitte informiere den Netzwerkadministrator. Code: 950"
+
+#~ msgid ""
+#~ "It can take up to 10 minutes for a newly plugged in device to gain access "
+#~ "to the network. PLEASE REFRAIN FROM WRITING IMMEDIATE SUPPORT TICKETS!"
+#~ msgstr ""
+#~ "Es können bis zu 10 Minuten vergehen bis ein neu eingestecktes Gerät "
+#~ "Zugriff auf das Netzwerk erhält. BITTE SEHEN SIE DAVON AB WÄHRENDDESSEN "
+#~ "EIN SUPPORT TICKET ZU ERÖFFNEN!"

@@ -22,6 +22,16 @@ from . import user
 from .. import server
 
 
+@user.app_errorhandler(400)
+def bad_request(e):
+    if request.accept_mimetypes.accept_json and \
+            not request.accept_mimetypes.accept_html:
+        response = jsonify({'error': 'bad request'})
+        response.status_code = 400
+        return response
+
+    return render_template("errors/400.html"), 400
+
 @user.app_errorhandler(403)
 def forbidden(e):
     if request.accept_mimetypes.accept_json and \
