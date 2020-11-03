@@ -52,12 +52,14 @@ def setup_accounting_configuration():
 #
 
 def add_traffy_table():
-    cmd = "add table ip traffy"
-    __execute_command(cmd)
+    __execute_command(
+        "add table ip traffy"
+    )
 
 def delete_traffy_table():
-    cmd = "delete table ip traffy"
-    __execute_command(cmd)
+    __execute_command(
+        "delete table ip traffy"
+    )
 
 #
 # nftables chains
@@ -66,29 +68,29 @@ def delete_traffy_table():
 # Captive Portal
 
 def add_prerouting_chain():
-    cmd = "add chain ip traffy prerouting { type nat hook prerouting priority - 100; }"
-    __execute_command(cmd)
+    __execute_command(
+        "add chain ip traffy prerouting { type nat hook prerouting priority - 100; }"
+    )
 
 def add_captive_portal_chain():
-    cmd = "add chain ip traffy captive-portal"
-    __execute_command(cmd)
+    __execute_command(
+        "add chain ip traffy captive-portal"
+    )
 
 # Accounting
 
 def add_forward_chain():
-    cmd = "add chain ip traffy forward { type filter hook forward priority 0; }"
-    __execute_command(cmd)
+    __execute_command(
+        "add chain ip traffy forward { type filter hook forward priority 0; }"
+    )
 
 def add_accounting_chains():
-    commands = []
-
-    commands.append("add chain ip traffy accounting-ingress")
-    commands.append("add chain ip traffy accounting-ingress-exc")
-
-    commands.append("add chain ip traffy accounting-egress")
-    commands.append("add chain ip traffy accounting-egress-exc")
-
-    __execute_commands(commands)
+    __execute_commands(
+        "add chain ip traffy accounting-ingress",
+        "add chain ip traffy accounting-ingress-exc",
+        "add chain ip traffy accounting-egress",
+        "add chain ip traffy accounting-egress-exc"
+    )
 
 #
 # nftables sets
@@ -97,50 +99,61 @@ def add_accounting_chains():
 # Captive Portal
 
 def add_registered_set():
-    cmd = "add set ip traffy registered { type ether_addr . ipv4_addr; }"
-    __execute_command(cmd)
+    __execute_command(
+        "add set ip traffy registered { type ether_addr . ipv4_addr; }"
+    )
 
 def add_allocation_to_registered_set(mac_address, ip_address):
-    cmd = "add element ip traffy registered { %s }" % (mac_address + " . " + ip_address)
-    __execute_command(cmd)
+    __execute_command(
+        "add element ip traffy registered { %s }" % (mac_address + " . " + ip_address)
+    )
 
 def add_allocations_to_registered_set(allocation_list):
-    cmd = "add element ip traffy registered { %s }" % ", ".join([mac + " . " + ip for mac, ip in allocation_list.items()])
-    __execute_command(cmd)
+    __execute_command(
+        "add element ip traffy registered { %s }" % ", ".join([mac + " . " + ip for mac, ip in allocation_list.items()])
+    )
 
 def delete_allocation_from_registered_set(mac_address, ip_address):
-    cmd = "delete element ip traffy registered { %s }" % (mac_address + " . " + ip_address)
-    __execute_command(cmd)
+    __execute_command(
+        "delete element ip traffy registered { %s }" % (mac_address + " . " + ip_address)
+    )
 
 def delete_allocations_from_registered_set(allocation_list):
-    cmd = "delete element ip traffy registered { %s }" % ", ".join([mac + " . " + ip for mac, ip in allocation_list.items()])
-    __execute_command(cmd)
+    __execute_command(
+        "delete element ip traffy registered { %s }" % ", ".join([mac + " . " + ip for mac, ip in allocation_list.items()])
+    )
 
 # Accounting
 
 def add_exceptions_set():
-    cmd = "add set ip traffy exceptions { type ipv4_addr; flags interval; }"
-    __execute_command(cmd)
+    __execute_command(
+        "add set ip traffy exceptions { type ipv4_addr; flags interval; }"
+    )
 
 def add_ips_to_exceptions_set(ip_address_list):
-    cmd = "add element ip traffy exceptions { %s }" % (", ".join(ip_address_list))
-    __execute_command(cmd)
+    __execute_command(
+        "add element ip traffy exceptions { %s }" % (", ".join(ip_address_list))
+    )
 
 def add_reg_key_set(reg_key_id):
-    cmd = "add set ip traffy key-%s { type ipv4_addr; }" % reg_key_id
-    __execute_command(cmd)
+    __execute_command(
+        "add set ip traffy key-%s { type ipv4_addr; }" % reg_key_id
+    )
 
 def add_ip_to_reg_key_set(ip_address, reg_key_id):
-    cmd = "add element ip traffy key-%s { %s }" % (reg_key_id, ip_address)
-    __execute_command(cmd)
+    __execute_command(
+        "add element ip traffy key-%s { %s }" % (reg_key_id, ip_address)
+    )
 
 def delete_ip_from_reg_key_set(ip_address, reg_key_id):
-    cmd = "delete element ip traffy key-%s { %s }" % (reg_key_id, ip_address)
-    __execute_command(cmd)
+    __execute_command(
+        "delete element ip traffy key-%s { %s }" % (reg_key_id, ip_address)
+    )
 
 def delete_reg_key_set(reg_key_id):
-    cmd = "delete set traffy key-%s" % reg_key_id
-    __execute_command(cmd)
+    __execute_command(
+        "delete set traffy key-%s" % reg_key_id
+    )
 
 #
 # nftables rules
@@ -149,49 +162,46 @@ def delete_reg_key_set(reg_key_id):
 # Captive Portal
 
 def add_captive_portal_chain_forwarding_rule():
-    cmd = "add rule ip traffy prerouting iif { %s } ether saddr . ip saddr != @registered goto captive-portal" % ", ".join([ip[4] for ip in config.IP_RANGES])
-    __execute_command(cmd)
+    __execute_command(
+        "add rule ip traffy prerouting iif { %s } ether saddr . ip saddr != @registered goto captive-portal" % ", ".join([ip[4] for ip in config.IP_RANGES])
+    )
 
 def add_unregistered_exception_accept_rules():
-    commands = []
-    commands.append("add rule ip traffy captive-portal tcp dport 53 accept")
-    commands.append("add rule ip traffy captive-portal udp dport vmap { 53 : accept, 67 : return }")
-    __execute_commands(commands)
+    __execute_commands(
+        "add rule ip traffy captive-portal tcp dport 53 accept",
+        "add rule ip traffy captive-portal udp dport vmap { 53 : accept, 67 : return }"
+    )
 
 def add_captive_portal_rewrite_rule():
-    commands = []
-    commands.append("add rule ip traffy captive-portal tcp dport { 80, 443 } dnat %s" % (config.WAN_IP_ADDRESS))
-    __execute_commands(commands)
+    __execute_command(
+        "add rule ip traffy captive-portal tcp dport { 80, 443 } dnat %s" % (config.WAN_IP_ADDRESS)
+    )
 
 def add_unregistered_drop_rule():
-    cmd = "add rule ip traffy captive-portal ip daddr != { %s, %s } drop" % (config.WAN_IP_ADDRESS, ", ".join([ip[1] for ip in config.IP_RANGES]))
-    __execute_command(cmd)
+    __execute_command(
+        "add rule ip traffy captive-portal ip daddr != { %s, %s } drop" % (config.WAN_IP_ADDRESS, ", ".join([ip[1] for ip in config.IP_RANGES]))
+    )
+
 
 # Accounting
 
 def add_accounting_chain_forwarding_rules():
-    commands = []
-
-    commands.append("add rule ip traffy forward iif %s ip saddr != @exceptions goto accounting-ingress" % config.WAN_INTERFACE_ID)
-    commands.append("add rule ip traffy forward iif %s ip saddr @exceptions goto accounting-ingress-exc" % config.WAN_INTERFACE_ID)
-
-    commands.append("add rule ip traffy forward oif %s ip daddr != @exceptions goto accounting-egress" % config.WAN_INTERFACE_ID)
-    commands.append("add rule ip traffy forward oif %s ip daddr @exceptions goto accounting-egress-exc" % config.WAN_INTERFACE_ID)
-
-    __execute_commands(commands)
+    __execute_commands(
+        "add rule ip traffy forward iif %s ip saddr != @exceptions goto accounting-ingress" % config.WAN_INTERFACE_ID,
+        "add rule ip traffy forward iif %s ip saddr @exceptions goto accounting-ingress-exc" % config.WAN_INTERFACE_ID,
+        "add rule ip traffy forward oif %s ip daddr != @exceptions goto accounting-egress" % config.WAN_INTERFACE_ID,
+        "add rule ip traffy forward oif %s ip daddr @exceptions goto accounting-egress-exc" % config.WAN_INTERFACE_ID
+    )
 
 def add_accounting_matching_rules(reg_key_id):
     add_accounting_counters(reg_key_id)
 
-    commands = []
-
-    commands.append("add rule ip traffy accounting-ingress ip daddr @key-%s counter name %s-ingress" % (reg_key_id, __digits_to_chars(reg_key_id)))
-    commands.append("add rule ip traffy accounting-ingress-exc ip daddr @key-%s counter name %s-ingress-exc" % (reg_key_id, __digits_to_chars(reg_key_id)))
-
-    commands.append("add rule ip traffy accounting-egress ip saddr @key-%s counter name %s-egress" % (reg_key_id, __digits_to_chars(reg_key_id)))
-    commands.append("add rule ip traffy accounting-egress-exc ip saddr @key-%s counter name %s-egress-exc" % (reg_key_id, __digits_to_chars(reg_key_id)))
-
-    __execute_commands(commands)
+    __execute_commands(
+        "add rule ip traffy accounting-ingress ip daddr @key-%s counter name %s-ingress" % (reg_key_id, __digits_to_chars(reg_key_id)),
+        "add rule ip traffy accounting-ingress-exc ip daddr @key-%s counter name %s-ingress-exc" % (reg_key_id, __digits_to_chars(reg_key_id)),
+        "add rule ip traffy accounting-egress ip saddr @key-%s counter name %s-egress" % (reg_key_id, __digits_to_chars(reg_key_id)),
+        "add rule ip traffy accounting-egress-exc ip saddr @key-%s counter name %s-egress-exc" % (reg_key_id, __digits_to_chars(reg_key_id))
+    )
 
 def delete_accounting_matching_rules(reg_key_id):
     chains = ["accounting-ingress", "accounting-ingress-exc", "accounting-egress", "accounting-egress-exc"]
@@ -201,8 +211,7 @@ def delete_accounting_matching_rules(reg_key_id):
         handles = __search_for_handles_in_chain(chain, identifier)
 
         for handle in handles:
-            cmd = "delete rule traffy %s handle %s" % (chain, handle)
-            __execute_command(cmd)
+            __execute_command("delete rule traffy %s handle %s" % (chain, handle))
     
     delete_accounting_counters(reg_key_id)
 
@@ -229,14 +238,12 @@ def __execute_commands(commands):
 #
 
 def add_accounting_counters(reg_key_id):
-    commands = []
-    commands.append("add counter ip traffy %s-ingress packets 0 bytes 0" % __digits_to_chars(reg_key_id))
-    commands.append("add counter ip traffy %s-ingress-exc packets 0 bytes 0" % __digits_to_chars(reg_key_id))
-
-    commands.append("add counter ip traffy %s-egress packets 0 bytes 0" % __digits_to_chars(reg_key_id))
-    commands.append("add counter ip traffy %s-egress-exc packets 0 bytes 0" % __digits_to_chars(reg_key_id))
-
-    __execute_commands(commands)
+    __execute_commands(
+        "add counter ip traffy %s-ingress packets 0 bytes 0" % __digits_to_chars(reg_key_id),
+        "add counter ip traffy %s-ingress-exc packets 0 bytes 0" % __digits_to_chars(reg_key_id),
+        "add counter ip traffy %s-egress packets 0 bytes 0" % __digits_to_chars(reg_key_id),
+        "add counter ip traffy %s-egress-exc packets 0 bytes 0" % __digits_to_chars(reg_key_id)
+    )
 
 def get_counter_values():
     cmd = "-j list counters table ip traffy"
@@ -265,14 +272,12 @@ def reset_counter_values():
     __execute_command(cmd)
 
 def delete_accounting_counters(reg_key_id):
-    commands = []
-    commands.append("delete counter traffy %s-ingress" % __digits_to_chars(reg_key_id))
-    commands.append("delete counter traffy %s-ingress-exc" % __digits_to_chars(reg_key_id))
-
-    commands.append("delete counter traffy %s-egress" % __digits_to_chars(reg_key_id))
-    commands.append("delete counter traffy %s-egress-exc" % __digits_to_chars(reg_key_id))
-
-    __execute_commands(commands)
+    __execute_commands(
+        "delete counter traffy %s-ingress" % __digits_to_chars(reg_key_id),
+        "delete counter traffy %s-ingress-exc" % __digits_to_chars(reg_key_id),
+        "delete counter traffy %s-egress" % __digits_to_chars(reg_key_id),
+        "delete counter traffy %s-egress-exc" % __digits_to_chars(reg_key_id)
+    )
 
 #
 # Util
