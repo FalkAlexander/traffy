@@ -1,0 +1,25 @@
+{% block page_content %}
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8"/>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}"/>
+    <title>{{ _("Bad Request") }}</title>
+  </head>
+  <body>
+    <div class="center-box">
+      <div class="dialog-box dialog-box-small">
+        <form method="POST">
+          <div class="padding-box">
+            <h1>{{ _("Bad Request") }}</h1>
+            <h2>{{ _("The request could not be processed. Leave this page in order to progress.") }}</h2>
+          </div>
+        </form>
+      </div>
+    </div>
+    {% include 'includes/sidebar.html' %}
+    {% include 'includes/footer.html' %}
+  </body>
+</html>
+{% endblock %}
+
