@@ -85,12 +85,12 @@ def add_forward_chain():
     )
 
 def add_accounting_chains():
-    __execute_commands(
+    __execute_commands([
         "add chain ip traffy accounting-ingress",
         "add chain ip traffy accounting-ingress-exc",
         "add chain ip traffy accounting-egress",
         "add chain ip traffy accounting-egress-exc"
-    )
+    ])
 
 #
 # nftables sets
@@ -167,10 +167,10 @@ def add_captive_portal_chain_forwarding_rule():
     )
 
 def add_unregistered_exception_accept_rules():
-    __execute_commands(
+    __execute_commands([
         "add rule ip traffy captive-portal tcp dport 53 accept",
         "add rule ip traffy captive-portal udp dport vmap { 53 : accept, 67 : return }"
-    )
+    ])
 
 def add_captive_portal_rewrite_rule():
     __execute_command(
@@ -186,22 +186,22 @@ def add_unregistered_drop_rule():
 # Accounting
 
 def add_accounting_chain_forwarding_rules():
-    __execute_commands(
+    __execute_commands([
         "add rule ip traffy forward iif %s ip saddr != @exceptions goto accounting-ingress" % config.WAN_INTERFACE_ID,
         "add rule ip traffy forward iif %s ip saddr @exceptions goto accounting-ingress-exc" % config.WAN_INTERFACE_ID,
         "add rule ip traffy forward oif %s ip daddr != @exceptions goto accounting-egress" % config.WAN_INTERFACE_ID,
         "add rule ip traffy forward oif %s ip daddr @exceptions goto accounting-egress-exc" % config.WAN_INTERFACE_ID
-    )
+    ])
 
 def add_accounting_matching_rules(reg_key_id):
     add_accounting_counters(reg_key_id)
 
-    __execute_commands(
+    __execute_commands([
         "add rule ip traffy accounting-ingress ip daddr @key-%s counter name %s-ingress" % (reg_key_id, __digits_to_chars(reg_key_id)),
         "add rule ip traffy accounting-ingress-exc ip daddr @key-%s counter name %s-ingress-exc" % (reg_key_id, __digits_to_chars(reg_key_id)),
         "add rule ip traffy accounting-egress ip saddr @key-%s counter name %s-egress" % (reg_key_id, __digits_to_chars(reg_key_id)),
         "add rule ip traffy accounting-egress-exc ip saddr @key-%s counter name %s-egress-exc" % (reg_key_id, __digits_to_chars(reg_key_id))
-    )
+    ])
 
 def delete_accounting_matching_rules(reg_key_id):
     chains = ["accounting-ingress", "accounting-ingress-exc", "accounting-egress", "accounting-egress-exc"]
@@ -238,12 +238,12 @@ def __execute_commands(commands):
 #
 
 def add_accounting_counters(reg_key_id):
-    __execute_commands(
+    __execute_commands([
         "add counter ip traffy %s-ingress packets 0 bytes 0" % __digits_to_chars(reg_key_id),
         "add counter ip traffy %s-ingress-exc packets 0 bytes 0" % __digits_to_chars(reg_key_id),
         "add counter ip traffy %s-egress packets 0 bytes 0" % __digits_to_chars(reg_key_id),
         "add counter ip traffy %s-egress-exc packets 0 bytes 0" % __digits_to_chars(reg_key_id)
-    )
+    ])
 
 def get_counter_values():
     cmd = "-j list counters table ip traffy"
@@ -268,16 +268,17 @@ def get_counter_values():
     return counters
 
 def reset_counter_values():
-    cmd = "reset counters table ip traffy"
-    __execute_command(cmd)
+    __execute_command(
+        "reset counters table ip traffy"
+    )
 
 def delete_accounting_counters(reg_key_id):
-    __execute_commands(
+    __execute_commands([
         "delete counter traffy %s-ingress" % __digits_to_chars(reg_key_id),
         "delete counter traffy %s-ingress-exc" % __digits_to_chars(reg_key_id),
         "delete counter traffy %s-egress" % __digits_to_chars(reg_key_id),
         "delete counter traffy %s-egress-exc" % __digits_to_chars(reg_key_id)
-    )
+    ])
 
 #
 # Util
