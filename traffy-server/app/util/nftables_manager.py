@@ -25,33 +25,21 @@ import shlex
 
 
 def setup_base_configuration():
-    if config.STATELESS:
-        return
-
     add_traffy_table()
     add_prerouting_chain()
     add_forward_chain()
 
-def setup_captive_portal_configuration():
-    if config.STATELESS:
-        return
-    
+def setup_captive_portal_configuration():    
     add_captive_portal_chain()
     add_registered_set()
 
 def setup_advanced_captive_portal_configuration():
-    if config.STATELESS:
-        return
-
     add_captive_portal_chain_forwarding_rule()
     add_unregistered_exception_accept_rules()
     add_captive_portal_rewrite_rule()
     add_unregistered_drop_rule()
 
 def setup_accounting_configuration():
-    if config.STATELESS:
-        return
-
     add_accounting_chains()
     add_exceptions_set()
 
