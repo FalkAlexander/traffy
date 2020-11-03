@@ -1,6 +1,7 @@
 __pycache__/
 *.pyc
 .vscode/*
+traffy-commander/config.py
 traffy-server/config.py
 traffy-web/config.py
 traffy-dhcp-watchdog/config.py
