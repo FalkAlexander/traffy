@@ -205,7 +205,7 @@ def add_accounting_matching_rules(reg_key_id):
 
 def delete_accounting_matching_rules(reg_key_id):
     chains = ["accounting-ingress", "accounting-ingress-exc", "accounting-egress", "accounting-egress-exc"]
-    identifier = "@key-" + str(reg_key_id)
+    identifier = "@key-" + str(reg_key_id) + " "
 
     for chain in chains:
         handles = __search_for_handles_in_chain(chain, identifier)
