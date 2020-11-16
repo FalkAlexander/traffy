@@ -338,7 +338,7 @@ def __get_developer_infos():
     branch = repo.active_branch
     branch_name = branch.name
 
-    commits = repo.iter_commits('--all', max_count=15)
+    commits = repo.iter_commits(branch, max_count=15)
 
     return branch_name, commits
 
