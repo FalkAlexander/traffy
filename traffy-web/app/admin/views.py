@@ -238,6 +238,7 @@ def edit_identity(reg_key):
                 if "move_date" in request.form.to_dict():
                     success = server.edit_reg_key_identity(reg_key, person_id, first_name, surname, mail, dormitory_id, room, move_date)
                 else:
+                    room = identity_data.get("new_room")
                     move_date = identity_data.get("scheduled_move")
                     success = server.edit_reg_key_identity(reg_key, person_id, first_name, surname, mail, dormitory_id, room, move_date)
                 if not success:
