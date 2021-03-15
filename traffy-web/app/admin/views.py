@@ -192,8 +192,13 @@ def edit_identity(reg_key):
             first_name = request.form["first_name"]
             surname = request.form["surname"]
             mail = request.form["mail"]
-            dormitory_id = server.get_dormitory_id_from_name(request.form["dormitory"])
-            room = request.form["room"]
+            if "dormitory" in request.form.to_dict():
+                dormitory_id = server.get_dormitory_id_from_name(request.form["dormitory"])
+                room = request.form["room"]
+            else:
+                dormitory_id = identity_data.get("dormitory_id")
+                room = identity_data.get("room")
+
             try:
                 move_date = request.form["move_date"]
             except:
@@ -230,7 +235,11 @@ def edit_identity(reg_key):
                 identity_data["dormitory_id"] = dormitory_id
                 identity_data["room"] = room
                 identity_data["deletion_date"] = move_date
-                success = server.edit_reg_key_identity(reg_key, person_id, first_name, surname, mail, dormitory_id, room, move_date)
+                if "move_date" in request.form.to_dict():
+                    success = server.edit_reg_key_identity(reg_key, person_id, first_name, surname, mail, dormitory_id, room, move_date)
+                else:
+                    move_date = identity_data.get("scheduled_move")
+                    success = server.edit_reg_key_identity(reg_key, person_id, first_name, surname, mail, dormitory_id, room, move_date)
                 if not success:
                     flash(_l("Identity could not get changed."))
                 return redirect("/admin/regcodes/" + reg_key)
