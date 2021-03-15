@@ -745,7 +745,10 @@ class ServerAPI:
             identity_query.mail = mail
 
             if move_date != "" and move_date is not None:
-                move_date = datetime.strptime(move_date, "%Y-%m-%d")
+                if "." in move_date:
+                    move_date = datetime.strptime(move_date, "%d.%m.%Y %H:%M:%S")
+                else:
+                    move_date = datetime.strptime(move_date, "%Y-%m-%d")
                 identity_query.move_date = move_date
                 identity_query.new_dormitory_id = dormitory_id
                 identity_query.new_room = room
