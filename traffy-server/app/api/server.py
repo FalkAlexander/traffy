@@ -276,6 +276,25 @@ class ServerAPI:
         # Setup Firewall
         self.__relock_registered_device_firewall(mac_address, ip_address)
 
+    def deregister_all_devices(self, reg_key, session=None):
+        close_session = False
+        if session is None:
+            session = self.db.create_session()
+            close_session = True
+
+        reg_key_query = self.get_reg_key_query_by_key(session, reg_key)
+
+        try:
+            address_pair_query = session.query(AddressPair).filter_by(reg_key=reg_key_query.id).all()
+            for row in address_pair_query:
+                ip_address_query = self.get_ip_address_query_by_id(session, row.ip_address)
+                self.deregister_device(ip_address_query.address_v4, session=session)
+        except:
+            session.rollback()
+        finally:
+            if close_session is True:
+                session.close()
+
     def __disable_shaping(self, reg_key_query, ip_address_query):
         if reg_key_query.id in self.accounting_srv.shaped_reg_keys:
             tc_manager.disable_shaping_for_ip(ip_address_query.id, ip_address_query.address_v4)

@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}"/>
+    <title>{{ _("Supervisor Registration Code Deregister Devices") }}</title>
+  </head>
+  <body>
+    <div class="nav-container">
+      <div class="nav-logo supervisor"></div>
+      <input type="checkbox" id="nav-menu" class="nav-menu" />
+      <nav>
+        <ul>
+          <li><a href="{{ url_for('admin.dashboard') }}">{{ _("Overview") }}</a></li>
+          <li class="active"><a href="{{ url_for('admin.reg_codes') }}">{{ _("Registration Codes") }}</a></li>
+          <li><a href="{{ url_for('admin.notifications') }}">{{ _("Notifications") }}</a></li>
+          {% if current_user.is_admin() %}
+          <li><a href="{{ url_for('admin.accounts') }}">{{ _("Accounts") }}</a></li>
+          {% endif %}
+          <li class="logout"><a href="{{ url_for('admin.logout') }}">{{ _("Logout") }}</a></li>
+        </ul>
+      </nav>
+      <label for="nav-menu" class="nav-menu-label">
+        <span></span>
+      </label>
+    </div>
+    <div class="page-box">
+      <div class="content-box">
+        {% for message in get_flashed_messages() %}
+        <div class="float-box-inline">
+          <div class="notification-box">
+            <p>{{ message }}</p>
+          </div>
+        </div>
+        {% endfor %}
+        <h1>{{ _("Deregister Users Devices") }}</h1>
+        <div class="supervisor-divider"></div>
+
+        <form method="POST">
+          <div class="center-box">
+            <div class="dialog-box dialog-box-small identity-edit">
+              <div class="padding-box">
+                <p>{{ _("The user has been moved into another room. It is recommended to unregister all currently registered devices of this user. Do you want to unregister these now?") }}</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="supervisor-divider"></div>
+          <div class="toolbar">
+            <input name="yes_btn" type="submit" value="{{ _('Yes') }}"/>
+            <input name="no_btn" type="submit" value="{{ _('No') }}"/>
+          </div>
+        </form>
+
+      </div>
+    </div>
+
+    {% include 'includes/footer.html' %}
+  </body>
+</html>
+
+

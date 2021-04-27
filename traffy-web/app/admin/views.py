@@ -228,6 +228,10 @@ def edit_identity(reg_key):
                                         current_dormitory_name=current_dormitory_name,
                                         new_dormitory_name=new_dormitory_name)
             else:
+                show_deregister_devices_page = False
+                if identity_data.get("room") != room or identity_data.get("dormitory_id") != dormitory_id:
+                    show_deregister_devices_page = True
+
                 identity_data["person_id"] = person_id
                 identity_data["first_name"] = first_name
                 identity_data["last_name"] = surname
@@ -243,13 +247,29 @@ def edit_identity(reg_key):
                     success = server.edit_reg_key_identity(reg_key, person_id, first_name, surname, mail, dormitory_id, room, move_date)
                 if not success:
                     flash(_l("Identity could not get changed."))
-                return redirect("/admin/regcodes/" + reg_key)
+
+                if show_deregister_devices_page is False:
+                    return redirect("/admin/regcodes/" + reg_key)
+                else:
+                    return redirect("/admin/regcodes/" + reg_key + "/deregister-devices")
 
     return render_template("/admin/edit-identity.html",
                             identity_data=identity_data,
                             dormitories=dormitories,
                             current_dormitory_name=current_dormitory_name,
                             new_dormitory_name=new_dormitory_name)
+
+@admin.route("/admin/regcodes/<reg_key>/deregister-devices", methods=["GET", "POST"])
+@login_required
+def deregister_devices_dialog_reg_code(reg_key):
+    if "no_btn" in request.form:
+        return redirect("/admin/regcodes/" + reg_key)
+
+    if "yes_btn" in request.form:
+        server.deregister_all_devices(reg_key)
+        return redirect("/admin/regcodes/" + reg_key)
+
+    return render_template("/admin/deregister-devices.html")
 
 @admin.route("/admin/regcodes/<reg_key>/deactivate", methods=["GET", "POST"])
 @login_required
