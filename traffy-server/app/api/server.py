@@ -148,13 +148,13 @@ class ServerAPI:
 
             # Setup Accounting
             self.__enable_device_accounting(session, reg_key_query, ip_address)
+
+            # Setup Shaping
+            self.__enable_shaping(reg_key_query, ip_address_query)
         except:
             session.rollback()
         finally:
             session.close()
-
-        # Setup Shaping
-        self.__enable_shaping(reg_key_query, ip_address_query)
 
     def get_registered_devices_count(self, reg_key):
         session = self.db.create_session()
