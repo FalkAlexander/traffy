@@ -1145,13 +1145,20 @@ class ServerAPI:
             else:
                 ib_expiry_date = ""
 
+            remote_dormitory_id = session.query(Dormitory).filter_by(internal_id=identity.dormitory_id).first()
+
+            if remote_dormitory_id is not None:
+                remote_dormitory_name = remote_dormitory_id.name
+            else:
+                remote_dormitory_name = "N/A"
+
             identity_rows.append(IdentityRowUpdate(
                 remote_id=None,
                 remote_person_id=identity.new_customer_id,
                 remote_last_name=identity.last_name,
                 remote_first_name=identity.first_name,
                 remote_mail=identity.mail,
-                remote_dormitory_id=identity.dormitory_id,
+                remote_dormitory=remote_dormitory_name,
                 remote_room=identity.room,
                 remote_ib_needed=identity.ib_needed,
                 remote_ib_expiry_date=ib_expiry_date
@@ -1181,13 +1188,27 @@ class ServerAPI:
                 remote_ib_expiry_date = identity.ib_expiry_date.strftime("%Y-%m-%d")
             else:
                 remote_ib_expiry_date = ""
+
+            local_dormitory_id = session.query(Dormitory).filter_by(id=local_identity_query.dormitory_id).first()
+            remote_dormitory_id = session.query(Dormitory).filter_by(internal_id=identity.dormitory_id).first()
+
+            if local_dormitory_id is not None:
+                local_dormitory_name = local_dormitory_id.name
+            else:
+                local_dormitory_name = "N/A"
+
+            if remote_dormitory_id is not None:
+                remote_dormitory_name = remote_dormitory_id.name
+            else:
+                remote_dormitory_name = "N/A"
+
             identity_rows.append(IdentityRowUpdate(
                 local_id=None,
                 local_person_id=local_identity_query.customer_id,
                 local_last_name=local_identity_query.last_name,
                 local_first_name=local_identity_query.first_name,
                 local_mail=local_identity_query.mail,
-                local_dormitory_id=local_identity_query.dormitory_id,
+                local_dormitory=local_dormitory_name,
                 local_room=local_identity_query.room,
                 local_ib_needed=local_identity_query.ib_needed,
                 local_ib_expiry_date=local_ib_expiry_date,
@@ -1196,7 +1217,7 @@ class ServerAPI:
                 remote_last_name=identity.last_name,
                 remote_first_name=identity.first_name,
                 remote_mail=identity.mail,
-                remote_dormitory_id=identity.dormitory_id,
+                remote_dormitory=remote_dormitory_name,
                 remote_room=identity.room,
                 remote_ib_needed=identity.ib_needed,
                 remote_ib_expiry_date=remote_ib_expiry_date,
@@ -1216,13 +1237,21 @@ class ServerAPI:
             local_identity_query = session.query(Identity).filter_by(id=identity.identity_id).first()
             if local_identity_query is None:
                 continue
+
+            local_dormitory_id = session.query(Dormitory).filter_by(id=local_identity_query.dormitory_id).first()
+
+            if local_dormitory_id is not None:
+                local_dormitory_name = local_dormitory_id.name
+            else:
+                local_dormitory_name = "N/A"
+
             identity_rows.append(IdentityRowUpdate(
                 local_id=local_identity_query.id,
                 local_person_id=local_identity_query.customer_id,
                 local_last_name=local_identity_query.last_name,
                 local_first_name=local_identity_query.first_name,
                 local_mail=local_identity_query.mail,
-                local_dormitory_id=local_identity_query.dormitory_id,
+                local_dormitory=local_dormitory_name,
                 local_room=local_identity_query.room,
                 local_ib_needed=local_identity_query.ib_needed,
                 local_ib_expiry_date=local_identity_query.ib_expiry_date
@@ -1393,7 +1422,7 @@ class IdentityRowUpdate():
     local_last_name = ""
     local_first_name = ""
     local_mail = ""
-    local_dormitory_id = ""
+    local_dormitory = ""
     local_room = ""
     local_ib_needed = ""
     local_ib_expiry_date = ""
@@ -1403,7 +1432,7 @@ class IdentityRowUpdate():
     remote_last_name = ""
     remote_first_name = ""
     remote_mail = ""
-    remote_dormitory_id = ""
+    remote_dormitory = ""
     remote_room = ""
     remote_ib_needed = ""
     remote_ib_expiry_date = ""
@@ -1413,7 +1442,7 @@ class IdentityRowUpdate():
     different_last_name = False
     different_first_name = False
     different_mail = False
-    different_dormitory_id = False
+    different_dormitory = False
     different_room = False
     different_ib_needed = False
     different_ib_expiry_date = False
@@ -1424,7 +1453,7 @@ class IdentityRowUpdate():
                  local_last_name=None,
                  local_first_name=None,
                  local_mail=None,
-                 local_dormitory_id=None,
+                 local_dormitory=None,
                  local_room=None,
                  local_ib_needed=None,
                  local_ib_expiry_date=None,
@@ -1433,7 +1462,7 @@ class IdentityRowUpdate():
                  remote_last_name=None,
                  remote_first_name=None,
                  remote_mail=None,
-                 remote_dormitory_id=None,
+                 remote_dormitory=None,
                  remote_room=None,
                  remote_ib_needed=None,
                  remote_ib_expiry_date=None,
@@ -1443,7 +1472,7 @@ class IdentityRowUpdate():
         self.local_last_name = local_last_name
         self.local_first_name = local_first_name
         self.local_mail = local_mail
-        self.local_dormitory_id = local_dormitory_id
+        self.local_dormitory = local_dormitory
         self.local_room = local_room
         self.local_ib_needed = local_ib_needed
         self.local_ib_expiry_date = local_ib_expiry_date
@@ -1453,7 +1482,7 @@ class IdentityRowUpdate():
         self.remote_last_name = remote_last_name
         self.remote_first_name = remote_first_name
         self.remote_mail = remote_mail
-        self.remote_dormitory_id = remote_dormitory_id
+        self.remote_dormitory = remote_dormitory
         self.remote_room = remote_room
         self.remote_ib_needed = remote_ib_needed
         self.remote_ib_expiry_date = remote_ib_expiry_date
@@ -1472,8 +1501,8 @@ class IdentityRowUpdate():
             self.different_first_name = True
         if self.local_mail != self.remote_mail:
             self.different_mail = True
-        if self.local_dormitory_id != self.remote_dormitory_id:
-            self.different_dormitory_id = True
+        if self.local_dormitory != self.remote_dormitory:
+            self.different_dormitory = True
         if self.local_room != self.remote_room:
             self.different_room = True
         if self.local_ib_needed != self.remote_ib_needed:
