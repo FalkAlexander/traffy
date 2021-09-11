@@ -1,0 +1,6 @@
+TRAFFY_MASTER_DATABASE_URI = "mysql://traffy_user:traffy_user@192.168.100.150/traffy_server"
+ERP_MASTER_DATABASE_URI = "mysql://traffy_user:traffy_user@192.168.100.150/tl1_import"
+REMOTE_CHARSET = "utf8"
+DECRYPTION_KEY_STRING = ""
+DECRYPTION_INIT_VECTOR = ""
+RELEVANT_DORMITORY_IDS = [51]
