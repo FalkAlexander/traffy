@@ -274,6 +274,31 @@ body:after{
   background: #235400 !important;
 }
 
+.message-box {
+  background: linear-gradient(90deg, rgba(45,55,72,1) 0%, rgba(78,156,172,1) 100%);
+  font-family: Cantarell-Regular;
+  font-size: 18px;
+  padding: 1px 20px 1px 20px;
+  border-radius: 5px;
+  color: #fff;
+  margin-top: 15px;
+  display: flex;
+  align-items: center;
+}
+
+.message-box-badge {
+  margin-right: 10px;
+  filter: invert(100%);
+}
+
+.message-box-badge.sync {
+  width: 35px;
+  height: 35px;
+  background: url("../icons/synchronization.svg") no-repeat;
+  background-position: center;
+  filter: invert(100%);
+}
+
 .padding-box .notification-box {
   height: auto;
 }
@@ -714,6 +739,11 @@ nav a:hover {
   }
 }
 
+.content-box a {
+  text-decoration: none;
+  color: inherit;
+}
+
 .chart-container {
     width: 100%;
     height: 350px;
@@ -816,6 +846,10 @@ nav a:hover {
    margin-bottom: 25px;
 }
 
+.master-data-comparison-box .table {
+    margin-bottom: 0px;
+}
+
 .table .table-row,
 .table .table-head {
    display: table-row;
@@ -881,6 +915,19 @@ nav a:hover {
 .table .table-cell.huge {
   width: 350px !important;
 }
+
+.table .table-cell.headrow {
+  font-weight: bold;
+}
+
+.table .table-cell.local {
+  background-color: #ffdfe3;
+}
+
+.table .table-cell.remote {
+  background-color: #dfffe9;
+}
+
 
 .table .table-cell+.table-cell {
   width: auto;
@@ -983,7 +1030,8 @@ nav a:hover {
   white-space: nowrap;
 }
 
-.settings-box {
+.settings-box,
+.master-data-comparison-box {
   background-color: #ffffff;
   border-radius: 5px;
   box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
@@ -995,7 +1043,8 @@ nav a:hover {
   background: repeating-linear-gradient(135deg, #ffffff, #ffffff 50px, #ffbfbf 10px, #ffbfbf 100px);
 }
 
-.settings-box-content {
+.settings-box-content,
+.master-data-comparison-box-content {
   padding: 20px 20px 20px 20px;
 }
 

@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}"/>
+    <title>{{ _("Supervisor Master Data Updates") }}</title>
+    <script src="{{ url_for('static', filename='js/libs/chart.min.js') }}"></script>
+  </head>
+  <body>
+    <div class="nav-container">
+      <div class="nav-logo supervisor"></div>
+      <input type="checkbox" id="nav-menu" class="nav-menu" />
+      <nav>
+        <ul>
+          <li><a href="{{ url_for('admin.dashboard') }}">{{ _("Overview") }}</a></li>
+          <li><a href="{{ url_for('admin.reg_codes') }}">{{ _("Registration Codes") }}</a></li>
+          <li><a href="{{ url_for('admin.notifications') }}">{{ _("Notifications") }}</a></li>
+          {% if current_user.is_admin() %}
+          <li><a href="{{ url_for('admin.accounts') }}">{{ _("Accounts") }}</a></li>
+          {% endif %}
+          <li class="logout"><a href="{{ url_for('admin.logout') }}">{{ _("Logout") }}</a></li>
+        </ul>
+      </nav>
+      <label for="nav-menu" class="nav-menu-label">
+        <span></span>
+      </label>
+    </div>
+    <div class="page-box">
+      <div class="content-box">
+        {% for message in get_flashed_messages() %}
+        <div class="float-box-inline">
+          <div class="notification-box">
+            <p>{{ message }}</p>
+          </div>
+        </div>
+        {% endfor %}
+        <h1>{{ _("Master Data Updates") }}</h1>
+        <div class="supervisor-divider"></div>
+
+        {% for identity in identities_creatable %}
+        <div class="master-data-comparison-box content">
+          <div class="master-data-comparison-box-content">
+            <h2>Create identity and registration code for debtor {{ identity.remote_person_id }}</h2>
+            <div class="table">
+              <div class="table-row">
+                <div class="table-cell small collapse headrow">{{ _("First name") }}</div>
+                <div class="table-cell remote">{{ identity.remote_first_name }}</div>
+              </div>
+              <div class="table-row">
+                <div class="table-cell small collapse headrow">{{ _("Last name") }}</div>
+                <div class="table-cell remote">{{ identity.remote_last_name }}</div>
+              </div>
+              <div class="table-row">
+                <div class="table-cell small collapse headrow">{{ _("Dormitory") }}</div>
+                <div class="table-cell remote">{{ identity.remote_dormitory_id }}</div>
+              </div>
+              <div class="table-row">
+                <div class="table-cell small collapse headrow">{{ _("Room") }}</div>
+                <div class="table-cell remote">{{ identity.remote_room }}</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        {% endfor %}
+
+        {% for identity in identities_updateable %}
+        <div class="master-data-comparison-box content">
+          <div class="master-data-comparison-box-content">
+            <h2>Update identity for debtor {{ identity.local_person_id }}</h2>
+            <div class="table">
+              <div class="table-head">
+                <div class="table-cell small collapse"></div>
+                <div class="table-cell">{{ _("Local") }}</div>
+                <div class="table-cell">{{ _("Remote") }}</div>
+              </div>
+              {% if identity.different_person_id %}
+              <div class="table-row">
+                <div class="table-cell small collapse headrow">{{ _("Person ID") }}</div>
+                <div class="table-cell local">{{ identity.local_person_id }}</div>
+                <div class="table-cell remote">{{ identity.remote_person_id }}</div>
+              </div>
+              {% endif %}
+              {% if identity.different_first_name %}
+              <div class="table-row">
+                <div class="table-cell small collapse headrow">{{ _("First name") }}</div>
+                <div class="table-cell local">{{ identity.local_first_name }}</div>
+                <div class="table-cell remote">{{ identity.remote_first_name }}</div>
+              </div>
+              {% endif %}
+              {% if identity.different_last_name %}
+              <div class="table-row">
+                <div class="table-cell small collapse headrow">{{ _("Last name") }}</div>
+                <div class="table-cell local">{{ identity.local_last_name }}</div>
+                <div class="table-cell remote">{{ identity.remote_last_name }}</div>
+              </div>
+              {% endif %}
+              {% if identity.different_mail %}
+              <div class="table-row">
+                <div class="table-cell small collapse headrow">{{ _("Mail") }}</div>
+                <div class="table-cell local">{{ identity.local_mail }}</div>
+                <div class="table-cell remote">{{ identity.remote_mail }}</div>
+              </div>
+              {% endif %}
+              {% if identity.different_dormitory_id %}
+              <div class="table-row">
+                <div class="table-cell small collapse headrow">{{ _("Dormitory") }}</div>
+                <div class="table-cell local">{{ identity.local_dormitory_id }}</div>
+                <div class="table-cell remote">{{ identity.remote_dormitory_id }}</div>
+              </div>
+              {% endif %}
+              {% if identity.different_room %}
+              <div class="table-row">
+                <div class="table-cell small collapse headrow">{{ _("Room") }}</div>
+                <div class="table-cell local">{{ identity.local_room }}</div>
+                <div class="table-cell remote">{{ identity.remote_room }}</div>
+              </div>
+              {% endif %}
+              {% if identity.different_ib_needed %}
+              <div class="table-row">
+                <div class="table-cell small collapse headrow">{{ _("IB needed") }}</div>
+                <div class="table-cell local">{{ identity.local_ib_needed }}</div>
+                <div class="table-cell remote">{{ identity.remote_ib_needed }}</div>
+              </div>
+              {% endif %}
+              {% if identity.different_person_id %}
+              <div class="table-row">
+                <div class="table-cell small collapse headrow">{{ _("IB expiry") }}</div>
+                <div class="table-cell local">{{ identity.local_ib_expiry_date }}</div>
+                <div class="table-cell remote">{{ identity.remote_ib_expiry_date }}</div>
+              </div>
+              {% endif %}
+            </div>
+          </div>
+        </div>
+        {% endfor %}
+
+        {% for identity in identities_deletable %}
+        <div class="master-data-comparison-box content">
+          <div class="master-data-comparison-box-content">
+            <h2>Delete identity and registration code for debtor {{ identity.local_person_id }}</h2>
+            <div class="table">
+              <div class="table-row">
+                <div class="table-cell small collapse headrow">{{ _("First name") }}</div>
+                <div class="table-cell local">{{ identity.local_first_name }}</div>
+              </div>
+              <div class="table-row">
+                <div class="table-cell small collapse headrow">{{ _("Last name") }}</div>
+                <div class="table-cell local">{{ identity.local_last_name }}</div>
+              </div>
+              <div class="table-row">
+                <div class="table-cell small collapse headrow">{{ _("Dormitory") }}</div>
+                <div class="table-cell local">{{ identity.local_dormitory_id }}</div>
+              </div>
+              <div class="table-row">
+                <div class="table-cell small collapse headrow">{{ _("Room") }}</div>
+                <div class="table-cell local">{{ identity.local_room }}</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        {% endfor %}
+
+      </div>
+    </div>
+
+    {% include 'includes/footer.html' %}
+  </body>
+</html>
+
+

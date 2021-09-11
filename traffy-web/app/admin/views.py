@@ -73,6 +73,8 @@ def dashboard():
 
     show_erp = server.is_erp_integration_enabled()
 
+    master_data_updates_available = server.is_master_updates_available()
+
     return render_template("/admin/dashboard.html",
                            labels=labels,
                            values_downlink=values_downlink,
@@ -95,7 +97,19 @@ def dashboard():
                            registered_users=registered_users,
                            average_credit=average_credit,
                            shaped_users=shaped_users,
-                           show_erp=show_erp)
+                           show_erp=show_erp,
+                           master_data_updates_available=master_data_updates_available)
+
+@admin.route("/admin/master-updates", methods=["GET", "POST"])
+@login_required
+def master_updates():
+    identities_creatable = server.get_identity_master_data_updates_createable()
+    identities_updateable = server.get_identity_master_data_updates_updateable()
+    identities_deletable = server.get_identity_master_data_updates_deletables()
+    return render_template("/admin/master-updates.html",
+                           identities_creatable=identities_creatable,
+                           identities_updateable=identities_updateable,
+                           identities_deletable=identities_deletable)
 
 @admin.route("/admin/regcodes", methods=["GET", "POST"])
 @login_required
