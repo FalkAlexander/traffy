@@ -4,6 +4,7 @@ __pycache__/
 traffy-server/config.py
 traffy-web/config.py
 traffy-dhcp-watchdog/config.py
+traffy-erp-integration/config.py
 boot.sh
 .idea/
 venv/
