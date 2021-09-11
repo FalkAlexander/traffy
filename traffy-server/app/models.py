@@ -106,15 +106,19 @@ class Identity(Base):
     new_dormitory_id = db.Column(db.Integer, unique=False, nullable=True)
     room = db.Column(db.String(20), unique=False, nullable=False)
     new_room = db.Column(db.String(20), unique=False, nullable=True)
-    move_date = db.Column(db.DateTime, nullable=True)
+    move_date = db.Column(db.DateTime, unique=False, nullable=True)
+    ib_needed = db.Column(db.String(1), unique=False, nullable=True)
+    ib_expiry_date = db.Column(db.Date, unique=False, nullable=True)
     
-    def __init__(self, customer_id, first_name, last_name, mail, dormitory_id, room):
+    def __init__(self, customer_id, first_name, last_name, mail, dormitory_id, room, ib_needed, ib_expiry_date):
         self.customer_id = customer_id
         self.first_name = first_name
         self.last_name = last_name
         self.mail = mail
         self.dormitory_id = dormitory_id
         self.room = room
+        self.ib_needed = ib_needed
+        self.ib_expiry_date = ib_expiry_date
     
     def __repr__(self):
         return "<Identity %r>" % self.customer_id
@@ -212,6 +216,39 @@ class Dormitory(Base):
     
     def __repr__(self):
         return "<Dormitory %r>" % self.internal_id
+
+class IdentityUpdate(Base):
+    __tablename__ = "identity_update"
+
+    id = db.Column(db.BigInteger, primary_key=True, autoincrement=True)
+    identity_id = db.Column(db.BigInteger, unique=False, nullable=True)
+    new_customer_id = db.Column(db.BigInteger, unique=False, nullable=True)
+    old_customer_id = db.Column(db.BigInteger, unique=False, nullable=True)
+    first_name = db.Column(db.String(500), unique=False, nullable=True)
+    last_name = db.Column(db.String(500), unique=False, nullable=True)
+    mail = db.Column(db.String(500), unique=False, nullable=True)
+    dormitory_id = db.Column(db.Integer, unique=False, nullable=True)
+    room = db.Column(db.String(20), unique=False, nullable=True)
+    ib_needed = db.Column(db.Boolean, nullable=True)
+    ib_expiry_date = db.Column(db.Date, nullable=True)
+    contract_expiry_date = db.Column(db.Date, nullable=True)
+
+    def __init__(self, identity_id, new_customer_id, old_customer_id, first_name, last_name, mail, dormitory_id,
+                 room, ib_needed, ib_expiry_date, contract_expiry_date):
+        self.identity_id = identity_id
+        self.new_customer_id = new_customer_id
+        self.old_customer_id = old_customer_id
+        self.first_name = first_name
+        self.last_name = last_name
+        self.mail = mail
+        self.dormitory_id = dormitory_id
+        self.room = room
+        self.ib_needed = ib_needed
+        self.ib_expiry_date = ib_expiry_date
+        self.contract_expiry_date = contract_expiry_date
+
+    def __repr__(self):
+        return "<IdentityUpdate %r>" % self.id
 
 def create_all(engine):
     Base.metadata.create_all(engine)

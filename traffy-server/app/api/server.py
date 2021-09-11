@@ -19,12 +19,13 @@
 
 from app.exceptions.user_exceptions import RegistrationError, DatabaseError, DeregistrationError
 from enum import Enum
-from ..models import RegistrationKey, IpAddress, MacAddress, AddressPair, Traffic, Identity, Dormitory
+from ..models import IdentityUpdate, RegistrationKey, IpAddress, MacAddress, AddressPair, Traffic, Identity, Dormitory
 from ..util import tc_manager, nftables_manager
 from datetime import datetime, timedelta
 from dateutil import rrule
 from user_agents import parse
 from sqlalchemy.sql import func
+from sqlalchemy import and_
 import json
 import time
 import codecs
@@ -1008,9 +1009,9 @@ class ServerAPI:
         identity = session.query(Identity).filter_by(id=reg_key_query.identity).first()
 
         if identity.move_date is None:
-            identity_data = IdentityRow(identity.id, identity.customer_id, identity.last_name, identity.first_name, identity.mail, identity.dormitory_id, identity.new_dormitory_id, identity.room, identity.new_room, identity.move_date)
+            identity_data = IdentityRow(identity.id, identity.customer_id, identity.last_name, identity.first_name, identity.mail, identity.dormitory_id, identity.new_dormitory_id, identity.room, identity.new_room, identity.move_date, identity.ib_needed, identity.ib_expiry_date)
         else:
-            identity_data = IdentityRow(identity.id, identity.customer_id, identity.last_name, identity.first_name, identity.mail, identity.dormitory_id, identity.new_dormitory_id, identity.room, identity.new_room, identity.move_date.strftime("%d.%m.%Y %H:%M:%S"))
+            identity_data = IdentityRow(identity.id, identity.customer_id, identity.last_name, identity.first_name, identity.mail, identity.dormitory_id, identity.new_dormitory_id, identity.room, identity.new_room, identity.move_date.strftime("%d.%m.%Y %H:%M:%S"), identity.ib_needed, identity.ib_expiry_date)
 
         session.close()
         return identity_data
@@ -1115,6 +1116,121 @@ class ServerAPI:
 
     def is_erp_integration_enabled(self):
         return config.ENABLE_ERP_INTEGRATION
+
+    def is_master_updates_available(self):
+        session = self.db.create_session()
+        identity_update_query = session.query(IdentityUpdate).all()
+
+        if len(identity_update_query) > 0:
+            return True
+        else:
+            return False
+
+        session.close()
+
+    def get_erp_integration_status(self):
+        session = self.db.create_session()
+        session.close()
+
+    def get_identity_master_data_updates_createable(self):
+        session = self.db.create_session()
+        identity_update_query = session.query(IdentityUpdate).filter(and_(IdentityUpdate.new_customer_id != None,
+                                                                     IdentityUpdate.old_customer_id == None,
+                                                                     IdentityUpdate.identity_id == None)).all()
+
+        identity_rows = []
+        for identity in identity_update_query:
+            if identity.ib_expiry_date is not None:
+                ib_expiry_date = identity.ib_expiry_date.strftime("%Y-%m-%d")
+            else:
+                ib_expiry_date = ""
+
+            identity_rows.append(IdentityRowUpdate(
+                remote_id=None,
+                remote_person_id=identity.new_customer_id,
+                remote_last_name=identity.last_name,
+                remote_first_name=identity.first_name,
+                remote_mail=identity.mail,
+                remote_dormitory_id=identity.dormitory_id,
+                remote_room=identity.room,
+                remote_ib_needed=identity.ib_needed,
+                remote_ib_expiry_date=ib_expiry_date
+            ))
+
+        session.close()
+
+        return identity_rows
+
+    def get_identity_master_data_updates_updateable(self):
+        session = self.db.create_session()
+        identity_update_query = session.query(IdentityUpdate).filter(and_(IdentityUpdate.new_customer_id != None,
+                                                                     IdentityUpdate.old_customer_id != None,
+                                                                     IdentityUpdate.identity_id != None)).all()
+        identity_rows = []
+        for identity in identity_update_query:
+            local_identity_query = session.query(Identity).filter_by(customer_id=identity.old_customer_id).first()
+            if local_identity_query is None:
+                continue
+
+            if local_identity_query.ib_expiry_date is not None:
+                local_ib_expiry_date = local_identity_query.ib_expiry_date.strftime("%Y-%m-%d")
+            else:
+                local_ib_expiry_date = ""
+
+            if identity.ib_expiry_date is not None:
+                remote_ib_expiry_date = identity.ib_expiry_date.strftime("%Y-%m-%d")
+            else:
+                remote_ib_expiry_date = ""
+            identity_rows.append(IdentityRowUpdate(
+                local_id=None,
+                local_person_id=local_identity_query.customer_id,
+                local_last_name=local_identity_query.last_name,
+                local_first_name=local_identity_query.first_name,
+                local_mail=local_identity_query.mail,
+                local_dormitory_id=local_identity_query.dormitory_id,
+                local_room=local_identity_query.room,
+                local_ib_needed=local_identity_query.ib_needed,
+                local_ib_expiry_date=local_ib_expiry_date,
+                remote_id=None,
+                remote_person_id=identity.new_customer_id,
+                remote_last_name=identity.last_name,
+                remote_first_name=identity.first_name,
+                remote_mail=identity.mail,
+                remote_dormitory_id=identity.dormitory_id,
+                remote_room=identity.room,
+                remote_ib_needed=identity.ib_needed,
+                remote_ib_expiry_date=remote_ib_expiry_date,
+                do_difference_check=True
+            ))
+
+        session.close()
+
+        return identity_rows
+
+    def get_identity_master_data_updates_deletables(self):
+        session = self.db.create_session()
+        identity_update_query = session.query(IdentityUpdate).filter_by(new_customer_id=None).all()
+
+        identity_rows = []
+        for identity in identity_update_query:
+            local_identity_query = session.query(Identity).filter_by(id=identity.identity_id).first()
+            if local_identity_query is None:
+                continue
+            identity_rows.append(IdentityRowUpdate(
+                local_id=local_identity_query.id,
+                local_person_id=local_identity_query.customer_id,
+                local_last_name=local_identity_query.last_name,
+                local_first_name=local_identity_query.first_name,
+                local_mail=local_identity_query.mail,
+                local_dormitory_id=local_identity_query.dormitory_id,
+                local_room=local_identity_query.room,
+                local_ib_needed=local_identity_query.ib_needed,
+                local_ib_expiry_date=local_identity_query.ib_expiry_date
+            ))
+
+        session.close()
+
+        return identity_rows
 
     #
     # Util / Private
@@ -1254,8 +1370,10 @@ class IdentityRow():
     room = ""
     new_room = ""
     scheduled_move = ""
+    ib_needed = ""
+    ib_expiry_date = ""
 
-    def __init__(self, id, person_id, last_name, first_name, mail, dormitory_id, new_dormitory_id, room, new_room, scheduled_move):
+    def __init__(self, id, person_id, last_name, first_name, mail, dormitory_id, new_dormitory_id, room, new_room, scheduled_move, ib_needed, ib_expiry_date):
         self.id = id
         self.person_id = person_id
         self.last_name = last_name
@@ -1266,6 +1384,103 @@ class IdentityRow():
         self.room = room
         self.new_room = new_room
         self.scheduled_move = scheduled_move
+        self.ib_needed = ib_needed
+        self.ib_expiry_date = ib_expiry_date
+
+class IdentityRowUpdate():
+    local_id = ""
+    local_person_id = ""
+    local_last_name = ""
+    local_first_name = ""
+    local_mail = ""
+    local_dormitory_id = ""
+    local_room = ""
+    local_ib_needed = ""
+    local_ib_expiry_date = ""
+
+    remote_id = ""
+    remote_person_id = ""
+    remote_last_name = ""
+    remote_first_name = ""
+    remote_mail = ""
+    remote_dormitory_id = ""
+    remote_room = ""
+    remote_ib_needed = ""
+    remote_ib_expiry_date = ""
+
+    different_id = False
+    different_person_id = False
+    different_last_name = False
+    different_first_name = False
+    different_mail = False
+    different_dormitory_id = False
+    different_room = False
+    different_ib_needed = False
+    different_ib_expiry_date = False
+
+    def __init__(self,
+                 local_id=None,
+                 local_person_id=None,
+                 local_last_name=None,
+                 local_first_name=None,
+                 local_mail=None,
+                 local_dormitory_id=None,
+                 local_room=None,
+                 local_ib_needed=None,
+                 local_ib_expiry_date=None,
+                 remote_id=None,
+                 remote_person_id=None,
+                 remote_last_name=None,
+                 remote_first_name=None,
+                 remote_mail=None,
+                 remote_dormitory_id=None,
+                 remote_room=None,
+                 remote_ib_needed=None,
+                 remote_ib_expiry_date=None,
+                 do_difference_check=False):
+        self.local_id = local_id
+        self.local_person_id = local_person_id
+        self.local_last_name = local_last_name
+        self.local_first_name = local_first_name
+        self.local_mail = local_mail
+        self.local_dormitory_id = local_dormitory_id
+        self.local_room = local_room
+        self.local_ib_needed = local_ib_needed
+        self.local_ib_expiry_date = local_ib_expiry_date
+
+        self.remote_id = remote_id
+        self.remote_person_id = remote_person_id
+        self.remote_last_name = remote_last_name
+        self.remote_first_name = remote_first_name
+        self.remote_mail = remote_mail
+        self.remote_dormitory_id = remote_dormitory_id
+        self.remote_room = remote_room
+        self.remote_ib_needed = remote_ib_needed
+        self.remote_ib_expiry_date = remote_ib_expiry_date
+
+        if do_difference_check is True:
+            self.__difference_check()
+
+    def __difference_check(self):
+        if self.local_id != self.remote_id:
+            self.different_id = True
+        if self.local_person_id != self.remote_person_id:
+            self.different_person_id = True
+        if self.local_last_name != self.remote_last_name:
+            self.different_last_name = True
+        if self.local_first_name != self.remote_first_name:
+            self.different_first_name = True
+        if self.local_mail != self.remote_mail:
+            self.different_mail = True
+        if self.local_dormitory_id != self.remote_dormitory_id:
+            self.different_dormitory_id = True
+        if self.local_room != self.remote_room:
+            self.different_room = True
+        if self.local_ib_needed != self.remote_ib_needed:
+            self.different_ib_needed = True
+        if self.local_ib_expiry_date != self.remote_ib_expiry_date:
+            self.different_ib_expiry_date = True
+
 
 class DeviceRow():
     ip_address = ""
