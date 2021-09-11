@@ -52,7 +52,7 @@
               </div>
               <div class="table-row">
                 <div class="table-cell small collapse headrow">{{ _("Dormitory") }}</div>
-                <div class="table-cell remote">{{ identity.remote_dormitory_id }}</div>
+                <div class="table-cell remote">{{ identity.remote_dormitory }}</div>
               </div>
               <div class="table-row">
                 <div class="table-cell small collapse headrow">{{ _("Room") }}</div>
@@ -101,11 +101,11 @@
                 <div class="table-cell remote">{{ identity.remote_mail }}</div>
               </div>
               {% endif %}
-              {% if identity.different_dormitory_id %}
+              {% if identity.different_dormitory %}
               <div class="table-row">
                 <div class="table-cell small collapse headrow">{{ _("Dormitory") }}</div>
-                <div class="table-cell local">{{ identity.local_dormitory_id }}</div>
-                <div class="table-cell remote">{{ identity.remote_dormitory_id }}</div>
+                <div class="table-cell local">{{ identity.local_dormitory }}</div>
+                <div class="table-cell remote">{{ identity.remote_dormitory }}</div>
               </div>
               {% endif %}
               {% if identity.different_room %}
@@ -149,7 +149,7 @@
               </div>
               <div class="table-row">
                 <div class="table-cell small collapse headrow">{{ _("Dormitory") }}</div>
-                <div class="table-cell local">{{ identity.local_dormitory_id }}</div>
+                <div class="table-cell local">{{ identity.local_dormitory }}</div>
               </div>
               <div class="table-row">
                 <div class="table-cell small collapse headrow">{{ _("Room") }}</div>
