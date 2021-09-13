@@ -759,7 +759,7 @@ class ServerAPI:
             reg_key_query = session.query(RegistrationKey).filter_by(key=reg_key).first()
             identity_query = session.query(Identity).filter_by(id=reg_key_query.identity).first()
 
-            identity_query.customer_id = person_id
+            identity_query.customer_id = int(person_id)
             identity_query.first_name = first_name
             identity_query.last_name = surname
             identity_query.mail = mail
@@ -1404,7 +1404,7 @@ class IdentityRow():
 
     def __init__(self, id, person_id, last_name, first_name, mail, dormitory_id, new_dormitory_id, room, new_room, scheduled_move, ib_needed, ib_expiry_date):
         self.id = id
-        self.person_id = person_id
+        self.person_id = str(person_id)
         self.last_name = last_name
         self.first_name = first_name
         self.mail = mail

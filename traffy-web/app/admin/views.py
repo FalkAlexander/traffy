@@ -202,7 +202,7 @@ def edit_identity(reg_key):
                                     new_dormitory_name=new_dormitory_name)
 
         if "save_btn" in request.form:
-            person_id = request.form["person_id"]
+            person_id = int(request.form["person_id"])
             first_name = request.form["first_name"]
             surname = request.form["surname"]
             mail = request.form["mail"]
@@ -246,7 +246,7 @@ def edit_identity(reg_key):
                 if identity_data.get("room") != room or identity_data.get("dormitory_id") != dormitory_id:
                     show_deregister_devices_page = True
 
-                identity_data["person_id"] = person_id
+                identity_data["person_id"] = str(person_id)
                 identity_data["first_name"] = first_name
                 identity_data["last_name"] = surname
                 identity_data["mail"] = mail
@@ -254,11 +254,11 @@ def edit_identity(reg_key):
                 identity_data["room"] = room
                 identity_data["deletion_date"] = move_date
                 if "move_date" in request.form.to_dict():
-                    success = server.edit_reg_key_identity(reg_key, person_id, first_name, surname, mail, dormitory_id, room, move_date)
+                    success = server.edit_reg_key_identity(reg_key, str(person_id), first_name, surname, mail, dormitory_id, room, move_date)
                 else:
                     room = identity_data.get("new_room")
                     move_date = identity_data.get("scheduled_move")
-                    success = server.edit_reg_key_identity(reg_key, person_id, first_name, surname, mail, dormitory_id, room, move_date)
+                    success = server.edit_reg_key_identity(reg_key, str(person_id), first_name, surname, mail, dormitory_id, room, move_date)
                 if not success:
                     flash(_l("Identity could not get changed."))
 
