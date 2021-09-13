@@ -732,7 +732,7 @@ class ServerAPI:
         try:
             session = self.db.create_session()
 
-            identity = Identity(customer_id=person_id, first_name=first_name, last_name=surname, mail=mail, dormitory_id=dormitory_id, room=room)
+            identity = Identity(customer_id=person_id, first_name=first_name, last_name=surname, mail=mail, dormitory_id=dormitory_id, room=room, ib_needed=None, ib_expiry_date=None)
             session.add(identity)
             session.commit()
 
