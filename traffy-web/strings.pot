@@ -1,183 +1,185 @@
 # Translations template for PROJECT.
-# Copyright (C) 2020 ORGANIZATION
+# Copyright (C) 2021 ORGANIZATION
 # This file is distributed under the same license as the PROJECT project.
-# FIRST AUTHOR <EMAIL@ADDRESS>, 2020.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2021.
 #
 #, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2020-11-03 18:55+0100\n"
+"POT-Creation-Date: 2021-10-30 20:37+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 2.8.0\n"
+"Generated-By: Babel 2.9.1\n"
 
 #: app/admin/views.py:56
 msgid "Wrong credentials. This attempt got reported."
 msgstr ""
 
-#: app/admin/views.py:63 app/admin/views.py:67 app/admin/views.py:458
-#: app/admin/views.py:462 app/user/views.py:202 app/user/views.py:206
+#: app/admin/views.py:63 app/admin/views.py:67 app/admin/views.py:502
+#: app/admin/views.py:506 app/user/views.py:202 app/user/views.py:206
 msgid "Accounted"
 msgstr ""
 
-#: app/admin/views.py:64 app/admin/views.py:68 app/admin/views.py:459
-#: app/admin/views.py:463 app/user/views.py:203 app/user/views.py:207
+#: app/admin/views.py:64 app/admin/views.py:68 app/admin/views.py:503
+#: app/admin/views.py:507 app/user/views.py:203 app/user/views.py:207
 msgid "Timerule"
 msgstr ""
 
-#: app/admin/views.py:65 app/admin/views.py:69 app/admin/views.py:460
-#: app/admin/views.py:464 app/templates/admin/key-page.html:56
+#: app/admin/views.py:65 app/admin/views.py:69 app/admin/views.py:504
+#: app/admin/views.py:508 app/templates/admin/key-page.html:56
 #: app/templates/user/dashboard_advanced.html:91 app/user/views.py:204
 #: app/user/views.py:208
 msgid "Shaped"
 msgstr ""
 
-#: app/admin/views.py:66 app/admin/views.py:70 app/admin/views.py:461
-#: app/admin/views.py:465 app/user/views.py:205 app/user/views.py:209
+#: app/admin/views.py:66 app/admin/views.py:70 app/admin/views.py:505
+#: app/admin/views.py:509 app/user/views.py:205 app/user/views.py:209
 msgid "Exceptions"
 msgstr ""
 
-#: app/admin/views.py:153 app/admin/views.py:212 app/admin/views.py:639
-#: app/admin/views.py:704 app/admin/views.py:733
+#: app/admin/views.py:167 app/admin/views.py:231 app/admin/views.py:683
+#: app/admin/views.py:748 app/admin/views.py:777
 msgid "Please fill out all input forms."
 msgstr ""
 
-#: app/admin/views.py:161
+#: app/admin/views.py:175
 msgid "An error occured while adding the registration code."
 msgstr ""
 
-#: app/admin/views.py:204
+#: app/admin/views.py:223
 msgid "Move date must be in the future."
 msgstr ""
 
-#: app/admin/views.py:219
+#: app/admin/views.py:238
 msgid "You can not schedule a move if the room and dormitory will stay the same."
 msgstr ""
 
-#: app/admin/views.py:235
+#: app/admin/views.py:263
 msgid "Identity could not get changed."
 msgstr ""
 
-#: app/admin/views.py:254
+#: app/admin/views.py:298
 msgid "Error: Maximum number of characters exceeded."
 msgstr ""
 
-#: app/admin/views.py:263 app/admin/views.py:376 app/admin/views.py:394
-#: app/admin/views.py:403 app/admin/views.py:412 app/admin/views.py:421
-#: app/admin/views.py:434 app/admin/views.py:451 app/admin/views.py:568
+#: app/admin/views.py:307 app/admin/views.py:420 app/admin/views.py:438
+#: app/admin/views.py:447 app/admin/views.py:456 app/admin/views.py:465
+#: app/admin/views.py:478 app/admin/views.py:495 app/admin/views.py:612
 msgid "An error occured."
 msgstr ""
 
-#: app/admin/views.py:276
+#: app/admin/views.py:320
 msgid "Device unregistered"
 msgstr ""
 
-#: app/admin/views.py:323 app/user/views.py:82 app/user/views.py:116
+#: app/admin/views.py:367 app/user/views.py:82 app/user/views.py:116
 #: app/user/views.py:149
 msgid "Invalid registration key."
 msgstr ""
 
-#: app/admin/views.py:358 app/admin/views.py:367 app/admin/views.py:385
+#: app/admin/views.py:402 app/admin/views.py:411 app/admin/views.py:429
 msgid "Input entered is invalid."
 msgstr ""
 
-#: app/admin/views.py:437
+#: app/admin/views.py:481
 msgid "Registration key successfully deleted."
 msgstr ""
 
-#: app/admin/views.py:439
+#: app/admin/views.py:483
 msgid "Registration key deletion scheduled successfully."
 msgstr ""
 
-#: app/admin/views.py:453
+#: app/admin/views.py:497
 msgid "Canceled pending registration key deletion."
 msgstr ""
 
-#: app/admin/views.py:469 app/templates/user/dashboard_advanced.html:93
+#: app/admin/views.py:513 app/templates/admin/deregister-devices.html:50
+#: app/templates/user/dashboard_advanced.html:93
 msgid "Yes"
 msgstr ""
 
-#: app/admin/views.py:471 app/templates/user/dashboard_advanced.html:95
+#: app/admin/views.py:515 app/templates/admin/deregister-devices.html:51
+#: app/templates/user/dashboard_advanced.html:95
 msgid "No"
 msgstr ""
 
-#: app/admin/views.py:474 app/templates/admin/key-page.html:168
+#: app/admin/views.py:518 app/templates/admin/key-page.html:168
 #: app/templates/admin/key-page.html:192
 msgid "Enabled"
 msgstr ""
 
-#: app/admin/views.py:476 app/templates/admin/key-page.html:171
+#: app/admin/views.py:520 app/templates/admin/key-page.html:171
 #: app/templates/admin/key-page.html:195
 msgid "Disabled"
 msgstr ""
 
-#: app/admin/views.py:556
+#: app/admin/views.py:600
 msgid "Invalid supervisor account."
 msgstr ""
 
-#: app/admin/views.py:577
+#: app/admin/views.py:621
 msgid "Password requirements not met."
 msgstr ""
 
-#: app/admin/views.py:579
+#: app/admin/views.py:623
 msgid "Password changed."
 msgstr ""
 
-#: app/admin/views.py:588
+#: app/admin/views.py:632
 msgid "Mail address entered is invalid."
 msgstr ""
 
-#: app/admin/views.py:590
+#: app/admin/views.py:634
 msgid "Mail address changed."
 msgstr ""
 
-#: app/admin/views.py:597
+#: app/admin/views.py:641
 msgid "No other supervisor account left, cannot delete this one."
 msgstr ""
 
-#: app/admin/views.py:602
+#: app/admin/views.py:646
 msgid "Error deleting account."
 msgstr ""
 
-#: app/admin/views.py:605
+#: app/admin/views.py:649
 msgid "Account deleted."
 msgstr ""
 
-#: app/admin/views.py:644
+#: app/admin/views.py:688
 msgid "Account could not get created."
 msgstr ""
 
-#: app/admin/views.py:700 app/admin/views.py:729
+#: app/admin/views.py:744 app/admin/views.py:773
 msgid "The notification cant be invalid before its valid time."
 msgstr ""
 
-#: app/admin/views.py:709
+#: app/admin/views.py:753
 msgid "Notification could not get created."
 msgstr ""
 
-#: app/admin/views.py:738
+#: app/admin/views.py:782
 msgid "Notification could not get edited."
 msgstr ""
 
-#: app/admin/views.py:744
+#: app/admin/views.py:788
 msgid "Notification does not exist."
 msgstr ""
 
-#: app/admin/views.py:756
+#: app/admin/views.py:800
 msgid "Notification deleted"
 msgstr ""
 
-#: app/admin/views.py:758
+#: app/admin/views.py:802
 msgid "An error occured while deleting the notification"
 msgstr ""
 
-#: app/admin/views.py:777
+#: app/admin/views.py:821
 msgid "Login to access that resource."
 msgstr ""
 
@@ -191,9 +193,11 @@ msgstr ""
 #: app/templates/admin/create-notification.html:14
 #: app/templates/admin/dashboard.html:15
 #: app/templates/admin/deactivate-regcode.html:14
+#: app/templates/admin/deregister-devices.html:14
 #: app/templates/admin/edit-identity.html:15
 #: app/templates/admin/edit-notification.html:14
 #: app/templates/admin/key-page.html:15
+#: app/templates/admin/master-updates.html:15
 #: app/templates/admin/notifications.html:14
 #: app/templates/admin/regcodes.html:15
 msgid "Overview"
@@ -205,9 +209,11 @@ msgstr ""
 #: app/templates/admin/create-notification.html:15
 #: app/templates/admin/dashboard.html:16
 #: app/templates/admin/deactivate-regcode.html:15
+#: app/templates/admin/deregister-devices.html:15
 #: app/templates/admin/edit-identity.html:16
 #: app/templates/admin/edit-notification.html:15
 #: app/templates/admin/key-page.html:16
+#: app/templates/admin/master-updates.html:16
 #: app/templates/admin/notifications.html:15
 #: app/templates/admin/regcodes.html:16
 msgid "Registration Codes"
@@ -220,9 +226,11 @@ msgstr ""
 #: app/templates/admin/create-notification.html:16
 #: app/templates/admin/dashboard.html:17
 #: app/templates/admin/deactivate-regcode.html:16
+#: app/templates/admin/deregister-devices.html:16
 #: app/templates/admin/edit-identity.html:17
 #: app/templates/admin/edit-notification.html:16
 #: app/templates/admin/key-page.html:17
+#: app/templates/admin/master-updates.html:17
 #: app/templates/admin/notifications.html:16
 #: app/templates/admin/regcodes.html:17
 msgid "Notifications"
@@ -234,9 +242,11 @@ msgstr ""
 #: app/templates/admin/create-notification.html:18
 #: app/templates/admin/dashboard.html:19
 #: app/templates/admin/deactivate-regcode.html:18
+#: app/templates/admin/deregister-devices.html:18
 #: app/templates/admin/edit-identity.html:19
 #: app/templates/admin/edit-notification.html:18
 #: app/templates/admin/key-page.html:19
+#: app/templates/admin/master-updates.html:19
 #: app/templates/admin/notifications.html:18
 #: app/templates/admin/regcodes.html:19
 msgid "Accounts"
@@ -248,9 +258,11 @@ msgstr ""
 #: app/templates/admin/create-notification.html:20
 #: app/templates/admin/dashboard.html:21
 #: app/templates/admin/deactivate-regcode.html:20
+#: app/templates/admin/deregister-devices.html:20
 #: app/templates/admin/edit-identity.html:21
 #: app/templates/admin/edit-notification.html:20
 #: app/templates/admin/key-page.html:21
+#: app/templates/admin/master-updates.html:21
 #: app/templates/admin/notifications.html:20
 #: app/templates/admin/regcodes.html:21
 msgid "Logout"
@@ -379,6 +391,9 @@ msgstr ""
 #: app/templates/admin/accounts.html:53 app/templates/admin/add-account.html:46
 #: app/templates/admin/add-regcode.html:47
 #: app/templates/admin/edit-identity.html:47
+#: app/templates/admin/master-updates.html:46
+#: app/templates/admin/master-updates.html:85
+#: app/templates/admin/master-updates.html:143
 #: app/templates/admin/regcodes.html:60
 msgid "First name"
 msgstr ""
@@ -398,6 +413,7 @@ msgstr ""
 #: app/templates/admin/add-account.html:50
 #: app/templates/admin/add-regcode.html:51
 #: app/templates/admin/edit-identity.html:51
+#: app/templates/admin/master-updates.html:99
 msgid "Mail"
 msgstr ""
 
@@ -425,18 +441,26 @@ msgstr ""
 
 #: app/templates/admin/add-regcode.html:45
 #: app/templates/admin/edit-identity.html:45
+#: app/templates/admin/master-updates.html:78
 msgid "Person ID"
 msgstr ""
 
 #: app/templates/admin/add-regcode.html:53
 #: app/templates/admin/edit-identity.html:53
+#: app/templates/admin/master-updates.html:54
+#: app/templates/admin/master-updates.html:106
+#: app/templates/admin/master-updates.html:151
 #: app/templates/admin/regcodes.html:61
 msgid "Dormitory"
 msgstr ""
 
 #: app/templates/admin/add-regcode.html:59
 #: app/templates/admin/edit-identity.html:64
-#: app/templates/admin/key-page.html:77 app/templates/admin/regcodes.html:62
+#: app/templates/admin/key-page.html:77
+#: app/templates/admin/master-updates.html:58
+#: app/templates/admin/master-updates.html:113
+#: app/templates/admin/master-updates.html:155
+#: app/templates/admin/regcodes.html:62
 #: app/templates/user/dashboard_advanced.html:134
 msgid "Room"
 msgstr ""
@@ -481,35 +505,41 @@ msgstr ""
 msgid "Supervisor Dashboard"
 msgstr ""
 
-#: app/templates/admin/dashboard.html:37
+#: app/templates/admin/dashboard.html:41
+msgid ""
+"Master data updates are available! Click here to view the available "
+"updates."
+msgstr ""
+
+#: app/templates/admin/dashboard.html:45
 msgid "Total traffic consumption"
 msgstr ""
 
-#: app/templates/admin/dashboard.html:43
+#: app/templates/admin/dashboard.html:51
 msgid "Miscellaneous statistics"
 msgstr ""
 
-#: app/templates/admin/dashboard.html:47
+#: app/templates/admin/dashboard.html:55
 msgid "Active Users"
 msgstr ""
 
-#: app/templates/admin/dashboard.html:51
+#: app/templates/admin/dashboard.html:59
 msgid "Registered Users"
 msgstr ""
 
-#: app/templates/admin/dashboard.html:55
+#: app/templates/admin/dashboard.html:63
 msgid "Average Credit"
 msgstr ""
 
-#: app/templates/admin/dashboard.html:59
+#: app/templates/admin/dashboard.html:67
 msgid "Shaped Users"
 msgstr ""
 
-#: app/templates/admin/dashboard.html:65
+#: app/templates/admin/dashboard.html:73
 msgid "Master data synchronization"
 msgstr ""
 
-#: app/templates/admin/dashboard.html:200 app/templates/admin/key-page.html:368
+#: app/templates/admin/dashboard.html:208 app/templates/admin/key-page.html:368
 #: app/templates/user/dashboard_advanced.html:249
 msgid "Total"
 msgstr ""
@@ -529,6 +559,21 @@ msgstr ""
 
 #: app/templates/admin/deactivate-regcode.html:51
 msgid "Deactivate"
+msgstr ""
+
+#: app/templates/admin/deregister-devices.html:6
+msgid "Supervisor Registration Code Deregister Devices"
+msgstr ""
+
+#: app/templates/admin/deregister-devices.html:36
+msgid "Deregister Users Devices"
+msgstr ""
+
+#: app/templates/admin/deregister-devices.html:43
+msgid ""
+"The user has been moved into another room. It is recommended to "
+"unregister all currently registered devices of this user. Do you want to "
+"unregister these now?"
 msgstr ""
 
 #: app/templates/admin/edit-identity.html:6
@@ -781,6 +826,36 @@ msgstr ""
 
 #: app/templates/admin/login.html:26
 msgid "Login"
+msgstr ""
+
+#: app/templates/admin/master-updates.html:6
+msgid "Supervisor Master Data Updates"
+msgstr ""
+
+#: app/templates/admin/master-updates.html:37
+msgid "Master Data Updates"
+msgstr ""
+
+#: app/templates/admin/master-updates.html:50
+#: app/templates/admin/master-updates.html:92
+#: app/templates/admin/master-updates.html:147
+msgid "Last name"
+msgstr ""
+
+#: app/templates/admin/master-updates.html:73
+msgid "Local"
+msgstr ""
+
+#: app/templates/admin/master-updates.html:74
+msgid "Remote"
+msgstr ""
+
+#: app/templates/admin/master-updates.html:120
+msgid "IB needed"
+msgstr ""
+
+#: app/templates/admin/master-updates.html:127
+msgid "IB expiry"
 msgstr ""
 
 #: app/templates/admin/notifications.html:36
