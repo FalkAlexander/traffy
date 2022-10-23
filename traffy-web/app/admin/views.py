@@ -243,7 +243,7 @@ def edit_identity(reg_key):
                                         new_dormitory_name=new_dormitory_name)
             else:
                 show_deregister_devices_page = False
-                if identity_data.get("room") != room or identity_data.get("dormitory_id") != dormitory_id:
+                if (identity_data.get("room") != room or identity_data.get("dormitory_id") != dormitory_id) and move_date == "":
                     show_deregister_devices_page = True
 
                 identity_data["person_id"] = str(person_id)
